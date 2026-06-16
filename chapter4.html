@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 4 – The Flight Environment Quiz</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; color: #222; }
+
+  header {
+    background: linear-gradient(135deg, #1a3c6e, #2d6abf);
+    color: #fff; padding: 24px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  header h1 { font-size: 1.5rem; }
+  header p { font-size: 0.9rem; opacity: 0.85; margin-top: 4px; }
+
+  #score-bar {
+    background: #fff; border-bottom: 2px solid #dde3ec;
+    padding: 12px 32px; display: flex; gap: 32px; align-items: center;
+    font-size: 0.9rem; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08); flex-wrap: wrap;
+  }
+  #score-bar span { font-weight: 700; color: #1a3c6e; }
+  #progress-bar { flex: 1; min-width: 120px; height: 8px; background: #dde3ec; border-radius: 4px; overflow: hidden; }
+  #progress-fill { height: 100%; background: #2d6abf; border-radius: 4px; transition: width .4s; }
+
+  .section-header {
+    background: #1a3c6e; color: #fff;
+    padding: 14px 32px; font-size: 1.1rem; font-weight: 700;
+    margin-top: 32px; letter-spacing: .5px;
+  }
+  .section-header span { opacity: 0.7; font-size: 0.85rem; font-weight: 400; margin-left: 12px; }
+
+  .question-card {
+    background: #fff; margin: 16px 32px;
+    border-radius: 10px; padding: 22px 26px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    border-left: 4px solid #dde3ec;
+    transition: border-color .2s;
+  }
+  .question-card.answered-correct { border-left-color: #27ae60; }
+  .question-card.answered-wrong   { border-left-color: #e74c3c; }
+
+  .q-number { font-size: 0.75rem; color: #888; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; }
+  .q-text { font-size: 1rem; font-weight: 600; line-height: 1.55; margin-bottom: 16px; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; }
+  .choice-btn {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: #f7f9fc; border: 2px solid #dde3ec;
+    border-radius: 8px; padding: 11px 16px;
+    cursor: pointer; font-size: 0.93rem; text-align: left;
+    transition: background .15s, border-color .15s;
+    line-height: 1.45;
+  }
+  .choice-btn:hover:not(:disabled) { background: #e8eef8; border-color: #2d6abf; }
+  .choice-btn .letter {
+    font-weight: 700; color: #2d6abf;
+    min-width: 22px; flex-shrink: 0;
+  }
+  .choice-btn.correct  { background: #eafaf1; border-color: #27ae60; }
+  .choice-btn.wrong    { background: #fdf0ef; border-color: #e74c3c; }
+  .choice-btn.correct .letter { color: #27ae60; }
+  .choice-btn.wrong   .letter { color: #e74c3c; }
+  .choice-btn:disabled { cursor: default; }
+
+  .explanation {
+    display: none; margin-top: 14px;
+    background: #f0f6ff; border-left: 3px solid #2d6abf;
+    border-radius: 6px; padding: 12px 16px;
+    font-size: 0.88rem; line-height: 1.6; color: #333;
+  }
+  .explanation.visible { display: block; }
+  .explanation strong { color: #1a3c6e; }
+
+  #end-screen {
+    display: none; text-align: center;
+    background: #fff; margin: 32px; border-radius: 12px;
+    padding: 48px 32px; box-shadow: 0 4px 20px rgba(0,0,0,.1);
+  }
+  #end-screen h2 { font-size: 2rem; color: #1a3c6e; margin-bottom: 8px; }
+  #end-screen .big-score { font-size: 4rem; font-weight: 800; color: #2d6abf; }
+  #end-screen p { color: #555; margin: 8px 0; }
+  #restart-btn {
+    margin-top: 24px; background: #2d6abf; color: #fff;
+    border: none; padding: 14px 36px; border-radius: 8px;
+    font-size: 1rem; cursor: pointer; font-weight: 600;
+    transition: background .2s;
+  }
+  #restart-btn:hover { background: #1a3c6e; }
+  .section-score { display: inline-block; margin: 6px 12px; font-size: 0.95rem; color: #444; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Chapter 4 – The Flight Environment</h1>
+    <p>Private Pilot FAA Airmen Knowledge Test Guide 2024 (Jeppesen) &nbsp;|&nbsp; 215 Questions</p>
+  </div>
+</header>
+
+<div id="score-bar">
+  <div>Answered: <span id="answered-count">0</span> / <span id="total-count">215</span></div>
+  <div id="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
+  <div>Correct: <span id="correct-count">0</span></div>
+  <div>Score: <span id="score-pct">0%</span></div>
+</div>
+
+<div id="quiz-container"></div>
+<div id="end-screen">
+  <h2>Quiz Complete!</h2>
+  <div class="big-score" id="final-score"></div>
+  <p id="final-detail"></p>
+  <div id="section-scores"></div>
+  <button id="restart-btn" onclick="restartQuiz()">Restart Quiz</button>
+</div>
+
+<script>
+const questions = [
+  // ======= SECTION A – Safety of Flight =======
+  {s:"A", q:"In addition to other preflight actions for a VFR flight away from the vicinity of the departure airport, regulations specifically require the pilot in command to",
+   c:["review traffic control light signal procedures.","check the accuracy of the navigation equipment and the emergency locator transmitter (ELT).","determine runway lengths at airports of intended use and the takeoff and landing distance data for the aircraft."],
+   a:2, ex:"As pilot in command, for any flight, you must determine runway lengths at the airports of intended use and the takeoff and landing distance data for your airplane."},
+  {s:"A", q:"Preflight action, as required for all flights away from the vicinity of an airport, shall include",
+   c:["the designation of an alternate airport.","a study of arrival procedures at airports/heliports of intended use.","an alternate course of action if the flight cannot be completed as planned."],
+   a:2, ex:"The preflight action for flights away from the vicinity of an airport include checking weather reports and forecasts, fuel requirements, alternatives available if the flight cannot be completed as planned, and any known traffic delays."},
+  {s:"A", q:"The final authority as to the operation of an aircraft is the",
+   c:["Federal Aviation Administration.","pilot in command.","aircraft manufacturer."],
+   a:1, ex:"As indicated in the regulation, the pilot in command of an aircraft is directly responsible for, and is the final authority as to, the operation of that aircraft."},
+  {s:"A", q:"When an ATC clearance has been obtained, no pilot in command may deviate from that clearance, unless that pilot obtains an amended clearance. The one exception to this regulation is",
+   c:["an emergency.","when the clearance states \"at pilot's discretion.\"","if the clearance contains a restriction."],
+   a:0, ex:"When you receive an ATC clearance, you may not deviate from that clearance, except in an emergency, unless you obtain an amended clearance. A 'pilot's discretion' clearance still must be followed, even though you have more latitude in complying with that clearance."},
+  {s:"A", q:"As pilot in command of an aircraft, under which situation may you deviate from an ATC clearance?",
+   c:["In an emergency.","When operating in Class A airspace at night.","If an ATC clearance is not understood and in VFR conditions."],
+   a:0, ex:"As pilot in command, you are expected to do what is necessary in an emergency. In rare instances you might have to deviate from an ATC clearance to avoid a collision with terrain or with another aircraft. Any pilot deviating from an ATC clearance must report the deviation to ATC as soon as possible and obtain a new clearance."},
+  {s:"A", q:"What action, if any, is appropriate if you deviate from an ATC instruction during an emergency and are given priority?",
+   c:["Take no special action because you are pilot in command.","File a detailed report within 48 hours to the chief of the appropriate ATC facility, if requested.","File a report to the FAA Administrator, as soon as possible."],
+   a:1, ex:"A pilot in command who is given priority by ATC because of an emergency shall submit a detailed report of that emergency within 48 hours to the manager of that ATC facility, if requested by ATC."},
+  {s:"A", q:"If an in-flight emergency requires immediate action, as pilot in command, you may",
+   c:["deviate from the FARs to the extent required to meet the emergency, but must submit a written report to the Administrator within 24 hours.","deviate from the FARs to the extent required to meet that emergency.","not deviate from the FARs unless prior approval for the deviation is granted by the Administrator."],
+   a:1, ex:"In an in-flight emergency requiring immediate action, you may deviate from any rule to the extent required to meet that emergency. A written report is not required unless requested by the FAA."},
+  {s:"A", q:"When must a pilot who deviates from a regulation during an emergency send a written report of that deviation to the Administrator?",
+   c:["Within 7 days.","Within 10 days.","Upon request."],
+   a:2, ex:"The regulation states that a written report is not required unless a report is requested from the FAA."},
+  {s:"A", q:"When would you be required to submit a detailed report of an emergency that caused you to deviate from an ATC clearance?",
+   c:["When requested by ATC.","Immediately.","Within 7 days."],
+   a:0, ex:"A pilot in command who deviates from a clearance, and is then given priority by ATC because of that emergency, shall submit a detailed report of that emergency within 48 hours to the manager of that ATC facility, if requested by ATC."},
+  {s:"A", q:"Before starting each maneuver, you should",
+   c:["check altitude, airspeed, and heading indications.","visually scan the entire area for collision avoidance.","announce your intentions on the nearest CTAF."],
+   a:1, ex:"To ensure you can see other aircraft that might be blocked by blind spots, make clearing turns and scan the area before and during your practice of maneuvers."},
+  {s:"A", q:"What collision avoidance procedure is recommended when climbing or descending VFR on an airway?",
+   c:["Execute gentle banks, left and right for continuous visual scanning of the airspace.","Advise the nearest FSS of the altitude changes.","Fly away from the centerline of the airway before changing altitude."],
+   a:0, ex:"Because of potential traffic on airways, it is important to scan. Making shallow turns enables you to compensate for blind spots."},
+  {s:"A", q:"Eye movements during daytime collision avoidance scanning should",
+   c:["not exceed 10 degrees and view each sector at least 1 second.","be 30 degrees and view each sector at least 3 seconds.","use peripheral vision by scanning small sectors and utilizing off-center viewing."],
+   a:0, ex:"The eyes are able to focus clearly only on a small area, approximately 10°, so a series of short eye movements is most effective. Peripheral vision and off-center viewing are more effective at night."},
+  {s:"A", q:"Which technique should you use to scan for traffic to the right and left during straight-and-level flight?",
+   c:["Systematically focus on different segments of the sky for short intervals.","Concentrate on relative movement detected in the peripheral vision area.","Continuous sweeping of the windshield from right to left."],
+   a:0, ex:"The eyes are able to focus clearly only on a small area, approximately 10°, so a series of short eye movements is most effective."},
+  {s:"A", q:"What is an effective way to scan for traffic in front of your airplane during climb?",
+   c:["Perform 90 degree turns every 1–2 miles to check for traffic along your flight path.","Use your cockpit display of traffic information (CDTI) to avoid aircraft that cannot be seen in a nose-high attitude.","Lower the nose periodically and clear the area, and then transition to cruise climb when altitude permits."],
+   a:2, ex:"Your forward visibility is reduced in the climb. To clear the area, lower the nose periodically for just a moment, then return to the climb attitude. Another method is to perform small S-turns. Transition to a cruise climb when altitude permits to improve forward visibility. A CDTI should be used as a back-up, not a replacement, for your scanning technique."},
+  {s:"A", q:"How can you determine if another aircraft is on a collision course with your aircraft?",
+   c:["The other aircraft always appears to get larger and closer at a rapid rate.","The nose of each aircraft is pointed at the same point in space.","No relative motion is apparent between your aircraft and the other aircraft."],
+   a:2, ex:"A lack of relative movement can indicate that the two aircraft are moving toward one another on a collision course."},
+  {s:"A", q:"Most midair collision accidents occur during",
+   c:["foggy days.","clear days.","cloudy nights."],
+   a:1, ex:"The majority of midair collisions occur during daylight hours, in VFR conditions, and within 5 miles of an airport."},
+  {s:"A", q:"The Aeronautical Information Manual (AIM) specifically encourages pilots to turn on their landing lights when operating below 10,000 feet, day or night, and especially when operating",
+   c:["in Class B airspace.","in conditions of reduced visibility.","within 15 miles of a towered airport."],
+   a:1, ex:"The FAA's voluntary pilot safety program, Operation Lights On, encourages you to turn on your landing lights when operating below 10,000 feet, day or night, especially within 10 miles of any airport; also in conditions of reduced visibility and in areas where flocks of birds can be expected."},
+  {s:"A", q:"What is the appropriate way to use a cockpit display of traffic information (CDTI) to avoid a collision?",
+   c:["Monitor the CDTI and if you receive a traffic alert, turn away from the target shown on the display.","Continuously scan for traffic by looking outside and cross check the CDTI to learn what areas need increased attention.","To avoid complacency, use the CDTI only after you are instrument rated and flying IFR."],
+   a:1, ex:"General aviation traffic systems are advisory only, to help you locate traffic. You may not fly any avoidance maneuvers without first seeing the traffic out the window."},
+  {s:"A", q:"Except in Alaska, during what time period should lighted position lights be displayed on an aircraft?",
+   c:["End of evening civil twilight to the beginning of morning civil twilight.","1 hour after sunset to 1 hour before sunrise.","Sunset to sunrise."],
+   a:2, ex:"No person may, during the period from sunset to sunrise, operate an aircraft unless it has lighted position lights."},
+  {s:"A", q:"No person may operate an aircraft in formation flight",
+   c:["over a densely populated area.","in Class D airspace under special VFR.","except by prior arrangement with the pilot in command of each aircraft."],
+   a:2, ex:"No person may operate an aircraft in formation flight except by arrangement with the pilot in command of each aircraft in the formation."},
+  {s:"A", q:"Which aircraft has the right-of-way over all other air traffic?",
+   c:["A balloon.","An aircraft in distress.","An aircraft on final approach to land."],
+   a:1, ex:"An aircraft in distress has the right-of-way over all other aircraft."},
+  {s:"A", q:"What action is required when two aircraft of the same category converge, but not head-on?",
+   c:["The faster aircraft shall give way.","The aircraft on the left shall give way.","Each aircraft shall give way to the right."],
+   a:1, ex:"The aircraft on the right has the right-of-way and the aircraft on the left shall give way."},
+  {s:"A", q:"Which aircraft has the right-of-way over the other aircraft listed?",
+   c:["Glider.","Airship.","Aircraft refueling other aircraft."],
+   a:0, ex:"In general, the least maneuverable or non-powered aircraft have the right-of-way. A glider has the right-of-way over an airship, airplane, or rotorcraft. An aircraft that is towing or refueling another aircraft has the right-of-way over all other engine-driven aircraft (but not a glider)."},
+  {s:"A", q:"An airplane and an airship are converging. If the airship is left of the airplane's position, which aircraft has the right-of-way?",
+   c:["The airship.","The airplane.","Each pilot should alter course to the right."],
+   a:0, ex:"In general, the least maneuverable aircraft normally has the right-of-way. A glider has the right-of-way over an airship, airplane, or rotorcraft. Because an airship is less maneuverable than an airplane, the airship has the right-of-way."},
+  {s:"A", q:"Which aircraft has the right-of-way over the other aircraft listed?",
+   c:["Airship.","Aircraft towing other aircraft.","Gyroplane."],
+   a:1, ex:"An aircraft towing or refueling another aircraft has the right-of-way over all other engine-driven aircraft."},
+  {s:"A", q:"What action should the pilots of a glider and an airplane take if on a head-on collision course?",
+   c:["The airplane pilot should give way to the left.","The glider pilot should give way to the right.","Both pilots should give way to the right."],
+   a:2, ex:"When any aircraft are approaching each other head-on, both pilots should alter their course to the right. For aircraft approaching head-on, the FARs do not differentiate between aircraft categories."},
+  {s:"A", q:"When two or more aircraft are approaching an airport for landing, the right-of-way belongs to the aircraft",
+   c:["that has the other to its right.","that is the least maneuverable.","at the lower altitude, but it shall not take advantage of this rule to cut in front of or to overtake another."],
+   a:2, ex:"When two or more aircraft are approaching an airport for landing, the one at the lower altitude has the right-of-way, but shall not use this rule to cut in front of another aircraft."},
+  {s:"A", q:"No person may operate an aircraft in aerobatic flight when",
+   c:["flight visibility is less than 5 miles.","over any congested area of a city, town, or settlement.","less than 2,500 feet AGL."],
+   a:1, ex:"No person may operate an aircraft in aerobatic flight over any congested area of a city, town, or settlement."},
+  {s:"A", q:"In which class of airspace is aerobatic flight prohibited?",
+   c:["Class E airspace not designated for Federal Airways above 1,500 feet AGL.","Class E airspace below 1,500 feet AGL.","Class G airspace above 1,500 feet AGL."],
+   a:1, ex:"No person may operate an aircraft in aerobatic flight within Class B, C, or D airspace, Class E airspace designated for an airport, or within 4 NM of the centerline of any Federal Airway. Aerobatic flight is also prohibited below 1,500 feet AGL and when the flight visibility is less than 3 statute miles."},
+  {s:"A", q:"What is the lowest altitude permitted for aerobatic flight?",
+   c:["1,000 feet AGL.","1,500 feet AGL.","2,000 feet AGL."],
+   a:1, ex:"No person may operate an aircraft in aerobatic flight below an altitude of 1,500 feet above the surface."},
+  {s:"A", q:"No person may operate an aircraft in aerobatic flight when the flight visibility is less than",
+   c:["3 miles.","5 miles.","7 miles."],
+   a:0, ex:"No person may operate an aircraft in aerobatic flight when flight visibility is less than three statute miles."},
+  {s:"A", q:"An approved parachute constructed of natural materials must have been packed by a certificated and appropriately rated parachute rigger within the preceding",
+   c:["60 days.","90 days.","120 days."],
+   a:0, ex:"No pilot may allow an emergency parachute to be carried in an aircraft unless it has been packed by a certificated and appropriately rated parachute rigger within the preceding 60 days if its canopy, shrouds, and harness are composed exclusively of natural fiber or materials."},
+  {s:"A", q:"An approved synthetic parachute may be carried in an aircraft for emergency use if it has been packed by an appropriately rated parachute rigger within the preceding",
+   c:["120 days.","180 days.","365 days."],
+   a:1, ex:"No pilot may allow an emergency parachute to be carried in an aircraft unless it has been packed within the preceding 180 days if its canopy, shrouds, and harness are composed exclusively of nylon, rayon, or other similar synthetic fiber or materials."},
+  {s:"A", q:"With certain exceptions, when must each occupant of an aircraft wear an approved parachute?",
+   c:["When a door is removed from the aircraft to facilitate parachute jumpers.","When intentionally pitching the nose of the aircraft up or down 30° or more.","When intentionally banking in excess of 30°."],
+   a:1, ex:"Unless each occupant is wearing an approved parachute, no pilot carrying any person (other than a crewmember) may carry out any intentional maneuver that exceeds a nose-up or nose-down attitude of 30 degrees relative to the horizon."},
+  {s:"A", q:"Which is normally prohibited when operating a restricted category civil aircraft?",
+   c:["Flight under instrument flight rules.","Flight over a densely populated area.","Flight within Class D airspace."],
+   a:1, ex:"No person may operate a restricted category civil aircraft within the United States over a densely populated area."},
+  {s:"A", q:"Unless otherwise specifically authorized, no person may operate an aircraft that has an experimental certificate",
+   c:["beneath the floor of Class B airspace.","over a densely populated area or in a congested airway.","from the primary airport with Class D airspace."],
+   a:1, ex:"Unless otherwise authorized by the Administrator in special operating limitations, no person may operate an aircraft that has an experimental certificate over a densely populated area or in a congested airway."},
+  {s:"A", q:"Except when necessary for takeoff or landing, what is the minimum safe altitude for a pilot to operate an aircraft anywhere?",
+   c:["An altitude allowing, if a power unit fails, an emergency landing without undue hazard to persons or property on the surface.","An altitude of 500 feet above the surface and no closer than 500 feet to any person, vessel, vehicle, or structure.","An altitude of 500 feet above the highest obstacle within a horizontal radius of 1,000 feet."],
+   a:0, ex:"Maintain enough altitude to allow an emergency landing in the event of an engine failure without undue hazard to people or property on the surface."},
+  {s:"A", q:"Except when necessary for takeoff or landing, what is the minimum safe altitude required for a pilot to operate an aircraft over congested areas?",
+   c:["An altitude of 1,000 feet above any person, vessel, vehicle, or structure.","An altitude of 500 feet above the highest obstacle within a horizontal radius of 1,000 feet.","An altitude of 1,000 feet above the highest obstacle within a horizontal radius of 2,000 feet."],
+   a:2, ex:"The minimum safe altitude required over a congested area is 1,000 feet above any obstacle within a horizontal radius of 2,000 feet of the aircraft."},
+  {s:"A", q:"Except when necessary for takeoff or landing, what is the minimum safe altitude for a pilot to operate an aircraft over other than a congested area?",
+   c:["An altitude of 1,000 feet above the highest obstacle within a horizontal radius of 2,000 feet.","An altitude of 500 feet AGL, except over open water or a sparsely populated area, which requires 500 feet from any person, vessel, vehicle, or structure.","An altitude of 500 feet above the highest obstacle within a horizontal radius of 1,000 feet."],
+   a:1, ex:"The minimum safe altitude over an uncongested area is 500 feet AGL, except over open water or a sparsely populated area, which requires 500 feet (horizontally or vertically) from any person, vessel, vehicle, or structure."},
+  {s:"A", q:"Except when necessary for takeoff or landing, an aircraft may not be operated closer than what distance from any person, vessel, vehicle, or structure?",
+   c:["500 feet.","700 feet.","1,000 feet."],
+   a:0, ex:"Over a sparsely populated or open water area, you must remain at least 500 feet (horizontally or vertically) from any person, vessel, vehicle, or structure."},
+  {s:"A", q:"Under what conditions may objects be dropped from an aircraft?",
+   c:["Only in an emergency.","If precautions are taken to avoid injury or damage to persons or property on the surface.","If prior permission is received from the Federal Aviation Administration."],
+   a:1, ex:"Objects can be dropped from an aircraft in flight, if reasonable precautions are taken to avoid injury or damage to persons or property."},
+  {s:"A", q:"When taxiing with strong quartering tailwinds, which aileron positions should be used?",
+   c:["Aileron down on the downwind side.","Ailerons neutral.","Aileron down on the side from which the wind is blowing."],
+   a:2, ex:"With a quartering tailwind, the aileron should be down on the side from which the wind is blowing to prevent the wind from flowing under and lifting the wing."},
+  {s:"A", q:"Which aileron positions should a pilot generally use when taxiing in strong quartering headwinds?",
+   c:["Aileron up on the side from which the wind is blowing.","Aileron down on the side from which the wind is blowing.","Ailerons neutral."],
+   a:0, ex:"To counteract the lifting tendency of a quartering headwind, the aileron should be up on the side from which the wind is blowing."},
+  {s:"A", q:"Which wind condition would be most critical when taxiing a nosewheel equipped high-wing airplane?",
+   c:["Quartering tailwind.","Direct crosswind.","Quartering headwind."],
+   a:0, ex:"A tricycle-gear, high-wing airplane is most susceptible to a quartering tailwind because a strong airflow beneath the wing and horizontal stabilizer can lift the airplane and cause it to nose over and flip on its back."},
+  {s:"A", q:"(Refer to Figure 9, area A.) How should the flight controls be held while taxiing a tricycle-gear equipped airplane into a left quartering headwind?",
+   c:["Left aileron up, elevator neutral.","Left aileron down, elevator neutral.","Left aileron up, elevator down."],
+   a:0, ex:"While taxiing a tricycle-gear airplane in a quartering headwind, the aileron should be up on the side from which the wind is blowing, and the elevator neutral. The wind is from the left, so the left aileron should be up."},
+  {s:"A", q:"(Refer to Figure 9, area B.) How should the flight controls be held while taxiing a tailwheel airplane into a right quartering headwind?",
+   c:["Right aileron up, elevator up.","Right aileron down, elevator neutral.","Right aileron up, elevator down."],
+   a:0, ex:"When taxiing a tailwheel airplane, position the ailerons the same as for a tricycle-gear airplane. To help keep the tailwheel on the ground, hold the elevator control aft (up) in a headwind. So with a right quartering headwind: right aileron up, elevator up."},
+  {s:"A", q:"(Refer to Figure 9, area C.) How should the flight controls be held while taxiing a tailwheel airplane with a left quartering tailwind?",
+   c:["Left aileron up, elevator neutral.","Left aileron down, elevator neutral.","Left aileron down, elevator down."],
+   a:2, ex:"For a quartering tailwind, the controls are held the same for both tailwheel and tricycle-gear airplanes. Ailerons are down on the side from which the wind is blowing, and the elevator is down to prevent the wind from lifting the tail."},
+  {s:"A", q:"Pre-takeoff briefing of passengers about the use of seat belts for a flight is the responsibility of",
+   c:["all passengers.","the pilot in command.","the right seat pilot."],
+   a:1, ex:"As the pilot in command, you must ensure that each person on board is briefed on how to fasten and unfasten the safety belt and shoulder harness, and that all persons are notified to fasten their safety belts during taxi, takeoff, or landing."},
+  {s:"A", q:"Regarding passengers, what obligation, if any, does a pilot in command have concerning the use of safety belts?",
+   c:["The pilot in command must instruct the passengers to keep safety belts fastened for the entire flight.","The pilot in command must brief the passengers on the use of safety belts and notify them to fasten their safety belts during taxi, takeoff, and landing.","The pilot in command has no obligation concerning passengers' use of safety belts."],
+   a:1, ex:"As the pilot in command, you must ensure that each person on board is briefed on how to fasten and unfasten the safety belt and shoulder harness, and that all persons are notified to fasten their safety belt during taxi, takeoff, or landing."},
+  {s:"A", q:"Flight crewmembers are required to keep their safety belts and shoulder harnesses fastened during",
+   c:["takeoffs and landings.","all flight conditions.","flight in turbulent air."],
+   a:0, ex:"Safety belts are required during takeoff and landing and while enroute. Shoulder harnesses are required during takeoff and landing, unless the crewmember station is not equipped with one or the crewmember cannot perform duties with it fastened."},
+  {s:"A", q:"Safety belts are required to be properly secured about which persons in an aircraft and when?",
+   c:["Pilots only, during takeoffs and landings.","Passengers, during taxi, takeoffs, and landings only.","Each person on board the aircraft during the entire flight."],
+   a:1, ex:"Passengers are required to have safety belts (and shoulder harnesses, if installed) fastened during taxi, takeoff, and landing."},
+  {s:"A", q:"Which best describes the flight conditions under which flight crewmembers are specifically required to keep their safety belts and shoulder harnesses fastened?",
+   c:["Safety belts during takeoff and landing; shoulder harnesses during takeoff and landing.","Safety belts during takeoff and landing; shoulder harnesses during takeoff and landing and while enroute.","Safety belts during takeoff and landing and while enroute; shoulder harnesses during takeoff and landing."],
+   a:2, ex:"During takeoff and landing, and while enroute, each required flight crewmember shall keep the safety belt fastened. In addition, during takeoff and landing, each required flight crewmember shall keep the shoulder harness fastened."},
+  {s:"A", q:"With certain exceptions, safety belts are required to be secured about passengers during",
+   c:["taxi, takeoffs, and landings.","all flight conditions.","flight in turbulent air."],
+   a:0, ex:"Passengers are only required to have safety belts (and shoulder harnesses, if installed) fastened during taxi, takeoff, and landing."},
+  {s:"A", q:"Your instructor has demonstrated a maneuver and wants you to try it. What steps should you complete to assume control of the airplane?",
+   c:["Tell the instructor that you are ready to try the maneuver and start performing the maneuver when the airplane is stabilized.","Start performing the maneuver after your instructor says, \"you have the flight controls,\" and let the instructor monitor your performance.","After your instructor says, \"you have the flight controls,\" say \"I have the flight controls,\" and watch for your instructor to confirm again, \"you have the flight controls.\""],
+   a:2, ex:"To ensure that it is clear who has control of the airplane, the FAA recommends a three-step process when exchanging the flight controls: the pilot passing control says \"You have the flight controls\"; the pilot taking control says \"I have the flight controls\"; and the pilot passing control confirms \"You have the flight controls.\""},
+  {s:"A", q:"Which incident requires an immediate notification to the nearest NTSB field office?",
+   c:["A forced landing due to engine failure.","Landing gear damage, due to a hard landing.","Flight control system malfunction or failure."],
+   a:2, ex:"The operator of an aircraft shall immediately notify the nearest NTSB field office when a flight control system malfunction or failure occurs."},
+  {s:"A", q:"Which incident would require an immediate notification to the nearest NTSB field office?",
+   c:["An in-flight generator or alternator failure.","An in-flight fire.","An in-flight loss of VOR receiver capability."],
+   a:1, ex:"The operator of an aircraft shall immediately notify the nearest NTSB field office when a fire in flight occurs."},
+  {s:"A", q:"Which incident requires an immediate notification be made to the nearest NTSB field office?",
+   c:["An overdue aircraft that is believed to be involved in an accident.","Inadvertent door or window opening in-flight.","An in-flight generator or alternator failure."],
+   a:0, ex:"The operator of an aircraft shall immediately notify the nearest NTSB field office when an overdue aircraft is believed to be involved in an accident."},
+  {s:"A", q:"On a postflight inspection of your aircraft after an aborted takeoff due to an elevator malfunction, you find that the elevator control cable has broken. According to NTSB 830, you",
+   c:["must immediately notify the nearest NTSB office.","should notify the NTSB within 10 days.","must file a NASA report immediately."],
+   a:0, ex:"NTSB 830.5 states that you must immediately notify the NTSB if an aircraft accident or serious incident occurs. Serious incidents include flight control system malfunction or failure."},
+  {s:"A", q:"The operator of an aircraft that has been involved in an incident is required to submit a report to the nearest field office of the NTSB",
+   c:["within 7 days.","within 10 days.","when requested."],
+   a:2, ex:"A report on an incident for which notification is required by 830.5(a) shall be filed only when requested by an authorized representative of the NTSB."},
+  {s:"A", q:"The operator of an aircraft that has been involved in an accident is required to file an accident report within how many days?",
+   c:["5.","7.","10."],
+   a:2, ex:"The operator of an aircraft shall file a report within 10 days after an accident, or after 7 days if an overdue aircraft is still missing."},
+  {s:"A", q:"If an aircraft is involved in an accident that results in substantial damage to the aircraft, the nearest NTSB field office should be notified",
+   c:["immediately.","within 48 hours.","within 7 days."],
+   a:0, ex:"The operator of an aircraft shall immediately, and by the most expeditious means available, notify the nearest NTSB field office when an aircraft accident occurs."},
+  {s:"A", q:"May aircraft wreckage be moved prior to the time the NTSB takes custody?",
+   c:["Yes, but only if moved by a federal, state, or local law enforcement officer.","Yes, but only to protect the wreckage from further damage.","No, it may not be moved under any circumstances."],
+   a:1, ex:"Before the NTSB takes custody, aircraft wreckage may not be disturbed or moved except to the extent necessary to protect the wreckage from further damage."},
+  {s:"A", q:"Which is an appropriate action to take to manage a cabin door opening after departure?",
+   c:["Immediately attempt to close the door.","Perform a normal traffic pattern and landing and close the door on the ground.","Decrease the airspeed to just above a stall speed to make it easier to close the door."],
+   a:1, ex:"Accidents have occurred because pilots stopped flying the airplane to close doors. Stay calm, maintain control, do not release your shoulder harness to reach the door, and close it safely on the ground after a normal traffic pattern and landing."},
+  {s:"A", q:"Which is true regarding emergency equipment and survival gear?",
+   c:["FAR 91.205 requires that a fire extinguisher, ELT, and a survival kit be on board the airplane.","Because items might vary depending on the airplane, you must be familiar with using the specific emergency equipment and survival equipment on board each airplane you fly.","You are required by FAR Part 91 to brief your passengers on the location and use of all emergency equipment and survival gear."],
+   a:1, ex:"You should be familiar with the emergency equipment and survival gear in each airplane you fly, which can include a fire extinguisher, egress hammer, or parachute system. Although not required by regulation, you should pack appropriate gear and brief passengers."},
+  {s:"A", q:"When packing a survival kit to have on board the airplane, you should include",
+   c:["only the items required by regulation.","equipment/gear needed for the specific terrain and weather along your route.","no more than a few core items to limit the weight in the baggage area."],
+   a:1, ex:"The only survival gear required by the FARs are flotation gear and a signaling device for over-water-for-hire operations. However, any complete survival kit should contain a basic core of supplies plus additional items appropriate to the terrain and weather you would encounter."},
+
+  // ======= SECTION B – Airports =======
+  {s:"B", q:"Which is the correct traffic pattern departure procedure to use at an uncontrolled airport?",
+   c:["Depart in any direction consistent with safety, after crossing the airport boundary.","Make all turns to the left.","Comply with any FAA traffic pattern established for the airport."],
+   a:2, ex:"Each person operating an aircraft departing an airport without an operating control tower shall comply with any traffic patterns established for that airport in Part 93."},
+  {s:"B", q:"The numbers 9 and 27 on a runway indicate that the runway is oriented approximately",
+   c:["009° and 027° true.","090° and 270° true.","090° and 270° magnetic."],
+   a:2, ex:"Runway numbers correspond to the magnetic, not true, direction, and are rounded to the nearest 10°, with the last zero omitted."},
+  {s:"B", q:"The numbers 8 and 26 on the approach ends of a runway indicate that the runway is orientated approximately",
+   c:["008° and 026° true.","080° and 260° true.","080° and 260° magnetic."],
+   a:2, ex:"Runway numbers indicate the magnetic direction of a runway to the nearest 10 degrees. Runway 8 would be approximately 080°, and 26 would be approximately 260° magnetic."},
+  {s:"B", q:"The recommended entry position to an airport traffic pattern is",
+   c:["45° to the base leg just below traffic pattern altitude.","45° at the midpoint of the downwind leg at traffic pattern altitude.","to cross directly over the airport at traffic pattern altitude, and then join the downwind leg."],
+   a:1, ex:"Always descend to traffic pattern altitude and level off before entering the pattern. The recommended traffic pattern entry is 45° at the midpoint of the runway on the downwind leg."},
+  {s:"B", q:"(Refer to Figure 49.) Select the proper traffic pattern and runway for landing.",
+   c:["Left-hand traffic and Runway 18.","Right-hand traffic and Runway 18.","Left-hand traffic and Runway 22."],
+   a:1, ex:"The wind tetrahedron indicates landing should be to the southwest, but Runway 22 is closed. Runway 18 is the next best choice, and the \"L\" mark at that end of the circle shows right-hand traffic for Runway 18."},
+  {s:"B", q:"(Refer to Figure 49.) If the wind is as shown by the landing-direction indicator, the pilot should land on",
+   c:["Runway 18 and expect a crosswind from the right.","Runway 22 directly into the wind.","Runway 36 and expect a crosswind from the right."],
+   a:0, ex:"The wind tetrahedron indicates landing should be to the southwest, but Runway 22 is closed. Runway 18 is the next best choice, with a crosswind from the right."},
+  {s:"B", q:"(Refer to Figure 50.) The segmented circle indicates that the airport traffic is",
+   c:["left hand for Runway 18 and right hand for Runway 36.","right hand for Runway 9 and left hand for Runway 27.","left hand for Runway 36 and right hand for Runway 18."],
+   a:2, ex:"The segmented circle indicates left-hand traffic for Runways 9 and 36, and right-hand traffic for Runways 18 and 27."},
+  {s:"B", q:"(Refer to Figure 50.) The traffic patterns indicated in the segmented circle have been arranged to avoid flights over an area to the",
+   c:["south of the airport.","north of the airport.","southeast of the airport."],
+   a:2, ex:"Because the traffic pattern for the north-south runway is west of the field, and the pattern for the east-west runway is north of the field, no traffic patterns should be flown southeast of the airport."},
+  {s:"B", q:"(Refer to Figure 50.) The segmented circle indicates that a landing on Runway 26 is with a",
+   c:["right-quartering headwind.","left-quartering headwind.","right-quartering tailwind."],
+   a:0, ex:"Because the wind cone shows wind from the northwest, a landing to the west experiences a right-quartering headwind."},
+  {s:"B", q:"(Refer to Figure 50.) Which runway and traffic pattern should be used as indicated by the wind cone in the segmented circle?",
+   c:["Right-hand traffic on Runway 18.","Left-hand traffic on Runway 36.","Right-hand traffic on Runway 9."],
+   a:1, ex:"With wind from the northwest, Runway 36 (a left-hand traffic pattern) would encounter a left-quartering headwind. Runway 27 is not an available answer choice."},
+  {s:"B", q:"You should state your position on the airport when calling the tower for takeoff, especially when",
+   c:["visibility is less than 1 mile.","parallel runways are in use.","departing from a runway intersection."],
+   a:2, ex:"The AIM specifically requests you to state your position when calling from a runway intersection, for example: \"Centennial Tower, Cessna 5238-Kilo, at Alpha 3.\""},
+  {s:"B", q:"The \"yellow demarcation bar\" marking indicates",
+   c:["a runway with a displaced threshold from a blast pad, stopway, or taxiway that precedes the runway.","a hold line from a taxiway to a runway.","the beginning of available runway for landing on the approach side."],
+   a:0, ex:"This double bar delineates a runway with a displaced threshold from a blast pad, stopway, or taxiway that precedes the runway."},
+  {s:"B", q:"(Refer to Figure 65, item E.) This sign is a visual clue that",
+   c:["confirms the aircraft's location to be on taxiway \"B.\"","warns the pilot of approaching taxiway \"B.\"","indicates \"B\" holding area is ahead."],
+   a:0, ex:"A location sign has a black background with a yellow border and yellow numbers or letters. A yellow letter designates a taxiway on which the aircraft is located."},
+  {s:"B", q:"(Refer to Figure 65, item F.) This sign confirms your position on",
+   c:["Runway 22.","routing to Runway 22.","Taxiway 22."],
+   a:0, ex:"A location sign has a black background with a yellow border and yellow numbers. The yellow number designates a runway on which the aircraft is located."},
+  {s:"B", q:"(Refer to Figure 48.) The portion of the runway identified by the letter A may be used for",
+   c:["landing.","taxiing and takeoff.","taxiing and landing."],
+   a:1, ex:"The area before a displaced threshold may be used for taxi and takeoff, and roll-out after landing in the opposite direction, but not for landing."},
+  {s:"B", q:"(Refer to Figure 65, item G.) From the cockpit, this marking confirms the aircraft to be",
+   c:["on a taxiway, about to enter runway zone.","on a runway, about to clear.","near an instrument approach clearance zone."],
+   a:1, ex:"This is a runway boundary sign, which faces the runway and is visible to the pilot exiting the runway. It provides a visual cue you can use to decide when you are \"clear of the runway.\""},
+  {s:"B", q:"(Refer to Figure 48.) According to the airport diagram, which statement is true?",
+   c:["Takeoffs may be started at position D on Runway 30, but the landing portion of this runway begins at position E.","Takeoffs may be started at position A on Runway 12, and the landing portion of this runway begins at position B.","The takeoff and landing portion of Runway 12 begins at position B."],
+   a:1, ex:"The area before a displaced threshold may be used for taxi and takeoff. Landings may be made after the displaced threshold at position \"B\" on Runway 12."},
+  {s:"B", q:"(Refer to Figure 48.) What is the difference between area A and area E on the airport depicted?",
+   c:["\"A\" may be used for taxi and takeoff; \"E\" may be used only as an overrun.","\"A\" may be used for all operations except heavy aircraft landings; \"E\" may be used only as an overrun.","\"A\" may be used only for taxiing; \"E\" may be used for all operations except landings."],
+   a:0, ex:"Area \"A\" before a displaced threshold may be used for taxi and takeoff, and roll-out after landing. Area \"E\" is a blastpad/stopway not designed to support continuous operations, but it may be used as an overrun."},
+  {s:"B", q:"(Refer to Figure 48.) Area C on the airport depicted is a",
+   c:["stabilized area.","multiple heliport.","closed runway."],
+   a:2, ex:"A closed runway is depicted by Xs."},
+  {s:"B", q:"(Refer to Figure 64.) Which marking indicates a vehicle lane?",
+   c:["A.","C.","E."],
+   a:1, ex:"Lanes for ground vehicles look similar to a road painted on the airport surface."},
+  {s:"B", q:"(Refer to Figure 49.) The arrows that appear on the ends of the north/south runway indicate that these areas",
+   c:["may be used only for taxiing.","is usable for taxiing, takeoff, and landing.","cannot be used for landing, but may be used for taxiing and takeoff."],
+   a:2, ex:"The area before a displaced threshold may be used for taxi and takeoff, and for roll-out after landing in the opposite direction, but not for landing."},
+  {s:"B", q:"At a towered airport, when approaching taxiway holding lines from the side with the continuous lines, you",
+   c:["may continue taxiing.","should not cross the lines without an ATC clearance.","should continue taxiing until all parts of the aircraft have crossed the lines."],
+   a:1, ex:"When approaching a taxiway hold line from the side with the continuous (solid) line at a towered airport, you should not cross the hold line without ATC clearance."},
+  {s:"B", q:"Which is true regarding runway incursions?",
+   c:["To help prevent a runway incursion during periods of reduced visibility or at night use your exterior taxi/landing lights when practical.","A runway incursion is defined as any occurrence at an airport involving an aircraft, vehicle, person, or object on the ground that results in a collision.","Runway incursions are primarily caused by controller errors."],
+   a:0, ex:"A runway incursion is any occurrence that creates a collision hazard or results in loss of separation with an aircraft taking off or landing. They are primarily caused by errors with clearances, communication, surface movement, and positional awareness. To help others see you, use exterior taxi/landing lights when practical."},
+  {s:"B", q:"The runway status lights (RWSL) system is primarily used to",
+   c:["provide weather updates to pilots.","signal distress in case of an emergency.","indicate runway occupancy and help pilots avoid potential runway incursions."],
+   a:2, ex:"Runway status lights are an automated system embedded in pavement that signals pilots when it is unsafe to enter, cross, or begin takeoff, enhancing runway safety by indicating runway occupancy."},
+  {s:"B", q:"What is the purpose of the runway/runway hold position sign?",
+   c:["Denotes entrance to runway from a taxiway.","Denotes area protected for an aircraft approaching or departing a runway.","Denotes intersecting runways."],
+   a:2, ex:"These signs are installed with pavement markings on runways used for LAHSO or taxiing operations. Like other holding position signs, they consist of white runway numbers on a red background and denote intersecting runways."},
+  {s:"B", q:"What does the outbound destination sign identify?",
+   c:["Identifies entrance to the runway from a taxiway.","Identifies direction to takeoff runways.","Identifies runway on which an aircraft is located."],
+   a:1, ex:"An outbound destination sign displays black text on a yellow background with an arrow showing the direction of the taxiing route to that destination (such as takeoff runways)."},
+  {s:"B", q:"How can you determine whether your destination airport uses land and hold short operations (LAHSO)?",
+   c:["The notation \"L\" preceding the runway length on a VFR chart.","LAHSO information published in the Airport/Facility Directory listing in the Chart Supplement.","NOTAMs from Flight Service during your preflight weather briefing."],
+   a:1, ex:"LAHSO information is published in the Chart Supplement's A/FD listing for that airport. An \"L\" preceding the runway length on a VFR chart indicates runway lighting, not LAHSO."},
+  {s:"B", q:"Who has final authority to accept or decline any land and hold short (LAHSO) clearance?",
+   c:["Pilot in command.","Air traffic controller.","Second in command."],
+   a:0, ex:"As the pilot in command (PIC), you have the final authority to accept or decline any LAHSO clearance. Decline it if you determine that it compromises safety."},
+  {s:"B", q:"When should you decline a land and hold short (LAHSO) clearance?",
+   c:["When it compromises safety.","Only when the tower operator concurs.","Pilots may not decline a LAHSO clearance."],
+   a:0, ex:"As the pilot in command (PIC), you have the final authority to accept or decline any LAHSO clearance. Decline it if you determine that it compromises safety."},
+  {s:"B", q:"Where is the \"available landing distance\" (ALD) data published for an airport that utilizes land and hold short operations (LAHSO)?",
+   c:["The special notices section of the Chart Supplement.","14 CFR Part 91, General Operating and Flight Rules.","Aeronautical Information Manual (AIM)."],
+   a:0, ex:"ALD data is published in the listing for an airport that has LAHSO. Airport listings are in the A/FD (special notices) section of the Chart Supplement."},
+  {s:"B", q:"What is the minimum visibility for a pilot to receive a land and hold short (LAHSO) clearance?",
+   c:["3 nautical miles.","3 statute miles.","1 statute mile."],
+   a:1, ex:"You should only receive a LAHSO clearance when there is a minimum ceiling of 1,000 feet and 3 statute miles visibility."},
+  {s:"B", q:"An airport's rotating beacon operated during daylight hours indicates",
+   c:["there are obstructions on the airport.","that weather at the airport located in Class D airspace is below basic VFR weather minimums.","the air traffic control tower is not in operation."],
+   a:1, ex:"When the airport beacon is on during the daytime, it means the ceiling is less than 1,000 feet or the visibility is less than 3 miles, which is below basic VFR minimums."},
+  {s:"B", q:"You can identify a military air station by a rotating beacon that emits",
+   c:["white and green alternating flashes.","two quick white flashes between each green flash.","green, yellow, and white flashes."],
+   a:1, ex:"A military airport beacon has two quick flashes of white light between each green flash."},
+  {s:"B", q:"How can a military airport be identified at night?",
+   c:["Alternate white and green light flashes.","Dual peaked (two quick) white flashes between each green flash.","White flashing lights with steady green at the same location."],
+   a:1, ex:"A military airport beacon has two quick flashes of white light between each green flash."},
+  {s:"B", q:"While operating in Class D airspace, each pilot of an aircraft approaching to land on a runway served by a visual approach slope indicator (VASI) shall",
+   c:["maintain a 3° glide until approximately 1/2 mile to the runway before going below the VASI.","maintain an altitude at or above the glide slope until a lower altitude is necessary for a safe landing.","stay high until the runway can be reached in a power-off landing."],
+   a:1, ex:"In Class D airspace approaching to land on a runway served by a VASI, FAR 91.129 requires you to maintain an altitude at or above the glide path until a lower altitude is necessary for a safe landing."},
+  {s:"B", q:"When approaching to land on a runway served by a visual approach slope indicator (VASI), the pilot shall",
+   c:["maintain an altitude that captures the glide slope at least 2 miles downwind from the runway threshold.","maintain an altitude at or above the glide slope.","remain on the glide slope and land between the two-light bar."],
+   a:1, ex:"FAR 91.129 requires you to maintain an altitude at or above the glide path until a lower altitude is necessary for a safe landing."},
+  {s:"B", q:"Which approach and landing objective is assured when the pilot remains on the proper glidepath of the VASI?",
+   c:["Runway identification and course guidance.","Safe obstruction clearance in the approach area.","Lateral course guidance to the runway."],
+   a:1, ex:"The VASI glide path provides safe obstruction clearance to the runway."},
+  {s:"B", q:"A slightly high glide slope indication from a precision approach path indicator is",
+   c:["four white lights.","three white lights and one red light.","two white lights and two red lights."],
+   a:1, ex:"A slightly high indication on a precision approach path indicator (PAPI) is three white lights and one red light."},
+  {s:"B", q:"A below glide slope indication from a pulsating visual approach slope indicator is a",
+   c:["pulsating white light.","steady white light.","pulsating red light."],
+   a:2, ex:"A pulsating approach slope indicator provides a pulsating red light when below glide slope."},
+  {s:"B", q:"(Refer to Figure 47.) Illustration A indicates that the aircraft is",
+   c:["above the glide slope.","on the glide slope.","below the glide slope."],
+   a:1, ex:"A red over white indication is on glide slope."},
+  {s:"B", q:"(Refer to Figure 47.) VASI lights as shown by illustration C indicate that the airplane is",
+   c:["above the glide slope.","on the glide slope.","below the glide slope."],
+   a:0, ex:"A white over white indication is above glide slope."},
+  {s:"B", q:"(Refer to Figure 47.) While on final approach to a runway equipped with a standard two-bar VASI, the lights appear as shown by illustration D. This means that the aircraft is",
+   c:["above the glide path.","below the glide path.","on the glide path."],
+   a:1, ex:"A red over red indication is below the glide slope."},
+  {s:"B", q:"To set the high intensity runway lights on medium intensity, the pilot should click the microphone seven times, then click it",
+   c:["one time within four seconds.","three times within three seconds.","five times within five seconds."],
+   a:2, ex:"At airports with a three-step pilot-controlled lighting system, five clicks turns the lights to medium intensity. For each adjustment, key the mic the required number of times within a period of five seconds."},
+  {s:"B", q:"Airport taxiway edge lights are identified at night by",
+   c:["white directional lights.","blue omnidirectional lights.","alternate red and green lights."],
+   a:1, ex:"Taxiway edge lights are blue."},
+  {s:"B", q:"You observe someone breaking into an airplane. What should you do?",
+   c:["Call 1-866-GA-SECURE and then call 911.","Call 911 and then call 1-866-GA-SECURE.","Call 1-866-GA-SECURE and then try to detain the suspected criminal."],
+   a:1, ex:"For criminal activity, such as someone breaking into an aircraft, do not confront the person — call 911 first, then 1-866-GA-SECURE (1-866-427-3287), and notify your airport, FBO, or flight school manager. Call only 1-866-GA-SECURE for suspicious, but not criminal, activity."},
+
+  // ======= SECTION C – Aeronautical Charts =======
+  {s:"C", q:"(Refer to Figure 20, area 3.) Determine the approximate latitude and longitude of Currituck County Airport.",
+   c:["36°24'N – 76°01'W.","36°48'N – 76°01'W.","47°24'N – 75°58'W."],
+   a:0, ex:"Counting tick marks (one minute each) down from the 36°30'N latitude line to the airport gives 36°24'N. At one tick mark west of the 76° longitude line, the longitude is 76°01'W."},
+  {s:"C", q:"(Refer to Figure 21, area 3.) Which airport is located at approximately 47°21'30\"N latitude and 101°01'30\"W longitude?",
+   c:["Poleschook.","Washburn.","Johnson."],
+   a:1, ex:"Counting down 9-1/2 tick marks from 47°30'N gives 47°21'30\"N. Moving 1-1/2 tick marks left of the 101° line gives 101°01'30\"W. This intersection is at Washburn Airport (5C8)."},
+  {s:"C", q:"(Refer to Figure 59, area 3.) Which airport is located at approximately 41°02'00\"N latitude and 83°59'00\"W longitude?",
+   c:["Ruhes.","Putnam.","Bluffton."],
+   a:1, ex:"The airport is two tick marks above the 41° latitude line. At 83°59'00\"W, it is one tick mark east of the 84° longitude line. This intersection is at Putnam Airport (OWX)."},
+  {s:"C", q:"(Refer to Figure 21, area 2.) The CTAF/MULTICOM frequency for Garrison Airport is",
+   c:["123.0 MHz.","122.8 MHz.","122.9 MHz."],
+   a:2, ex:"The frequency next to the CTAF symbol (the letter \"C\" in a dark circle) is the multicom frequency of 122.9 MHz."},
+  {s:"C", q:"(Refer to Figure 59, area 3.) The CTAF/MULTICOM frequency for Wyandot County Airport (56D) is",
+   c:["123.0 MHz.","122.8 MHz.","122.9 MHz."],
+   a:2, ex:"The frequency next to the CTAF symbol (the letter \"C\" in a dark circle) is the multicom frequency of 122.9 MHz."},
+  {s:"C", q:"(Refer to Figure 22, area 2 and Figure 31.) At Coeur D'Alene, which frequency should be used as a Common Traffic Advisory Frequency (CTAF) to self-announce position and intentions?",
+   c:["122.05 MHz.","108.8 MHz.","122.8 MHz."],
+   a:2, ex:"The airport data block lists 122.8 MHz as the CTAF/UNICOM frequency. 122.05 MHz is the Flight Service frequency and 135.075 MHz is the AWOS frequency."},
+  {s:"C", q:"(Refer to Figure 22, area 2 and Figure 31.) At Coeur D'Alene, which frequency should be used as a Common Traffic Advisory Frequency (CTAF) to monitor airport traffic?",
+   c:["122.05 MHz.","122.8 MHz.","135.075 MHz."],
+   a:1, ex:"At non-towered airports, the CTAF frequency is used to self-announce position or intentions. The A/FD lists the CTAF/UNICOM frequency as 122.8 MHz."},
+  {s:"C", q:"(Refer to Figure 22, area 2 and Figure 31.) What is the correct UNICOM frequency to be used at Coeur D'Alene to request fuel?",
+   c:["108.8 MHz.","122.8 MHz.","135.075 MHz."],
+   a:1, ex:"Use the UNICOM/CTAF frequency of 122.8 MHz to request fuel, transportation, or other airport information."},
+  {s:"C", q:"(Refer to Figure 59, area 1 and Figure 63.) What is the correct frequency to be used to contact Toledo Approach if approaching the Toledo Express Class C airspace from the east?",
+   c:["123.975 MHz.","126.1 MHz.","134.35 MHz."],
+   a:1, ex:"A box east of the Class C airspace says to contact Toledo Approach within 20 NM on 126.1 MHz (radials 360°–179°, the east side). 134.35 MHz is the west side, and 123.975 MHz is not associated with a specific direction."},
+  {s:"C", q:"(Refer to Figure 25, area 3.) If Dallas Executive Tower is not in operation, which frequency should be used as a Common Traffic Advisory Frequency (CTAF) to monitor airport traffic?",
+   c:["122.95 MHz.","126.35 MHz.","127.25 MHz."],
+   a:2, ex:"The star next to \"CT 127.25\" indicates the tower operates part-time. The circled \"C\" indicates that 127.25 MHz is the CTAF frequency when the tower is not operating."},
+  {s:"C", q:"(Refer to Figure 26, area 4.) The CTAF/UNICOM frequency at Jamestown Airport is",
+   c:["118.425 MHz.","122.2 MHz.","123.0 MHz."],
+   a:2, ex:"The CTAF symbol, the circled C, is next to the frequency 123.0 MHz. 118.425 MHz is for ASOS weather broadcasts and 122.2 MHz is for Flight Service."},
+  {s:"C", q:"(Refer to Figure 26, area 5.) What is the CTAF/UNICOM frequency at Barnes County Airport?",
+   c:["118.725 MHz.","122.8 MHz.","1402 kHz."],
+   a:1, ex:"The CTAF symbol, the circled C, is next to the frequency 122.8 MHz. 118.725 MHz is for ASOS weather broadcasts and 1402 is the field elevation."},
+  {s:"C", q:"(Refer to Figure 26, area 3.) When flying over Arrowwood National Wildlife Refuge, a pilot should fly no lower than",
+   c:["2,000 feet AGL.","2,500 feet AGL.","3,000 feet AGL."],
+   a:0, ex:"You are requested to maintain a minimum altitude of 2,000 feet above National Wildlife Refuges."},
+  {s:"C", q:"Pilots flying over a national wildlife refuge are requested to fly no lower than",
+   c:["1,000 feet AGL.","2,000 feet AGL.","3,000 feet AGL."],
+   a:1, ex:"You are requested to maintain a minimum altitude of 2,000 feet above National Wildlife Refuges."},
+  {s:"C", q:"(Refer to Figure 20, area 5.) The CAUTION box denotes what hazard to aircraft?",
+   c:["Unmarked balloon on cable to 3,008 feet MSL.","Unmarked balloon on cable to 3,008 feet AGL.","Unmarked blimp hangers at 308 feet MSL."],
+   a:0, ex:"The CAUTION box indicates an unmarked balloon on a cable to 3,008 feet MSL."},
+  {s:"C", q:"(Refer to Figure 20, area 2.) The flag symbol at Lake Drummond represents a",
+   c:["compulsory reporting point for the Norfolk Class C Airspace.","compulsory reporting point for Hampton Roads Airport.","visual checkpoint used to identify position for initial callup to Norfolk Approach Control."],
+   a:2, ex:"The flag represents a visual checkpoint used to identify your position for approach control. Because the flag is 22 NM southwest of Norfolk International, it is used when contacting Norfolk Approach."},
+  {s:"C", q:"(Refer to Figure 20, area 2.) The elevation of the Chesapeake Regional Airport is",
+   c:["19 feet.","23 feet.","55 feet."],
+   a:0, ex:"The elevation is the first number listed before the runway information. In this case, it is 19 feet."},
+  {s:"C", q:"(Refer to Figure 20, area 6.) The NALF Fentress (NFE) Airport is in what type of airspace?",
+   c:["Class C.","Class E.","Class G."],
+   a:1, ex:"NFE is outside the solid magenta lines of the Norfolk Class C airspace, but inside a dashed magenta circle indicating Class E airspace at the surface."},
+  {s:"C", q:"(Refer to Figure 21.) The terrain elevation of the light tan area between Minot (area 1) and Audubon Lake (area 2) varies from",
+   c:["sea level to 2,000 feet MSL.","2,000 feet to 2,500 feet MSL.","2,000 feet to 2,700 feet MSL."],
+   a:1, ex:"The tan area represents terrain above 2,000 feet MSL with a 500-foot contour interval. With no contour lines in the tan area, no terrain exists above 2,500 feet."},
+  {s:"C", q:"(Refer to Figure 21.) Which public use airports depicted are indicated as having fuel?",
+   c:["Minot Intl. (area 1).","Minot Intl. (area 1) and Mercer County Regional Airport (area 3).","Mercer County Regional Airport (area 3) and Garrison (area 2)."],
+   a:0, ex:"Tick marks around an airport symbol indicate that fuel is available."},
+  {s:"C", q:"(Refer to Figure 23, areas 2 and 3.) The flag symbols at Statesboro Bullock County Airport, Claxton-Evans County Airport, and Ridgeland Airport are",
+   c:["airports with special traffic patterns.","outer boundaries of Savannah Class C airspace.","visual checkpoints to identify position for initial callup before entering Savannah Class C airspace."],
+   a:2, ex:"The flag symbols represent visual checkpoints used to identify the aircraft position for approach control — in this case when contacting Savannah Approach Control."},
+  {s:"C", q:"(Refer to Figure 23, area 3.) What altitude do you need to be flying at to clear the obstacle with high-intensity lights that is approximately 6 nautical miles southwest of Savannah International by 1,000 feet?",
+   c:["1,531 feet MSL.","1,534 feet AGL.","2,548 feet MSL."],
+   a:2, ex:"About 6 NM southwest is an obstacle with a strobe light symbol marked 1,548 (1,534). The first number is MSL elevation; adding 1,000 feet of clearance gives 2,548 feet MSL."},
+  {s:"C", q:"(Refer to Figure 23, area 3.) The top of the group obstruction approximately 11 nautical miles from the Savannah VORTAC on the 010° radial is",
+   c:["454 feet AGL.","454 feet MSL.","559 feet MSL."],
+   a:1, ex:"This obstruction is labeled \"stacks\" with the number 454. When only one number is printed (not in parentheses), it is the MSL altitude."},
+  {s:"C", q:"(Refer to Figure 24, area 1.) What minimum altitude is required to vertically clear the obstacle in the uncongested area on the northeast side of Airpark East Airport?",
+   c:["1,010 feet MSL.","1,273 feet MSL.","1,283 feet MSL."],
+   a:1, ex:"In uncongested areas, the FARs require 500 feet of obstacle clearance. Add 500 feet to the obstacle elevation of 773 feet MSL = 1,273 feet MSL."},
+  {s:"C", q:"(Refer to Figure 24, area 2.) What minimum altitude is necessary to vertically clear the obstacle in the uncongested area on the southeast side of Winnsboro Airport by 500 feet?",
+   c:["823 feet MSL.","1,013 feet MSL.","1,403 feet MSL."],
+   a:2, ex:"In uncongested areas, the FARs require 500 feet of obstacle clearance. Add 500 feet to the obstacle elevation of 903 feet MSL = 1,403 feet MSL."},
+  {s:"C", q:"(Refer to Figure 25, area 2.) The control tower frequency for Addison Airport is",
+   c:["122.95 MHz.","126.0 MHz.","133.4 MHz."],
+   a:1, ex:"The tower frequency at Addison Airport is 126.0 MHz as indicated by the letters \"CT.\""},
+  {s:"C", q:"(Refer to Figure 25, area 8.) What minimum altitude is required to fly over the Cedar Hill TV towers in the congested area east of Joe Pool Lake?",
+   c:["2,731 feet MSL.","3,049 feet MSL.","3,549 feet MSL."],
+   a:2, ex:"In a congested area, add 1,000 feet to the highest obstacle. The highest tower is 2,549 feet MSL, so the minimum altitude is 3,549 feet MSL (which requires an ATC clearance, as the Class B floor here is 3,000 feet MSL)."},
+  {s:"C", q:"(Refer to Figure 25, area 5.) The navigation facility at Dallas-Ft. Worth International (DFW) is a",
+   c:["VOR.","VORTAC.","VOR/DME."],
+   a:2, ex:"A hexagon surrounded by a square is a VOR/DME symbol."},
+  {s:"C", q:"Which is true concerning the blue and magenta colors used to depict airports on sectional aeronautical charts?",
+   c:["Airports with control towers underlying Class A, B, and C airspace are shown in blue, Class D and E airspace are magenta.","Airports with control towers underlying Class C, D, and E airspace are shown in magenta.","Airports with control towers underlying Class B, C, D, and E airspace are shown in blue."],
+   a:2, ex:"Airports with control towers are depicted in blue on sectional charts."},
+  {s:"C", q:"Which statement about longitude and latitude is true?",
+   c:["Lines of longitude are parallel to the Equator.","Lines of longitude cross the Equator at right angles.","The 0° line of latitude passes through Greenwich, England."],
+   a:1, ex:"Lines of longitude connect the poles and are perpendicular to the equator."},
+
+  // ======= SECTION D – Airspace =======
+  {s:"D", q:"(Refer to Figure 26, area 2.) The day VFR visibility and cloud clearance requirements to operate over the town of Cooperstown, after departing and climbing out of the Cooperstown Airport at or below 700 feet AGL are",
+   c:["1 mile and clear of clouds.","1 mile, 1,000 feet above, 500 feet below, and 2,000 feet horizontally from clouds.","3 miles and clear of clouds."],
+   a:0, ex:"This area is Class G airspace below the 700-foot AGL floor of Class E. In Class G during the day at or below 700 feet AGL, the requirement is 1 statute mile and clear of clouds."},
+  {s:"D", q:"What minimum visibility and clearance from clouds are required for VFR operations in Class G airspace at 700 feet AGL or below during daylight hours?",
+   c:["1-mile visibility and clear of clouds.","1-mile visibility, 500 feet below, 1,000 feet above, and 2,000 feet horizontal clearance from clouds.","3-miles visibility and clear of clouds."],
+   a:0, ex:"For VFR flight in uncontrolled (Class G) airspace below 1,200 feet during daytime, you are required to have 1 mile visibility and remain clear of clouds."},
+  {s:"D", q:"(Refer to Figure 78.) What are the basic VFR weather minima required to takeoff from the Onawa, IA (K36) airport during the day?",
+   c:["3 statute miles visibility, 500 feet below the clouds, 1,000 feet above the clouds, and 2,000 feet horizontally from the clouds.","0 statute miles, clear of clouds.","1 statute mile, clear of clouds."],
+   a:2, ex:"This airport is in Class G airspace from the surface up to 1,200 feet AGL. For VFR flight in uncontrolled airspace below 1,200 feet AGL during daytime, you need 1 mile visibility and remain clear of clouds."},
+  {s:"D", q:"(Refer to Figure 26, area 1.) Identify the airspace over the town of McHenry.",
+   c:["Class G airspace — surface up to but not including 700 feet MSL, Class E airspace — 700 feet to 14,500 feet MSL.","Class G airspace — surface up to but not including 1,200 feet AGL, Class E airspace — 1,200 feet AGL up to but not including 18,000 feet MSL.","Class G airspace — surface up to but not including 18,000 feet MSL."],
+   a:1, ex:"McHenry is outside the hard-edged side of the magenta bands: Class G from the surface up to but not including 1,200 feet AGL, then Class E from 1,200 feet AGL to 18,000 feet MSL."},
+  {s:"D", q:"During operations outside controlled airspace at altitudes of more than 1,200 feet AGL, but less than 10,000 feet MSL, the minimum flight visibility for VFR flight at night is",
+   c:["1 mile.","3 miles.","5 miles."],
+   a:1, ex:"In Class G airspace at these altitudes, night VFR operations require 3 statute miles visibility."},
+  {s:"D", q:"During operations outside controlled airspace at altitudes of more than 1,200 feet AGL, but less than 10,000 feet MSL, the minimum distance below clouds requirement for VFR flight at night is",
+   c:["500 feet.","1,000 feet.","1,500 feet."],
+   a:0, ex:"In uncontrolled airspace below 10,000 feet MSL (above 1,200 feet AGL), the VFR cloud clearance is 500 feet below."},
+  {s:"D", q:"During operations outside controlled airspace at altitudes of more than 1,200 feet AGL, but less than 10,000 feet MSL, the minimum flight visibility for day VFR is",
+   c:["1 mile.","3 miles.","5 miles."],
+   a:0, ex:"In uncontrolled airspace below 10,000 feet MSL and above 1,200 feet AGL, required daytime visibility is 1 statute mile."},
+  {s:"D", q:"During operations at altitudes of more than 1,200 feet AGL and at or above 10,000 feet MSL, the minimum distance above clouds requirement for VFR flight is",
+   c:["500 feet.","1,000 feet.","1,500 feet."],
+   a:1, ex:"For VFR flights at these altitudes, you are required to remain 1,000 feet above clouds. The only exception is daytime below 1,200 feet AGL in uncontrolled airspace (clear of clouds)."},
+  {s:"D", q:"VFR flight in controlled airspace above 1,200 feet AGL and below 10,000 feet MSL requires a minimum visibility and vertical cloud clearance of",
+   c:["3 miles, and 500 feet below or 1,000 feet above the clouds in controlled airspace.","5 miles, and 1,000 feet below or 1,000 feet above the clouds at all altitudes.","5 miles, and 1,000 feet below or 1,000 feet above the clouds only in Class A airspace."],
+   a:0, ex:"Below 10,000 feet MSL in Class C, D, and E airspace, the cloud clearances are 500 feet below, 1,000 feet above, and 2,000 feet horizontal, with 3 miles visibility. (Class B is clear of clouds.)"},
+  {s:"D", q:"During operations within controlled airspace at altitudes of less than 1,200 feet AGL, the minimum horizontal distance from clouds requirement for VFR flight is",
+   c:["1,000 feet.","1,500 feet.","2,000 feet."],
+   a:2, ex:"In controlled airspace (other than Class B) below 10,000 feet, the VFR horizontal cloud clearance is 2,000 feet, regardless of whether you are above or below 1,200 feet AGL."},
+  {s:"D", q:"The minimum flight visibility required for VFR flights above 10,000 feet MSL and more than 1,200 feet AGL in controlled airspace is",
+   c:["1 mile.","3 miles.","5 miles."],
+   a:2, ex:"At or above 10,000 feet MSL and above 1,200 feet AGL, the required visibility is 5 statute miles, regardless of whether you're in controlled or uncontrolled airspace."},
+  {s:"D", q:"During operations within controlled airspace at altitudes of more than 1,200 feet AGL, but less than 10,000 feet MSL, the minimum distance above clouds requirement for VFR flight is",
+   c:["500 feet.","1,000 feet.","1,500 feet."],
+   a:1, ex:"Below 10,000 feet MSL in Class C, D, and E airspace, the cloud clearances are 500 feet below, 1,000 feet above, and 2,000 feet horizontal."},
+  {s:"D", q:"A Mode C transponder and ADS-B Out equipment are required in which airspace?",
+   c:["Class A, Class B (and within 30 miles of the Class B primary airport), and Class C.","Class D and Class E (below 10,000 feet MSL).","Class D and Class G (below 10,000 feet MSL)."],
+   a:0, ex:"A Mode C transponder and ADS-B Out equipment are required in Class A, Class B (and within 30 miles of the Class B primary airport), and Class C airspace."},
+  {s:"D", q:"A Mode C transponder and ADS-B Out equipment are required in",
+   c:["Class B airspace and within 30 miles of the Class B primary airport.","Class D airspace.","Class E airspace below 10,000 feet MSL."],
+   a:0, ex:"Within 30 NM of a primary Class B airport, from the surface to 10,000 feet MSL, aircraft must be equipped with a Mode C transponder and ADS-B Out. This equipment is not required in Class D, or in Class E below 10,000 feet MSL."},
+  {s:"D", q:"For VFR flight operations above 10,000 feet MSL and more than 1,200 feet AGL, the minimum horizontal distance from clouds required is",
+   c:["1,000 feet.","2,000 feet.","1 mile."],
+   a:2, ex:"Whether in controlled or uncontrolled airspace at these altitudes, the minimum VFR horizontal distance from clouds is 1 statute mile."},
+  {s:"D", q:"(Refer to Figure 26, area 2.) The visibility and cloud clearance requirements to operate VFR during daylight hours over the town of Cooperstown between 1,200 feet AGL and 10,000 feet MSL are",
+   c:["3 miles and 1,000 feet above, 500 feet below, and 2,000 feet horizontally from clouds.","1 mile and clear of clouds.","1 mile and 1,000 feet above, 500 feet below, and 2,000 feet horizontally from clouds."],
+   a:0, ex:"Cooperstown is within Class E airspace (floor 700 feet AGL). Below 10,000 feet MSL in controlled airspace, 3 miles visibility and 1,000 feet above, 500 feet below, and 2,000 feet horizontally from clouds is required."},
+  {s:"D", q:"Unless otherwise specified, Federal airways include that Class E airspace extending upward from",
+   c:["700 feet above the surface up to and including 17,999 feet MSL.","1,200 feet above the surface up to and including 17,999 feet MSL.","the surface up to and including 18,000 feet MSL."],
+   a:1, ex:"Federal (or Victor) airways normally begin at 1,200 feet AGL and extend up to 17,999 feet MSL."},
+  {s:"D", q:"(Refer to Figure 22, area 1.) The visibility and cloud clearance requirements to operate VFR during daylight hours over Sandpoint Airport at 1,200 feet AGL are",
+   c:["1 mile and 1,000 feet above, 500 feet below, and 2,000 feet horizontally from each cloud.","1 mile and clear of clouds.","3 miles and 1,000 feet above, 500 feet below, and 2,000 feet horizontally from each cloud."],
+   a:2, ex:"The airspace is Class E above 700 feet AGL. The day VFR minimums are 3 miles and 1,000 feet above, 500 feet below, and 2,000 feet horizontally from all clouds."},
+  {s:"D", q:"(Refer to Figure 26, area 5.) The airspace overlying and within 5 miles of Barnes County Airport is",
+   c:["Class D airspace from the surface to the floor of the overlying Class E airspace.","Class E airspace from the surface to 1,200 feet MSL.","Class G airspace from the surface to 700 feet AGL."],
+   a:2, ex:"The magenta shading indicates Class E begins at 700 feet AGL. Below 700 feet the airspace is uncontrolled (Class G). Class D airspace is not shown anywhere on this chart."},
+  {s:"D", q:"What minimum visibility and clearance from clouds are required for VFR operations on an airway below 10,000 feet MSL?",
+   c:["1-mile visibility and clear of clouds.","3-miles visibility, 500 feet below, 1,000 feet above, and 2,000 feet horizontally from clouds.","3-miles visibility, 500 feet above, 1,000 feet below, and 2,000 feet horizontally from clouds."],
+   a:1, ex:"The VFR cloud clearances for Class E airspace apply. Below 10,000 feet MSL, maintain 3 miles visibility and 500 feet below, 1,000 feet above, and 2,000 feet horizontally from clouds."},
+  {s:"D", q:"(Refer to Figure 22, area 3.) The vertical limits of that portion of Class E airspace designated as a Federal airway over Magee Airport are",
+   c:["1,200 feet AGL to 17,999 feet MSL.","7,500 feet MSL to 17,999 feet MSL.","700 feet MSL to 12,500 feet MSL."],
+   a:0, ex:"Federal (Victor) airways extend 4 NM each side of the centerline and, unless otherwise indicated, from 1,200 feet AGL up to but not including 18,000 feet MSL (17,999 feet MSL)."},
+  {s:"D", q:"The width of a Federal airway from either side of the centerline is",
+   c:["4 nautical miles.","6 nautical miles.","8 nautical miles."],
+   a:0, ex:"A Federal (or Victor) airway is normally 8 NM wide — 4 NM each side of the centerline."},
+  {s:"D", q:"With certain exceptions, Class E airspace extends upward from either 700 feet or 1,200 feet AGL to, but does not include,",
+   c:["10,000 feet MSL.","14,500 feet MSL.","18,000 feet MSL."],
+   a:2, ex:"Unless otherwise indicated, Class E airspace begins at 700 or 1,200 feet AGL and continues up to, but not including, 18,000 feet MSL."},
+  {s:"D", q:"T-routes are GPS based and are Class E airspace extending upward from",
+   c:["700 feet above the surface up to and including 17,999 feet MSL.","1,200 feet above the surface up to and including 17,999 feet MSL.","the surface up to and including 18,000 feet MSL."],
+   a:1, ex:"T-routes normally begin at 1,200 feet AGL and extend up to 17,999 feet MSL. They are considered Class E airspace."},
+  {s:"D", q:"Normal VFR operations in Class D airspace with an operating control tower require the ceiling and visibility to be at least",
+   c:["1,000 feet and 1 mile.","1,000 feet and 3 miles.","2,500 feet and 3 miles."],
+   a:1, ex:"To operate in Class D airspace, the VFR visibility minimum is three statute miles and the ceiling must be at least 1,000 feet."},
+  {s:"D", q:"(Refer to Figure 25, area 7.) The airspace overlying Collin County Mc Kinney Airport (TKI) is controlled from the surface to",
+   c:["2,900 feet MSL.","2,500 feet MSL.","700 feet AGL."],
+   a:0, ex:"The controlled airspace overlying TKI is Class D. The top is shown as [29] within a square dashed box, indicating 2,900 feet MSL."},
+  {s:"D", q:"(Refer to Figure 25, area 4.) The airspace directly overlying Fort Worth Meacham is",
+   c:["Class B airspace to 10,000 feet MSL.","Class C airspace to 5,000 feet MSL.","Class D airspace to 3,200 feet MSL."],
+   a:2, ex:"The blue segmented circle indicates Class D airspace. The [32] indicates the ceiling of the Class D airspace is 3,200 feet MSL. Class B begins at 4,000 feet MSL above the airport."},
+  {s:"D", q:"At what altitude shall the altimeter be set to 29.92, when climbing to cruising flight level?",
+   c:["14,500 feet MSL.","18,000 feet MSL.","24,000 feet MSL."],
+   a:1, ex:"To standardize altimeter settings in Class A airspace, you are required to set your altimeter to 29.92 at and above 18,000 feet MSL."},
+  {s:"D", q:"A blue segmented circle on a sectional chart depicts which class airspace?",
+   c:["Class B.","Class C.","Class D."],
+   a:2, ex:"Class D airspace is designated by a blue segmented circle. Class B is a solid blue line and Class C is a solid magenta line."},
+  {s:"D", q:"Airspace at an airport with a part-time control tower is classified as Class D airspace only",
+   c:["when the weather minimums are below basic VFR.","when the associated control tower is in operation.","when the associated Flight Service Station is in operation."],
+   a:1, ex:"In order for airspace to be classified as Class D, a control tower must be operating."},
+  {s:"D", q:"The basic VFR weather minimums for operating an aircraft within Class D airspace are",
+   c:["500-foot ceiling and 1-mile visibility.","1,000-foot ceiling and 3-miles visibility.","clear of clouds and 2-miles visibility."],
+   a:1, ex:"To take off or land under VFR in Class D airspace, the ceiling must be at least 1,000 feet and ground visibility at least 3 statute miles (flight visibility may be used if ground visibility is not available)."},
+  {s:"D", q:"When a control tower on an airport within Class D airspace ceases operation for the day, what happens to the airspace designation?",
+   c:["The airspace designation normally does not change.","The airspace remains Class D airspace as long as a weather observer or automated weather system is available.","The airspace reverts to Class E or a combination of Class E and G airspace during the hours the tower is not in operation."],
+   a:2, ex:"Class D airspace exists only when the control tower is operating. When the tower closes, the airspace becomes Class E (or occasionally Class G), and you normally continue to use the tower frequency as a CTAF."},
+  {s:"D", q:"No person may take off or land an aircraft under basic VFR at an airport that lies within Class D airspace unless the",
+   c:["flight visibility at that airport is at least 1 mile.","ground visibility at that airport is at least 1 mile.","ground visibility at that airport is at least 3 miles."],
+   a:2, ex:"To take off or land under VFR in a Class D airspace area, the ceiling must be at least 1,000 feet and the ground visibility at least 3 statute miles. Flight visibility may be used if ground visibility is not available."},
+  {s:"D", q:"A non-towered satellite airport, within the same Class D airspace as that designated for the primary airport, requires two-way radio communications be established and maintained with the",
+   c:["satellite airport's UNICOM.","associated Flight Service facility.","primary airport's control tower."],
+   a:2, ex:"When departing from a non-towered satellite airport within Class D airspace, you must establish and maintain two-way radio communications with the ATC facility (the primary airport's control tower) having jurisdiction over the airspace as soon as practical after departing."},
+  {s:"D", q:"The lateral dimensions of Class D airspace are based on",
+   c:["the number of airports that lie within the Class D airspace.","5 statute miles from the geographical center of the primary airport.","the instrument procedures for which the controlled airspace is established."],
+   a:2, ex:"The configuration of each Class D airspace area is individually tailored, and when instrument procedures are published, the airspace is normally designed to contain those procedures."},
+  {s:"D", q:"Unless otherwise authorized, two-way radio communications with air traffic control are required for landings or takeoffs at all towered airports",
+   c:["regardless of weather conditions.","only when weather conditions are less than VFR.","within Class D airspace only when weather conditions are less than VFR."],
+   a:0, ex:"When operating at an airport where a control tower is in operation, you must be in radio contact with ATC whether or not VFR conditions exist."},
+  {s:"D", q:"Two-way radio communication must be established with the air traffic control facility having jurisdiction over the area before entering which class airspace?",
+   c:["Class C.","Class E.","Class G."],
+   a:0, ex:"You must establish two-way radio communications before entering a Class C airspace area, and maintain it while operating within the Class C airspace."},
+  {s:"D", q:"Under what condition may an aircraft operate from a satellite airport within Class C airspace?",
+   c:["The pilot must file a flight plan before departure.","The pilot must monitor ATC until clear of the Class C airspace.","The pilot must contact ATC as soon as practicable after takeoff."],
+   a:2, ex:"You must establish two-way communications with ATC as soon as practical after takeoff."},
+  {s:"D", q:"What minimum radio equipment is required for operation within Class C airspace?",
+   c:["Two-way radio communications equipment and a Mode C transponder.","Two-way radio communications equipment, a Mode C transponder, and DME.","Two-way radio communications equipment, a Mode C transponder, and ADS-B Out equipment."],
+   a:2, ex:"To operate in Class C airspace, you are required to have a two-way radio, a transponder with Mode C capability, and ADS-B Out equipment."},
+  {s:"D", q:"Which initial action should a pilot take before entering Class C airspace?",
+   c:["Contact approach control on the appropriate frequency.","Contact the tower and request permission to enter.","Contact Flight Service for traffic advisories."],
+   a:0, ex:"Before entering Class C airspace, you must establish contact with approach control."},
+  {s:"D", q:"(Refer to Figure 20, area 1.) What minimum radio equipment is required to land and take off at Norfolk International?",
+   c:["Mode C transponder, ADS-B Out equipment, and VOR.","A two-way radio, a Mode C transponder, and ADS-B Out equipment.","Mode C transponder, VOR, and DME."],
+   a:1, ex:"The area depicted is Class C airspace. Aircraft must be equipped with a two-way radio and, unless otherwise authorized, a Mode C transponder and ADS-B Out equipment. A VOR or DME is not required."},
+  {s:"D", q:"The vertical limit of Class C airspace above the primary airport is normally",
+   c:["1,200 feet AGL.","3,000 feet AGL.","4,000 feet AGL."],
+   a:2, ex:"Class C airspace usually consists of a 5 NM core surface area extending from the surface up to 4,000 feet above the airport elevation, and a 10 NM shelf area extending from 1,200 feet up to 4,000 feet above the airport elevation."},
+  {s:"D", q:"The radius of the procedural outer area of Class C airspace is normally",
+   c:["10 NM.","20 NM.","30 NM."],
+   a:1, ex:"Class C airspace has a procedural outer area (not shown on charts) that normally extends 20 NM from the primary airport. Radar services are available, but contact with ATC is not required."},
+  {s:"D", q:"(Refer to Figure 23, area 3.) What is the floor of the Savannah Class C airspace at the shelf area (outer circle)?",
+   c:["1,300 feet AGL.","1,300 feet MSL.","1,700 feet MSL."],
+   a:1, ex:"The floor of the shelf area at Savannah is 1,300 feet MSL. The exact upper and lower limits of the shelf area are 4,100 and 1,300 feet (41/13) MSL."},
+  {s:"D", q:"All operations within Class C airspace must be in",
+   c:["accordance with instrument flight rules.","compliance with ATC clearances and instructions.","an aircraft equipped with a Mode C transponder and ADS-B Out equipment."],
+   a:2, ex:"All aircraft operating within Class C airspace must be equipped with a two-way radio and, unless authorized by ATC, a Mode C transponder and ADS-B Out equipment."},
+  {s:"D", q:"(Refer to Figure 69, area 4.) You are in the uncongested area about 7 NM SW of Corpus Christi International Airport, and unable to reach Corpus Christi Approach because of radio congestion. What altitude or course should you use to avoid the tall TV towers in this area?",
+   c:["Maintain at least 1,604 feet MSL; it is not necessary to contact ATC for obstacle clearance.","Fly over the TV towers at 1,499 feet MSL to remain under the floor of the Class C airspace.","Remain under the floor of Class C airspace and maintain a safe lateral distance from all the TV towers."],
+   a:2, ex:"The minimum safe altitude (1,604 feet MSL) is above the floor of the Class C airspace, which requires two-way radio communications. If you cannot reach ATC to climb, remain below the Class C floor and maintain safe horizontal clearance from the towers."},
+  {s:"D", q:"(Refer to Figure 25, area 2.) The floor of Class B airspace at Addison Airport is",
+   c:["at the surface.","3,000 feet MSL.","3,100 feet MSL."],
+   a:1, ex:"The altitudes are indicated by \"110\" over \"30,\" meaning the Class B airspace extends from a floor of 3,000 feet MSL up to 11,000 feet MSL."},
+  {s:"D", q:"What minimum radio equipment is required for VFR operation within Class B airspace?",
+   c:["Two-way radio communications equipment and a Mode C or Mode S transponder.","Two-way radio communications equipment, a Mode C transponder, and ADS-B Out equipment.","Two-way radio communications equipment, a Mode C transponder, and a VOR or TACAN receiver."],
+   a:1, ex:"You need a two-way radio capable of communications with ATC and, unless otherwise authorized, a Mode C transponder and ADS-B Out equipment."},
+  {s:"D", q:"What minimum pilot certification is required for operation within Class B airspace?",
+   c:["Sport pilot certificate.","Private pilot certificate or student pilot certificate with appropriate logbook endorsements.","Private Pilot Certificate with an instrument rating."],
+   a:1, ex:"To operate in Class B airspace, you must hold a private pilot certificate. Within certain Class B areas, student pilots may operate after receiving specific training and a logbook endorsement from an authorized instructor."},
+  {s:"D", q:"(Refer to Figure 25, area 4.) The floor of Class B airspace overlying Hicks Airport (T67) north-northwest of Fort Worth Meacham Field is",
+   c:["at the surface.","3,200 feet MSL.","4,000 feet MSL."],
+   a:2, ex:"The altitudes of this sector are indicated by \"110\" over \"40,\" meaning the Class B airspace extends from a floor of 4,000 feet MSL up to 11,000 feet MSL."},
+  {s:"D", q:"With certain exceptions, all aircraft within 30 miles of a Class B primary airport from the surface upward to 10,000 feet MSL must be equipped with",
+   c:["an operable VOR or TACAN receiver and an ADF receiver.","instruments and equipment required for IFR operations.","a Mode C transponder and ADS-B Out equipment."],
+   a:2, ex:"A Mode C transponder and ADS-B Out equipment are required to be in use when within 30 miles of a Class B primary airport."},
+  {s:"D", q:"In which type of airspace are VFR flights prohibited?",
+   c:["Class A.","Class B.","Class C."],
+   a:0, ex:"Only IFR operations are allowed in Class A airspace. VFR flights are allowed in Class B and C airspace if authorized by ATC."},
+  {s:"D", q:"What is the minimum weather condition required for airplanes operating under special VFR in Class D airspace?",
+   c:["1-mile flight visibility.","1-mile flight visibility and 1,000-foot ceiling.","3-miles flight visibility and 1,000-foot ceiling."],
+   a:0, ex:"When authorized by ATC, special VFR allows you to operate with one statute mile visibility as long as you can remain clear of clouds."},
+  {s:"D", q:"What are the minimum requirements for airplane operations under special VFR in Class D airspace at night?",
+   c:["The airplane must be under radar surveillance at all times while in Class D airspace.","The airplane must be equipped for IFR and with an altitude reporting transponder.","The pilot must be instrument rated, and the airplane must be IFR equipped."],
+   a:2, ex:"For special VFR at night, you must have a current instrument rating, and the airplane must be equipped for IFR operations."},
+  {s:"D", q:"No person may operate an airplane within Class D airspace at night under special VFR unless the",
+   c:["flight can be conducted 500 feet below the clouds.","airplane is equipped for instrument flight.","flight visibility is at least 3 miles."],
+   a:1, ex:"For special VFR at night, you must have a current instrument rating, and the airplane must be equipped for IFR operations."},
+  {s:"D", q:"A special VFR clearance authorizes the pilot of an aircraft to operate VFR while within Class D airspace when the visibility is",
+   c:["less than 1 mile and the ceiling is less than 1,000 feet.","at least 1 mile and the aircraft can remain clear of clouds.","at least 3 miles and the aircraft can remain clear of clouds."],
+   a:1, ex:"When authorized by ATC, special VFR allows you to operate with one statute mile visibility as long as you can remain clear of clouds."},
+  {s:"D", q:"(Refer to Figure 25.) At which airports is fixed-wing Special VFR not authorized?",
+   c:["Fort Worth Meacham and Fort Worth Spinks.","Dallas-Fort Worth International and Dallas Love Field.","Addison and Dallas Executive."],
+   a:1, ex:"The \"NO SVFR\" notation above the airport name indicates that fixed-wing special VFR is not authorized — at Dallas-Fort Worth International and Dallas Love Field."},
+  {s:"D", q:"What ATC facility should the pilot contact to receive a special VFR departure clearance in Class D airspace?",
+   c:["Flight Service.","Air traffic control tower.","Air route traffic control center."],
+   a:1, ex:"When a control tower is located within the Class B, C, or D surface area, requests for clearances should be made to the tower. In a Class E surface area, a clearance may be obtained from the nearest tower, Flight Service, or center."},
+  {s:"D", q:"Unless otherwise authorized, what is the maximum indicated airspeed at which a person may operate an aircraft below 10,000 feet MSL?",
+   c:["200 knots.","250 knots.","288 knots."],
+   a:1, ex:"Unless otherwise authorized, you may not operate an aircraft below 10,000 feet MSL at an indicated airspeed of more than 250 knots."},
+  {s:"D", q:"When flying in the airspace underlying Class B airspace, the maximum speed authorized is",
+   c:["200 knots.","230 knots.","250 knots."],
+   a:0, ex:"You may not operate in the airspace underlying a Class B area, or in a VFR corridor designated through a Class B area, at an indicated airspeed of more than 200 knots."},
+  {s:"D", q:"When flying in a VFR corridor designated through Class B airspace, the maximum speed authorized is",
+   c:["180 knots.","200 knots.","250 knots."],
+   a:1, ex:"You may not operate in a VFR corridor designated through a Class B area, or in the airspace underlying a Class B area, at an indicated airspeed of more than 200 knots."},
+  {s:"D", q:"Unless otherwise authorized, the maximum indicated airspeed at which aircraft may be flown when at or below 2,500 feet AGL and within 4 nautical miles of the primary airport of Class C airspace is",
+   c:["200 knots.","230 knots.","250 knots."],
+   a:0, ex:"The maximum indicated airspeed inside or within 4 NM of the primary airport in Class C airspace, at or below 2,500 feet AGL, is 200 knots."},
+  {s:"D", q:"Under what condition, if any, may pilots fly through a restricted area?",
+   c:["When flying on airways with an ATC clearance.","With authorization from the controlling agency.","Regulations do not allow this."],
+   a:1, ex:"The controlling agency may grant permission to fly through a restricted area."},
+  {s:"D", q:"Responsibility for collision avoidance in an alert area rests with",
+   c:["the controlling agency.","all pilots.","Air traffic control."],
+   a:1, ex:"All pilots flying in an alert area, whether participating in activities or transitioning, are equally responsible for collision avoidance."},
+  {s:"D", q:"What action should a pilot take when operating under VFR in a military operations area (MOA)?",
+   c:["Obtain a clearance from the controlling agency before entering the MOA.","Operate only on the airways that transverse the MOA.","Exercise extreme caution when military activity is being conducted."],
+   a:2, ex:"Due to the possibility of military training activities, you should use extra caution and be vigilant for military traffic when operating in an MOA."},
+  {s:"D", q:"(Refer to Figure 21, area 2.) What hazards to aircraft may exist in areas such as Devils Lake West MOA?",
+   c:["Military training activities that require acrobatic or abrupt flight maneuvers.","High volume of pilot training or an unusual type of aerial activity.","Unusual, often invisible, hazards to aircraft such as artillery firing, aerial gunnery, or guided missiles."],
+   a:0, ex:"Most training activities in a military operations area (MOA) involve acrobatic or abrupt flight maneuvers."},
+  {s:"D", q:"You should not fly through a restricted area unless you have",
+   c:["filed an IFR flight plan.","received prior authorization from the controlling agency.","received prior permission from the commanding officer of the nearest military base."],
+   a:1, ex:"You must receive prior authorization from the controlling agency before operating in a restricted area. If on an IFR flight plan and ATC clears you through, they are acting as the controlling agency."},
+  {s:"D", q:"(Refer to Figure 21, area 3.) What type of military flight operations should you expect along IR644?",
+   c:["VFR training flights above 1,500 feet AGL at speeds less than 250 knots.","IFR training flights above 1,500 feet AGL at speeds more than 250 knots.","Instrument training flights below 1,500 feet AGL at speeds more than 150 knots."],
+   a:1, ex:"Military training routes (MTR) below 10,000 feet MSL operate at speeds over 250 knots. IR routes are for IFR operations. An IR route with three letters (IR644) indicates one or more segments are above 1,500 feet AGL."},
+  {s:"D", q:"(Refer to Figure 20, area 4.) What hazards to aircraft may exist in restricted areas such as R-5302B?",
+   c:["Military training activities that require acrobatic or abrupt flight maneuvers.","Unusual, often invisible, hazards such as aerial gunnery or guided missiles.","High volume of pilot training or an unusual type of aerial activity."],
+   a:1, ex:"Restricted areas can have invisible hazards to aircraft, such as artillery firing, aerial gunnery, or guided missiles."},
+  {s:"D", q:"Information concerning regularly used parachute jump aircraft operations areas may be found in the",
+   c:["NOTAMs publications.","Aeronautical Information Manual.","General Information section of the Chart Supplement."],
+   a:2, ex:"Established parachute jump aircraft operations areas are listed in the General Information section of the Chart Supplement. Frequently used sites are also depicted on charts; infrequent sites are in NOTAMs."},
+  {s:"D", q:"How can you learn the time and location of TFRs?",
+   c:["Obtain a weather briefing from Flight Service and ask for TFRs.","Obtain a list of TFR NOTAMs with graphical depictions at tfr.tsa.com.","Check TFRs and their effective times at tfr.gov or in your flight planning application."],
+   a:0, ex:"Although graphical TFR listings exist online, official dissemination is through Flight Service by telephone at 1-800-WX-BRIEF or at 1800wxbrief.com."},
+  {s:"D", q:"If you are planning to fly under VFR within 60 nautical miles of the Washington DC SFRA, you must",
+   c:["squawk 7700 and announce your intentions on 121.5.","remain clear of the Class B airspace until receiving clearance to enter the airspace.","complete the FAA Special Awareness Training course."],
+   a:2, ex:"If you plan to fly under VFR within 60 NM of the Washington DC VOR, you must complete the FAA Special Awareness Training course at faasafety.gov."},
+  {s:"D", q:"What must you do before flying anywhere within 60 miles of the Washington (DCA) VOR?",
+   c:["Take special awareness training from the FAA and have a certificate of completion in your possession.","Take an orientation flight with an authorized flight instructor, obtain a logbook endorsement, and carry your logbook.","Obtain ground instruction from an authorized ground or flight instructor, obtain a logbook endorsement, and carry your logbook."],
+   a:0, ex:"You may not fly within a 60-NM radius of the DCA VOR under VFR unless you have completed Special Awareness Training (available at FAAsafety.gov) and hold a certificate of training completion you can present on request."},
+  {s:"D", q:"If you penetrate an area with security related flight restrictions, you risk being intercepted by U.S military or law enforcement aircraft. If you are intercepted, you should",
+   c:["turn 180 degrees from your present heading and return to your departure airport.","follow instructions from the intercepting aircraft, squawk 7700 on your transponder, and attempt to contact the intercepting aircraft on 121.5.","squawk 7500 on your transponder and attempt to contact the intercepting aircraft on 123.0."],
+   a:1, ex:"Do not adjust altitude, heading, or airspeed until directed. Follow instructions from the intercepting aircraft, attempt to contact it or ATC on 121.5, and squawk 7700 unless otherwise instructed by ATC."},
+  {s:"D", q:"You are flying VFR and not talking to ATC and observe a military jet fighter off your left wingtip rocking its wings and then making a slow left turn away from you. What action should you take?",
+   c:["Land at the nearest airport and wait for authorities to meet you.","Follow the aircraft, squawk 7700, and contact the VHF guard frequency on 121.5 MHz.","Proceed on course, you are free to go because the intercepting aircraft has turned away from you."],
+   a:1, ex:"When the intercepting aircraft rocks its wings and makes a slow turn away, you are intercepted and must follow it. (An abrupt breakaway turn that does not cross your flight path means you are free to proceed.)"}
+];
+
+let answered = 0, correct = 0;
+const sectionCorrect = {A:0, B:0, C:0, D:0};
+const sectionTotal   = {A:0, B:0, C:0, D:0};
+
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  document.getElementById('total-count').textContent = questions.length;
+
+  const sections = {
+    A: 'Section A – Safety of Flight',
+    B: 'Section B – Airports',
+    C: 'Section C – Aeronautical Charts',
+    D: 'Section D – Airspace'
+  };
+  let currentSection = '';
+
+  questions.forEach((q, idx) => {
+    questions[idx]._answered = false;
+
+    if (q.s !== currentSection) {
+      currentSection = q.s;
+      const count = questions.filter(x=>x.s===q.s).length;
+      const hdr = document.createElement('div');
+      hdr.className = 'section-header';
+      hdr.innerHTML = sections[q.s] + `<span>${count} questions</span>`;
+      container.appendChild(hdr);
+    }
+
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'q-'+idx;
+
+    const letters = ['A','B','C'];
+    const choicesHtml = q.c.map((ch, ci) =>
+      `<button class="choice-btn" onclick="answer(${idx},${ci})" id="btn-${idx}-${ci}">
+         <span class="letter">${letters[ci]}.</span>${ch}
+       </button>`
+    ).join('');
+
+    card.innerHTML = `
+      <div class="q-number">Q${idx+1} &nbsp;·&nbsp; Section ${q.s}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="choices">${choicesHtml}</div>
+      <div class="explanation" id="ex-${idx}"><strong>Explanation:</strong> ${q.ex}</div>`;
+    container.appendChild(card);
+  });
+
+  // recompute section totals
+  Object.keys(sectionTotal).forEach(k => sectionTotal[k] = questions.filter(x=>x.s===k).length);
+}
+
+function answer(qIdx, chosen) {
+  const q = questions[qIdx];
+  if (q._answered) return;
+  q._answered = true;
+  answered++;
+
+  const letters = ['A','B','C'];
+  const card = document.getElementById('q-'+qIdx);
+  const ex   = document.getElementById('ex-'+qIdx);
+
+  letters.forEach((_, ci) => {
+    const btn = document.getElementById(`btn-${qIdx}-${ci}`);
+    btn.disabled = true;
+    if (ci === q.a) btn.classList.add('correct');
+    else if (ci === chosen && chosen !== q.a) btn.classList.add('wrong');
+  });
+
+  ex.classList.add('visible');
+
+  if (chosen === q.a) {
+    correct++;
+    sectionCorrect[q.s]++;
+    card.classList.add('answered-correct');
+  } else {
+    card.classList.add('answered-wrong');
+  }
+
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent  = correct;
+  const pct = Math.round(correct / answered * 100);
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = (answered / questions.length * 100) + '%';
+
+  if (answered === questions.length) showEnd();
+}
+
+function showEnd() {
+  document.getElementById('end-screen').style.display = 'block';
+  const pct = Math.round(correct / questions.length * 100);
+  document.getElementById('final-score').textContent = pct + '%';
+  document.getElementById('final-detail').textContent = `You answered ${correct} out of ${questions.length} questions correctly.`;
+  const sNames = {
+    A:'Section A – Safety of Flight',
+    B:'Section B – Airports',
+    C:'Section C – Aeronautical Charts',
+    D:'Section D – Airspace'
+  };
+  document.getElementById('section-scores').innerHTML = Object.keys(sNames).map(s =>
+    `<div class="section-score">${sNames[s]}: <strong>${sectionCorrect[s]}/${sectionTotal[s]}</strong> (${Math.round(sectionCorrect[s]/sectionTotal[s]*100)}%)</div>`
+  ).join('');
+  document.getElementById('end-screen').scrollIntoView({behavior:'smooth'});
+}
+
+function restartQuiz() {
+  answered = 0; correct = 0;
+  Object.keys(sectionCorrect).forEach(k => sectionCorrect[k] = 0);
+  document.getElementById('answered-count').textContent = 0;
+  document.getElementById('correct-count').textContent  = 0;
+  document.getElementById('score-pct').textContent = '0%';
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('end-screen').style.display = 'none';
+  buildQuiz();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+buildQuiz();
+</script>
+</body>
+</html>

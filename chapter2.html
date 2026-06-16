@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 2 – Airplane Systems Quiz</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; color: #222; }
+
+  header {
+    background: linear-gradient(135deg, #1a3c6e, #2d6abf);
+    color: #fff; padding: 24px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  header h1 { font-size: 1.5rem; }
+  header p { font-size: 0.9rem; opacity: 0.85; margin-top: 4px; }
+
+  #score-bar {
+    background: #fff; border-bottom: 2px solid #dde3ec;
+    padding: 12px 32px; display: flex; gap: 32px; align-items: center;
+    font-size: 0.9rem; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  }
+  #score-bar span { font-weight: 700; color: #1a3c6e; }
+  #progress-bar { flex: 1; height: 8px; background: #dde3ec; border-radius: 4px; overflow: hidden; }
+  #progress-fill { height: 100%; background: #2d6abf; border-radius: 4px; transition: width .4s; }
+
+  .section-header {
+    background: #1a3c6e; color: #fff;
+    padding: 14px 32px; font-size: 1.1rem; font-weight: 700;
+    margin-top: 32px; letter-spacing: .5px;
+  }
+  .section-header span { opacity: 0.7; font-size: 0.85rem; font-weight: 400; margin-left: 12px; }
+
+  .question-card {
+    background: #fff; margin: 16px 32px;
+    border-radius: 10px; padding: 22px 26px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    border-left: 4px solid #dde3ec;
+    transition: border-color .2s;
+  }
+  .question-card.answered-correct { border-left-color: #27ae60; }
+  .question-card.answered-wrong   { border-left-color: #e74c3c; }
+
+  .q-number { font-size: 0.75rem; color: #888; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; }
+  .q-text { font-size: 1rem; font-weight: 600; line-height: 1.55; margin-bottom: 16px; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; }
+  .choice-btn {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: #f7f9fc; border: 2px solid #dde3ec;
+    border-radius: 8px; padding: 11px 16px;
+    cursor: pointer; font-size: 0.93rem; text-align: left;
+    transition: background .15s, border-color .15s;
+    line-height: 1.45;
+  }
+  .choice-btn:hover:not(:disabled) { background: #e8eef8; border-color: #2d6abf; }
+  .choice-btn .letter {
+    font-weight: 700; color: #2d6abf;
+    min-width: 22px; flex-shrink: 0;
+  }
+  .choice-btn.correct  { background: #eafaf1; border-color: #27ae60; }
+  .choice-btn.wrong    { background: #fdf0ef; border-color: #e74c3c; }
+  .choice-btn.correct .letter { color: #27ae60; }
+  .choice-btn.wrong   .letter { color: #e74c3c; }
+  .choice-btn:disabled { cursor: default; }
+
+  .explanation {
+    display: none; margin-top: 14px;
+    background: #f0f6ff; border-left: 3px solid #2d6abf;
+    border-radius: 6px; padding: 12px 16px;
+    font-size: 0.88rem; line-height: 1.6; color: #333;
+  }
+  .explanation.visible { display: block; }
+  .explanation strong { color: #1a3c6e; }
+
+  #end-screen {
+    display: none; text-align: center;
+    background: #fff; margin: 32px; border-radius: 12px;
+    padding: 48px 32px; box-shadow: 0 4px 20px rgba(0,0,0,.1);
+  }
+  #end-screen h2 { font-size: 2rem; color: #1a3c6e; margin-bottom: 8px; }
+  #end-screen .big-score { font-size: 4rem; font-weight: 800; color: #2d6abf; }
+  #end-screen p { color: #555; margin: 8px 0; }
+  #restart-btn {
+    margin-top: 24px; background: #2d6abf; color: #fff;
+    border: none; padding: 14px 36px; border-radius: 8px;
+    font-size: 1rem; cursor: pointer; font-weight: 600;
+    transition: background .2s;
+  }
+  #restart-btn:hover { background: #1a3c6e; }
+  .section-score { display: inline-block; margin: 6px 12px; font-size: 0.95rem; color: #444; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Chapter 2 – Airplane Systems</h1>
+    <p>Private Pilot FAA Airmen Knowledge Test Guide 2024 (Jeppesen) &nbsp;|&nbsp; 147 Questions</p>
+  </div>
+</header>
+
+<div id="score-bar">
+  <div>Answered: <span id="answered-count">0</span> / <span id="total-count">147</span></div>
+  <div id="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
+  <div>Correct: <span id="correct-count">0</span></div>
+  <div>Score: <span id="score-pct">0%</span></div>
+</div>
+
+<div id="quiz-container"></div>
+<div id="end-screen">
+  <h2>Quiz Complete!</h2>
+  <div class="big-score" id="final-score"></div>
+  <p id="final-detail"></p>
+  <div id="section-scores"></div>
+  <button id="restart-btn" onclick="restartQuiz()">Restart Quiz</button>
+</div>
+
+<script>
+const questions = [
+  // ======= SECTION A – Airplanes =======
+  {s:"A",
+   q:"Where can the operating limitations for an aircraft be found?",
+   c:["On the airworthiness certificate.","In the aircraft airframe and engine logbooks.","In the current, FAA-approved airplane flight manual, approved manual material, markings, and placards, or any combination thereof."],
+   a:2, ex:"Operating limitations can be found in the current, FAA-approved airplane flight manual (AFM), approved manual material, markings, and placards, or any combination of these items."},
+  {s:"A",
+   q:"Which of the following are always required to be carried in the aircraft during flight?",
+   c:["Pilot's information manual (PIM).","Radio station license.","FAA-approved airplane flight manual (AFM)."],
+   a:2, ex:"The FAA requires all currently manufactured airplanes to be equipped with an FAA-approved airplane flight manual (AFM), which is specifically assigned to the individual airplane and must be accessible by the pilot during flight. The radio station license is only required when transmitting outside the United States."},
+  {s:"A",
+   q:"Which is true regarding an airplane's operating limitations?",
+   c:["Operating limitations are only located in the POH.","Operating limitations can be in the form of placards.","Operating limitations must be committed to memory because they are not required to be in the airplane."],
+   a:1, ex:"Operating limitations can be found in the current, FAA-approved airplane flight manual (AFM), approved manual material, markings, and placards, or any combination of these items."},
+  {s:"A",
+   q:"To determine the expiration date of the last annual aircraft inspection, you should refer to the",
+   c:["airworthiness certificate.","registration certificate.","aircraft maintenance records."],
+   a:2, ex:"The registered owner or operator shall keep records of the maintenance, preventive maintenance, alterations, and required or approved inspections for each aircraft. This information is found in the maintenance records for the aircraft."},
+  {s:"A",
+   q:"A certificate of aircraft registration is valid for how many years?",
+   c:["3 years from date of issuance.","1 year from date of issuance.","7 years from date of issuance."],
+   a:2, ex:"A certificate of aircraft registration expires seven years after the last day of the month in which it was issued."},
+  {s:"A",
+   q:"How long does the airworthiness certificate of an aircraft remain valid?",
+   c:["As long as the aircraft has a current registration certificate.","Indefinitely unless the aircraft suffers major damage.","As long as the aircraft is maintained and operated as required by the Federal Aviation Regulations."],
+   a:2, ex:"The airworthiness certificate remains valid only as long as the aircraft is maintained and operated in accordance with the FARs."},
+  {s:"A",
+   q:"In addition to a valid airworthiness certificate, what documents or records must be onboard an aircraft during flight?",
+   c:["Aircraft engine and airframe logbooks, and owner's manual.","Radio operator's permit, and repair and alteration forms.","Operating limitations and registration certificate."],
+   a:2, ex:"Use the acronym ARROW to remember the required certificates and documents: Airworthiness certificate, Registration, Radio station license (international flights only), Operating limitations, and Weight and balance."},
+  {s:"A",
+   q:"Which of the following preflight actions is the pilot in command required to take in order to comply with the FARs regarding day visual flight rules (VFR)?",
+   c:["File a VFR flight plan with Flight Service.","Verify the airworthiness certificate is legible to passengers.","Verify approved position lights are not burned out."],
+   a:1, ex:"According to FAR 91.203, you must ensure that the airworthiness certificate and registration certificate are in the airplane. The airworthiness certificate must be displayed at the cabin or cockpit entrance so that it is legible to passengers and crew."},
+  {s:"A",
+   q:"An annual inspection was performed on an aircraft June 13, 2024. When is the next annual inspection due?",
+   c:["June 1, 2025.","June 13, 2025.","June 30, 2025."],
+   a:2, ex:"No person may operate an aircraft unless, within the preceding 12 calendar months, it has had an annual inspection. The term 'calendar month' is defined as the last day of the month."},
+  {s:"A",
+   q:"What aircraft inspections are required for rental aircraft that are also used for flight instruction?",
+   c:["Annual and 100-hour inspections.","Biannual and 100-hour inspections.","Annual and 50-hour inspections."],
+   a:0, ex:"No person may operate an aircraft carrying any person (other than a crewmember) for hire, or give flight instruction for hire in an aircraft that person provides, unless within the preceding 100 hours of time in service, the aircraft has received an annual or 100-hour inspection."},
+  {s:"A",
+   q:"An aircraft had a 100-hour inspection when the tachometer read 1259.6. When is the next 100-hour inspection due?",
+   c:["1349.6 hours.","1359.6 hours.","1369.6 hours."],
+   a:1, ex:"No person may operate an aircraft carrying any person (other than a crewmember) for hire, unless within the preceding 100 hours of time in service, the aircraft has received an annual or 100-hour inspection. The next inspection is due at 1259.6 + 100 = 1359.6 hours."},
+  {s:"A",
+   q:"A 100-hour inspection was due at 3303 hours. The 100-hour inspection was actually done at 3300 hours. When is the next 100-hour inspection due?",
+   c:["3400 hours.","3403 hours.","3413 hours."],
+   a:0, ex:"If the 100-hour inspection is done ahead of schedule, the next inspection is still due 100 hours after the actual time of the inspection. 3300 + 100 = 3400 hours."},
+  {s:"A",
+   q:"A 100-hour inspection was due at 3302.5 hours. The 100-hour inspection was actually done at 3309.5 hours. When is the next 100-hour inspection due?",
+   c:["3312.5 hours.","3395.5 hours.","3402.5 hours."],
+   a:2, ex:"The 100-hour limitation may be exceeded by not more than 10 hours if enroute to a location where the inspection is to be performed. However, the next inspection is still due 100 hours after the original inspection was due: 3302.5 + 100 = 3402.5 hours."},
+  {s:"A",
+   q:"Maintenance records show the last transponder inspection was performed on September 1, 2024. The next inspection is due no later than",
+   c:["September 30, 2025.","September 1, 2026.","September 30, 2026."],
+   a:2, ex:"No person may use an ATC transponder unless, within the preceding 24 calendar months, that transponder has been tested and found to comply with the appropriate standards. The term 'calendar month' refers to the end of the month when an inspection is due."},
+  {s:"A",
+   q:"The maximum cumulative time that an emergency locator transmitter may be operated before the rechargeable battery must be recharged is",
+   c:["30 minutes.","45 minutes.","60 minutes."],
+   a:2, ex:"The ELT battery must be replaced or recharged if the transmitter has been operated for a total of 1 hour (60 minutes) or after 50 percent of useful battery life (or charge) has expired."},
+  {s:"A",
+   q:"The responsibility for ensuring that maintenance personnel make the appropriate entries in the aircraft maintenance records indicating the aircraft has been approved for return to service lies with the",
+   c:["owner or operator.","pilot in command.","mechanic who performed the work."],
+   a:0, ex:"Each owner or operator of an aircraft shall ensure that maintenance personnel make appropriate entries in the aircraft maintenance record indicating the aircraft has been approved for return to service."},
+  {s:"A",
+   q:"Who is responsible for ensuring appropriate entries are made in maintenance records indicating the aircraft has been approved for return to service?",
+   c:["Repair station.","Certified mechanic.","Owner or operator."],
+   a:2, ex:"Each owner or operator of an aircraft shall ensure that maintenance personnel make appropriate entries in the aircraft maintenance records indicating the aircraft has been approved for return to service."},
+  {s:"A",
+   q:"During the preflight inspection who is responsible for determining the aircraft is safe for flight?",
+   c:["The owner or operator.","The certificated mechanic who performed the annual inspection.","The pilot in command."],
+   a:2, ex:"Preflight inspection is the responsibility of the pilot in command (PIC). Before every flight, the PIC is required to accomplish a thorough and systematic preflight to ensure that the aircraft is safe for flight."},
+  {s:"A",
+   q:"How should an aircraft preflight inspection be accomplished for the first flight of the day?",
+   c:["Thorough and systematic means recommended by the manufacturer.","Quick walk around with a check of fuel and oil.","Any sequence as determined by the pilot-in-command."],
+   a:0, ex:"Before every flight, the PIC is required to accomplish a thorough and systematic preflight to ensure that the aircraft is safe for flight. The preflight inspection should be completed according to procedures recommended by the manufacturer, normally using a checklist."},
+  {s:"A",
+   q:"Who is responsible for determining if an aircraft is in condition for safe flight?",
+   c:["A certificated aircraft mechanic.","The pilot in command.","The owner or operator."],
+   a:1, ex:"The pilot in command of a civil aircraft is responsible, and has final authority, for determining whether that aircraft is in condition for safe flight."},
+  {s:"A",
+   q:"The responsibility for ensuring that an aircraft is maintained in an airworthy condition is primarily that of the",
+   c:["pilot in command.","owner or operator.","mechanic who performs the work."],
+   a:1, ex:"The owner or operator of an aircraft is primarily responsible for maintaining that aircraft in an airworthy condition. The pilot in command is responsible for checking the condition of the aircraft before flying it."},
+  {s:"A",
+   q:"If an alteration or repair substantially affects the operation of an aircraft in flight, that aircraft must be test flown by an appropriately rated pilot and approved for return to service before being operated",
+   c:["by any private pilot.","with passengers aboard.","for compensation or hire."],
+   a:1, ex:"Before any person (other than a crewmember) can fly in an aircraft that has been maintained, rebuilt, or altered in a manner that may have appreciably changed its flight characteristics, an appropriately rated pilot with at least a private pilot certificate must first conduct a test flight."},
+  {s:"A",
+   q:"Before passengers may be carried in an aircraft that has been altered in a manner that could have appreciably changed its flight characteristics, it must be flight tested by an appropriately rated pilot who holds at least a",
+   c:["Commercial pilot certificate with an instrument rating.","Private pilot certificate.","Commercial Pilot Certificate and a mechanic's certificate."],
+   a:1, ex:"An appropriately rated pilot with at least a private pilot certificate is authorized to flight test the aircraft after alterations that may have appreciably changed its flight characteristics."},
+  {s:"A",
+   q:"Which records or documents shall the owner or operator of an aircraft keep to show compliance with an applicable airworthiness directive?",
+   c:["Aircraft maintenance records.","Airworthiness certificate and pilot's operating handbook.","Airworthiness and registration certificates."],
+   a:0, ex:"The owner or operator of an aircraft shall keep a record of current status of applicable airworthiness directives (ADs) in the appropriate aircraft maintenance records."},
+  {s:"A",
+   q:"Which operation would be described as preventive maintenance?",
+   c:["Repair of landing gear brace struts.","Replenishing hydraulic fluid.","Repair of portions of skin sheets by making additional seams."],
+   a:1, ex:"Replenishing hydraulic fluid is listed as preventive maintenance in FAR Part 43, Appendix A. Structural repairs such as those to landing gear brace struts or adding seams to skin require an appropriate aircraft mechanic certificate."},
+  {s:"A",
+   q:"Preventive maintenance has been performed on an aircraft. What paperwork is required?",
+   c:["A full, detailed description of the work done must be entered in the airframe logbook.","The date the work was completed, and the name of the person who did the work must be entered in the airframe and engine logbook.","The signature, certificate number, and kind of certificate held by the person approving the work and a description of the work must be entered in the aircraft maintenance records."],
+   a:2, ex:"FAR 91.417 and FAR 43.9 require that records of preventive maintenance must include a description of the work performed, the date of completion, and the signature, certificate number, and kind of certificate held by the person approving the aircraft for return to service."},
+  {s:"A",
+   q:"What regulation allows a private pilot to perform preventive maintenance?",
+   c:["14 CFR 43.7.","14 CFR 91.403.","14 CFR 61.113."],
+   a:0, ex:"14 CFR 43.7 covers preventive maintenance. If you hold at least a private pilot certificate, you may perform preventive maintenance such as replacing and servicing batteries, replacing spark plugs, servicing wheel bearings, etc."},
+  {s:"A",
+   q:"Who may perform preventive maintenance on an aircraft and approve it for return to service?",
+   c:["Student or recreational pilot.","Private or commercial pilot.","None of the above."],
+   a:1, ex:"If you hold at least a private pilot certificate, you may perform preventive maintenance such as replacing and servicing batteries, replacing spark plugs, servicing wheel bearings, etc."},
+  {s:"A",
+   q:"Completion of an annual inspection and the return of the aircraft to service should always be indicated by",
+   c:["the relicensing date on the Registration Certificate.","an appropriate notation in the aircraft maintenance records.","an inspection sticker placed on the instrument panel that lists the annual inspection completion date."],
+   a:1, ex:"No person may operate an aircraft unless, within the preceding 12 calendar months, it has had an annual inspection by a person authorized to do that type of inspection and is entered as an annual inspection in the required maintenance records."},
+  {s:"A",
+   q:"What should an owner or operator know about airworthiness directives (ADs)?",
+   c:["They are for informational purposes only.","They are mandatory.","They are voluntary."],
+   a:1, ex:"ADs are published as part of the FARs. You may not operate an aircraft to which an airworthiness directive applies, except in accordance with that airworthiness directive."},
+  {s:"A",
+   q:"Who is responsible for ensuring that airworthiness directives (ADs) are complied with?",
+   c:["Mechanic with inspection authorization (IA).","Owner or operator.","Repair station."],
+   a:1, ex:"The owner or operator of an aircraft is primarily responsible for maintaining that aircraft in an airworthy condition, including compliance with 14 CFR 39 (ADs)."},
+  {s:"A",
+   q:"What is required for an airworthiness certificate to remain valid?",
+   c:["The airworthiness certificate remains valid as long as required maintenance and inspections are performed on the aircraft within the specified time periods.","The airworthiness certificate remains valid as long as it is in the aircraft.","The airworthiness certificate is valid from the day it is issued by the FAA, and it remains valid for a specified period determined by the FAA."],
+   a:0, ex:"This certificate remains valid as long as the required maintenance and inspections are performed on the aircraft within the specified time periods."},
+  {s:"A",
+   q:"A minimum equipment list (MEL) is",
+   c:["based on the regulations and the specific requirements for your aircraft and flight operation and indicates the equipment that is allowed to be inoperative for a particular flight.","a required document for all aircraft.","lists only the minimum equipment required by 91.205 for a specific flight operation."],
+   a:0, ex:"If a minimum equipment list (MEL) exists for your aircraft, you must use it. The MEL takes into consideration the regulations and the specific requirements for your aircraft and flight operation and indicates the equipment that is allowed to be inoperative for a particular flight."},
+  {s:"A",
+   q:"What is true regarding the use of a minimum equipment list (MEL)?",
+   c:["If your airplane is equipped with an MEL, you must use it, as it takes into account all regulations and requirements for your aircraft.","The kinds of operation equipment list (KOEL) can be used in lieu of an MEL if your airplane has one.","The MEL is advisory only and should not be used to determine the requirements of your airplane."],
+   a:0, ex:"If a minimum equipment list (MEL) exists for your aircraft, you must use it. The MEL takes into consideration the regulations and specific requirements for your aircraft and flight operation, and indicates the equipment that is allowed to be inoperative for a particular flight."},
+  {s:"A",
+   q:"During the preflight inspection, you discover inoperative equipment on an airplane that you are planning to fly. Under what conditions can you complete the flight under VFR?",
+   c:["The equipment is not required by FAR 91.205.","As the pilot in command with at least a private pilot certificate, you determine the airplane is in a safe condition for flight.","The equipment is not required by FAR 91.205, an equipment list or KOEL, the VFR-day type certificate requirements, or an AD."],
+   a:2, ex:"You must determine that the inoperative equipment is not required by: the VFR-day type certificate requirements, FAR 91.205, the equipment list or KOEL for the aircraft, or an airworthiness directive (AD). The inoperative equipment must also be deactivated and placarded as inoperative."},
+  {s:"A",
+   q:"You discover inoperative equipment on an airplane that you are planning to fly. The airplane does not have an MEL. You have determined that according to the FARs you may legally fly the airplane. What additional actions must be taken?",
+   c:["No further action is required.","You must obtain a special flight permit.","The equipment must be removed or deactivated and placarded 'inoperative.'"],
+   a:2, ex:"If the answer is NO to ALL questions about required equipment, then you may fly the airplane after the inoperative equipment is removed and the cockpit control placarded by an AMT, or deactivated and placarded 'inoperative.'"},
+  {s:"A",
+   q:"If you determine that the airworthiness requirements are not met, a special flight permit",
+   c:["allows the aircraft to be flown to a location where the needed repairs can be made.","allows the aircraft to be flown with inoperative equipment until the next annual inspection.","can be issued by an AMT and allows the aircraft to be flown until scheduled repairs can be made."],
+   a:0, ex:"If you determine that the airworthiness requirements are not met, the FAA may permit the airplane to be flown to a location where the needed repairs can be made by issuing a special flight permit (sometimes called a ferry permit)."},
+  {s:"A",
+   q:"If a special flight permit is needed, you can",
+   c:["submit an application to the nearest FAA FSDO.","obtain the permit from an AMT.","notify your local FSDO, and no application is required."],
+   a:0, ex:"To obtain a special flight permit, an application must be submitted to the nearest FAA flight standards district office (FSDO)."},
+
+  // ======= SECTION B – Powerplant and Related Systems =======
+  {s:"B",
+   q:"Excessively high engine temperatures will",
+   c:["cause damage to heat-conducting hoses and warping of the cylinder cooling fins.","cause loss of power, excessive oil consumption, and possible permanent internal engine damage.","not appreciably affect an aircraft engine."],
+   a:1, ex:"High temperature can cause detonation and a resulting loss of power, excessive oil consumption, and engine damage, including scoring of the cylinders and damage to pistons, rings, and valves."},
+  {s:"B",
+   q:"If the engine oil temperature and cylinder head temperature gauges have exceeded their normal operating range, the pilot may have been operating with",
+   c:["the mixture set too rich.","higher-than-normal oil pressure.","too much power and with the mixture set too lean."],
+   a:2, ex:"High power settings with the mixture set too lean can cause overheating, which is indicated by high engine oil and cylinder head temperatures."},
+  {s:"B",
+   q:"Float-type carburetors operate based on",
+   c:["automatic metering of air at the venturi as the aircraft gains altitude.","the difference in air pressure at the venturi throat and the air inlet.","increase in air velocity in the throat of a venturi causing an increase in air pressure."],
+   a:1, ex:"The decreased pressure caused by air flowing rapidly through the venturi tube draws fuel from the float chamber."},
+  {s:"B",
+   q:"The basic purpose of adjusting the fuel/air mixture at altitude is to",
+   c:["decrease the amount of fuel in the mixture in order to compensate for increased air density.","decrease the fuel flow in order to compensate for decreased air density.","increase the amount of fuel in the mixture to compensate for the decrease in pressure and density of the air."],
+   a:1, ex:"If fuel flow is not decreased with altitude, the mixture becomes too rich with fuel. Therefore, the fuel mixture must be leaned to maintain the proper fuel/air ratio."},
+  {s:"B",
+   q:"During the runup at a high elevation airport, you notice a slight engine roughness that is not affected by the magneto check but grows worse during the carburetor heat check. Under these circumstances, what would be the most logical initial action?",
+   c:["Check the results obtained with a leaner setting of the mixture.","Taxi back to the flight line for a maintenance check.","Reduce manifold pressure to control detonation."],
+   a:0, ex:"In this case, engine roughness is probably caused by the mixture set too rich for the high altitude. When the carburetor heat is turned on, the warmer air is less dense, and the mixture is further enriched. The problem can usually be corrected by leaning the mixture."},
+  {s:"B",
+   q:"While cruising at 9,500 feet MSL, the fuel/air mixture is properly adjusted. What will occur if a descent to 4,500 feet MSL is made without readjusting the mixture?",
+   c:["The fuel/air mixture can become excessively lean.","There can be more fuel in the cylinders than is needed for normal combustion, and the excess fuel will absorb heat and cool the engine.","The excessively rich mixture creates higher cylinder head temperatures and can cause detonation."],
+   a:0, ex:"With a decrease in altitude, air density increases. This means you will have to enrich the mixture as you descend, otherwise the fuel/air mixture can become excessively lean."},
+  {s:"B",
+   q:"Which condition is most favorable to the development of carburetor icing?",
+   c:["Any temperature below freezing and a relative humidity of less than 50 percent.","Temperature between 32°F and 50°F and low humidity.","Temperature between 20°F and 70°F and high humidity."],
+   a:2, ex:"Carburetor icing is most probable between 20°F and 70°F with high humidity or visible moisture. Although uncommon, carburetor icing is possible at temperatures as high as 38°C (100°F) and humidity as low as 50%."},
+  {s:"B",
+   q:"The risk of carburetor ice is",
+   c:["high when the ambient temperature is between 20°F and 70°F and the relative humidity is high.","nonexistent at 95°F even when there is visible moisture.","high at 0°F when the relative humidity is high."],
+   a:0, ex:"Carburetor icing is most probable between 20°F and 70°F with high humidity or visible moisture. Carburetor icing is not a high risk at very low temperatures, as the air cannot hold much moisture."},
+  {s:"B",
+   q:"If an aircraft is equipped with a fixed-pitch propeller and a float-type carburetor, the first indication of carburetor ice would most likely be",
+   c:["a drop in oil temperature and cylinder head temperature.","engine roughness.","loss of RPM."],
+   a:2, ex:"The restricted airflow through the carburetor causes an enriched mixture and a loss of RPM."},
+  {s:"B",
+   q:"Applying carburetor heat will",
+   c:["result in more air going through the carburetor.","enrich the fuel/air mixture.","not affect the fuel/air mixture."],
+   a:1, ex:"When the carburetor heat is turned on, the warmer air entering the carburetor is less dense, and with the same amount of fuel entering the carburetor, the mixture is thereby enriched."},
+  {s:"B",
+   q:"What change occurs in the fuel/air mixture when carburetor heat is applied?",
+   c:["A decrease in RPM results from the lean mixture.","The fuel/air mixture becomes richer.","The fuel/air mixture becomes leaner."],
+   a:1, ex:"When the carburetor heat is turned on, the warmer air entering the carburetor is less dense, and with the same amount of fuel entering the carburetor, the mixture is thereby enriched."},
+  {s:"B",
+   q:"The use of carburetor heat tends to",
+   c:["decrease engine performance.","increase engine performance.","have no effect on engine performance."],
+   a:0, ex:"Because the warmer air entering the carburetor is less dense, the fuel/air mixture is enriched and power decreases."},
+  {s:"B",
+   q:"The presence of carburetor ice in an aircraft equipped with a fixed-pitch propeller can be verified by applying carburetor heat and noting",
+   c:["an increase in RPM and then a gradual decrease in RPM.","a decrease in RPM and then a constant RPM indication.","a decrease in RPM and then a gradual increase in RPM."],
+   a:2, ex:"When carburetor heat is first applied, the mixture is enriched, and RPM decreases. Then, as the ice melts, airflow into the carburetor increases, as does the engine RPM."},
+  {s:"B",
+   q:"With regard to carburetor ice, float-type carburetor systems in comparison to fuel injection systems are generally considered to be",
+   c:["more susceptible to icing.","equally susceptible to icing.","less susceptible to icing."],
+   a:0, ex:"Because the fuel is introduced directly into the hot cylinders instead of vaporizing in a cold venturi throat, fuel injection systems are not as susceptible to icing as float-type carburetors."},
+  {s:"B",
+   q:"One purpose of the dual-ignition system on an aircraft engine is to provide for",
+   c:["improved engine performance.","uniform heat distribution.","balanced cylinder head pressure."],
+   a:0, ex:"Dual-ignition systems fire two spark plugs on each cylinder. In addition to system redundancy, this improves combustion of the fuel/air mixture and results in slightly more power."},
+  {s:"B",
+   q:"What should be the first action after starting an aircraft engine?",
+   c:["Adjust for proper RPM and check for desired indications on the engine gauges.","Place the magneto or ignition switch momentarily in the OFF position to check for proper grounding.","Test each brake and the parking brake."],
+   a:0, ex:"Immediately after starting an engine, set the proper RPM and check engine gauges for proper indications. Turning the magnetos off could cause a backfire and testing the brakes occurs after the airplane starts moving."},
+  {s:"B",
+   q:"If the grade of fuel used in an aircraft engine is lower than specified for the engine, it will most likely cause",
+   c:["detonation.","a mixture of fuel and air that is not uniform in all cylinders.","lower cylinder head temperatures."],
+   a:0, ex:"The higher the grade of fuel, the more pressure it can withstand without detonating. Conversely, lower fuel grades are more prone to detonation with accompanying higher engine temperatures."},
+  {s:"B",
+   q:"Detonation occurs in a reciprocating aircraft engine when",
+   c:["the spark plugs are fouled or shorted out or the wiring is defective.","hot spots in the combustion chamber ignite the fuel/air mixture in advance of normal ignition.","the unburned charge in the cylinders explodes instead of burning normally."],
+   a:2, ex:"Detonation occurs when the fuel/air mixture suddenly explodes in the cylinders instead of burning smoothly. Detonation is caused by excessively lean mixtures, while hot spots in the cylinder cause preignition."},
+  {s:"B",
+   q:"If it becomes necessary to hand-prop an airplane engine, it is extremely important that a competent pilot",
+   c:["call 'contact' before touching the propeller.","be at the controls in the cockpit.","be in the cockpit and call out all commands."],
+   a:1, ex:"When hand-propping an airplane, a qualified pilot must be at the controls to prevent the airplane from moving and to set the engine controls properly. The person who is turning the propeller calls out the commands."},
+  {s:"B",
+   q:"Detonation may occur at high-power settings as",
+   c:["the fuel mixture ignites instantaneously instead of burning progressively and evenly.","an excessively rich fuel mixture causes an explosive gain in power.","the fuel mixture is ignited too early by hot carbon deposits in the cylinder."],
+   a:0, ex:"Detonation occurs when the fuel/air mixture suddenly explodes in the cylinders instead of burning smoothly."},
+  {s:"B",
+   q:"You suspect that your engine (with a fixed-pitch propeller) is detonating during climbout after takeoff. Your initial corrective action would be to",
+   c:["lean the mixture.","lower the nose slightly to increase airspeed.","apply carburetor heat."],
+   a:1, ex:"Detonation can occur when the engine overheats. During a climb, lowering the nose increases airspeed and reduces the rate of climb, increasing the cooling airflow around the engine."},
+  {s:"B",
+   q:"The uncontrolled firing of the fuel/air charge in advance of normal spark ignition is known as",
+   c:["combustion.","preignition.","detonation."],
+   a:1, ex:"Preignition occurs when the fuel/air mixture is ignited in advance of the normal timed ignition."},
+  {s:"B",
+   q:"Which would most likely cause the cylinder head temperature and engine oil temperature gauges to exceed their normal operating ranges?",
+   c:["Using fuel that has a lower-than-specified fuel rating.","Using fuel that has a higher-than-specified fuel rating.","Operating with higher-than-normal oil pressure."],
+   a:0, ex:"Lower grade fuels detonate under less pressure. Using fuel with a lower fuel rating than specified can cause detonation, which in turn leads to excessive engine temperatures."},
+  {s:"B",
+   q:"Which is true regarding starting a fuel-injected engine?",
+   c:["Vapor lock typically occurs in cold weather conditions if the engine has not been started for a significant period of time.","Using the electric/auxiliary fuel pump to prime the engine can help purge vapors from the injection system.","A typical procedure for starting a flooded engine involves initially setting the throttle to idle and setting the mixture control to the idle-cutoff position."],
+   a:1, ex:"Priming the engine provides a combustible mixture for starting and purges any vapors from the injection system. A fuel-injected engine can be difficult to restart a few minutes after shutdown due to vapor lock from residual heat."},
+  {s:"B",
+   q:"What type fuel can be substituted for an aircraft if the recommended octane is not available?",
+   c:["The next higher octane aviation gas.","The next lower octane aviation gas.","Unleaded automotive gas of the same octane rating."],
+   a:0, ex:"Typically, if you follow the manufacturer's recommendations, you may use the next higher grade of fuel. You may not use automotive gas unless the aircraft has a supplemental type certificate (STC) permitting its use."},
+  {s:"B",
+   q:"Filling the fuel tanks after the last flight of the day is considered a good operating procedure because this will",
+   c:["force any existing water to the top of the tank away from the fuel lines to the engine.","prevent expansion of the fuel by eliminating airspace in the tanks.","prevent moisture condensation by eliminating airspace in the tanks."],
+   a:2, ex:"As the airplane cools overnight, water condenses in the tanks from vapor in the air and enters the fuel. Filling the fuel tanks eliminates the airspace and prevents this condensation buildup."},
+  {s:"B",
+   q:"To properly purge water from the fuel system of an aircraft equipped with fuel tank sumps and a fuel strainer quick drain, it is necessary to drain fuel from the",
+   c:["fuel strainer drain.","lowest point in the fuel system.","fuel strainer drain and the fuel tank sumps."],
+   a:2, ex:"Fuel needs to be drained from both the fuel tank sumps and the fuel strainer drain. The fuel strainer drain might be the lowest point in the fuel system, but draining it without draining the fuel tank sumps is insufficient."},
+  {s:"B",
+   q:"An abnormally high engine oil temperature indication may be caused by",
+   c:["the oil level being too low.","operating with a too high viscosity oil.","operating with an excessively rich mixture."],
+   a:0, ex:"Engine oil lubricates moving parts, reduces friction, and carries heat from interior portions of the engine to the oil cooler. A low oil level is less effective at cooling the engine, indicated by high engine oil temperature."},
+  {s:"B",
+   q:"What action can you take to aid in cooling an engine that is overheating during a climb?",
+   c:["Reduce rate of climb and increase airspeed.","Reduce climb speed and increase RPM.","Increase climb speed and increase RPM."],
+   a:0, ex:"During a climb, lowering the nose increases airspeed. This action will reduce the rate of climb and increase the cooling airflow around the engine."},
+  {s:"B",
+   q:"Excessively high engine temperatures, either in the air or on the ground, will",
+   c:["increase fuel consumption and may increase power due to the increased heat.","result in damage to heat-conducting hoses and warping of cylinder cooling fans.","cause loss of power, excessive oil consumption, and possible permanent internal engine damage."],
+   a:2, ex:"High temperatures can cause detonation and a resulting loss of power, excessive oil consumption, and engine damage, including scoring of the cylinders and damage to piston, rings, and valves."},
+  {s:"B",
+   q:"For internal cooling, reciprocating aircraft engines are especially dependent on",
+   c:["a properly functioning thermostat.","air flowing over the exhaust manifold.","the circulation of lubricating oil."],
+   a:2, ex:"Engine oil lubricates moving parts, reduces friction, and carries heat from interior portions of the engine to the oil cooler."},
+  {s:"B",
+   q:"What is one procedure to aid in cooling an engine that is overheating?",
+   c:["Enrichen the fuel mixture.","Increase the RPM.","Reduce the airspeed."],
+   a:0, ex:"A richer fuel mixture burns at a lower temperature and reduces heat in the engine. Reducing airspeed reduces the airflow through the engine and worsens the problem."},
+  {s:"B",
+   q:"If you smell exhaust gases in flight, assume that",
+   c:["Carbon monoxide is present — close the fresh air vents and turn the heater on so filtered air enters the cabin.","Carbon monoxide is present — turn off the heater, open the fresh air vents, and use supplemental oxygen, if it is available.","The cabin heat is working properly because heat is transferred to incoming air from the hot engine exhaust gases."],
+   a:1, ex:"If the muffler is cracked, exhaust gases can enter the cabin. If you smell exhaust gases, you can assume that carbon monoxide is present. Turn off the heater, open the fresh air vents, and use supplemental oxygen, if it is available."},
+  {s:"B",
+   q:"How is engine operation controlled on an engine equipped with a constant-speed propeller?",
+   c:["The throttle controls power output as registered on the manifold pressure gauge and the propeller control regulates engine RPM.","The throttle controls power output as registered on the manifold pressure gauge and the propeller control regulates a constant blade angle.","The throttle controls engine RPM as registered on the tachometer and the mixture control regulates the power output."],
+   a:0, ex:"The throttle controls the power output of the engine, which is indicated on the manifold pressure gauge. The propeller control changes engine RPM by adjusting the pitch of the propeller."},
+  {s:"B",
+   q:"What is an advantage of a constant-speed propeller?",
+   c:["Permits the pilot to select and maintain a desired cruising speed.","Permits the pilot to select the blade angle for the most efficient performance.","Provides a smoother operation with stable RPM and eliminates vibrations."],
+   a:1, ex:"By setting propeller RPM, you indirectly set blade angle. Selecting the optimal blade angle enables a high percentage of engine power to be converted into thrust over a wide range of RPM and airspeed combinations."},
+  {s:"B",
+   q:"A precaution for the operation of an engine equipped with a constant-speed propeller is to",
+   c:["avoid high RPM settings with high manifold pressure.","avoid high manifold pressure settings with low RPM.","always use a rich mixture with high RPM settings."],
+   a:1, ex:"For a given RPM setting, there is a maximum allowable manifold pressure. Generally, you should avoid high manifold pressures with low RPM to prevent internal stress within the engine."},
+  {s:"B",
+   q:"Which preflight checks should you make on an airplane with full-authority digital engine control (FADEC)?",
+   c:["Verify proper operation of both ECUs as well as their back-up power sources.","Ensure that engine RPM drops sufficiently when the propeller control is pulled back.","Ensure that the mixture control is adjusted for highest RPM with smooth engine operation."],
+   a:0, ex:"Because the engine stops running if an ECU fails, redundant systems are required with back-up power. These systems should be checked for proper operation before flight."},
+  {s:"B",
+   q:"Which procedures are best practices that can aid in starting your airplane's engine in cold temperatures?",
+   c:["Preheating; hand propping.","Priming; following vapor lock procedure.","Preheating; using external power."],
+   a:2, ex:"In cold weather, the AFM/POH typically recommend using an external preheater and/or an external power source to start the engine. Hand-propping is dangerous and is generally discouraged."},
+  {s:"B",
+   q:"Which is an action to manage an alternator failure?",
+   c:["Shed electrical load to preserve battery power for essential equipment.","Prepare to perform an emergency approach and landing.","Turn off the master switch to avoid a fire and prepare to land without radio communication, lights, or flaps."],
+   a:0, ex:"Actions to manage an alternator failure include: shed electrical load to preserve battery power for essential equipment; notify ATC of the situation and use ATC services; be prepared to control the airplane and land without digital instruments, radio communication, lights, or flaps."},
+  {s:"B",
+   q:"Which situations would require an emergency descent?",
+   c:["Loss of cabin pressurization; engine failure after takeoff; smoke on the flight deck.","Smoke on the flight deck; alternator failure; engine fire.","Loss of cabin pressurization; engine fire; smoke on the flight deck."],
+   a:2, ex:"An emergency descent may be needed due to an uncontrollable engine or wing fire, smoke in the cockpit, a sudden loss of cabin pressurization, or any other situation that demands an immediate rapid descent."},
+  {s:"B",
+   q:"Steps for performing an emergency descent typically include to establish",
+   c:["best glide speed.","a standard-rate turn.","a descending turn at 30° to 45°."],
+   a:2, ex:"Steps to perform an emergency descent typically include: configure the airplane to descend; establish a descending turn at 30° to 45°; maintain the bank angle and maximum allowable airspeed (VNE, VA, VFE or VLE); return to straight-and-level flight; return to cruise flight or prepare for landing."},
+  {s:"B",
+   q:"Turning off the master switch is an appropriate immediate action to take when",
+   c:["smoke or fire exists in the cabin.","the engine is running roughly.","you want to power only essential equipment after an alternator failure."],
+   a:0, ex:"Managing smoke and fire in the cabin typically involves: turn off the master switch to remove the possible source of the fire; if flames exist, use the fire extinguisher; after extinguishing the fire, open the air vents to clear the cabin; land as soon as possible."},
+  {s:"B",
+   q:"Immediately grasping the control wheel and pulling the applicable circuit breakers as recommended by the AFM/POH is an action to manage",
+   c:["runaway trim.","loss of elevator control due to linkage failure.","a flap malfunction."],
+   a:0, ex:"If you experience a trim malfunction, immediately grasp the control wheel to control the airplane. If you cannot correct the problem and are experiencing runaway trim, pull the applicable circuit breakers as recommended by the AFM/POH and land as soon as practical."},
+  {s:"B",
+   q:"If the flaps do not extend as you prepare for landing",
+   c:["the glide path is not as steep and floating during the flare is likely.","the landing distance will be decreased.","the glide path is steeper so be alert to errors in your judgment of height and distance."],
+   a:0, ex:"Consider these factors for a no-flap approach and landing: the glide path is not as steep as with flaps extended, so the higher nose attitude on final can cause errors in judgment of height and distance; landing distance is substantially increased; floating during the flare is likely."},
+
+  // ======= SECTION C – Flight Instruments =======
+  {s:"C",
+   q:"If an altimeter setting is not available before flight, to which altitude should you adjust the altimeter?",
+   c:["The elevation of the nearest airport corrected to mean sea level.","The elevation of the departure area.","Pressure altitude corrected for nonstandard temperature."],
+   a:1, ex:"If unable to obtain a local altimeter setting, you should set the altimeter to the departure field elevation as shown in flight information sources. Field elevation is already referenced to mean sea level (true altitude) and does not need to be corrected."},
+  {s:"C",
+   q:"Prior to takeoff, the altimeter should be set to",
+   c:["the current local altimeter setting, if available, or the departure airport elevation.","the corrected density altitude of the departure airport.","the corrected pressure altitude for the departure airport."],
+   a:0, ex:"If unable to obtain a local altimeter setting, you should set the altimeter to the departure field elevation as shown in flight information sources."},
+  {s:"C",
+   q:"If the pitot tube and outside static vents become clogged, which instruments would be affected?",
+   c:["The altimeter, airspeed indicator, and turn-and-slip indicator.","The altimeter, airspeed indicator, and vertical speed indicator.","The altimeter, attitude indicator, and turn-and-slip indicator."],
+   a:1, ex:"The altimeter, the airspeed indicator, and the vertical speed indicator all use static air and would therefore be affected. The turn-and-slip indicator and attitude indicator are gyroscopic instruments and are not affected."},
+  {s:"C",
+   q:"Which instrument becomes inoperative if the pitot tube becomes clogged?",
+   c:["Altimeter.","Vertical speed.","Airspeed."],
+   a:2, ex:"The airspeed indicator is the only pitot-static instrument that is connected to the pitot tube. It operates by sensing impact pressure (ram air) in the pitot tube and comparing it to static pressure."},
+  {s:"C",
+   q:"The pitot system provides impact pressure for which instrument?",
+   c:["Altimeter.","Vertical-speed indicator.","Airspeed indicator."],
+   a:2, ex:"The airspeed indicator is the only pitot-static instrument that is connected to the pitot tube. It operates by sensing impact pressure (ram air) in the pitot tube and comparing it to static pressure."},
+  {s:"C",
+   q:"Which instrument(s) become inoperative if the static vents become clogged?",
+   c:["Airspeed only.","Altimeter only.","Airspeed, altimeter, and vertical speed."],
+   a:2, ex:"The altimeter, the airspeed indicator, and the vertical speed indicator all use static air and would therefore be affected."},
+  {s:"C",
+   q:"Which V-speed represents maneuvering speed?",
+   c:["VA.","VLO.","VNE."],
+   a:0, ex:"VA is defined as the design maneuvering speed. VLO is maximum gear operating speed and VNE is never-exceed speed."},
+  {s:"C",
+   q:"Which V-speed represents maximum landing gear extended speed?",
+   c:["VLE.","VLO.","VFE."],
+   a:0, ex:"VLE is defined as maximum landing gear extended speed. VLO is maximum gear operating speed and VFE is maximum flap extended speed."},
+  {s:"C",
+   q:"VNO is defined as the",
+   c:["normal operating range.","never-exceed speed.","maximum structural cruising speed."],
+   a:2, ex:"VNO is defined as maximum structural cruising speed. It is at the upper end of the green arc—the normal operating range—on the airspeed indicator."},
+  {s:"C",
+   q:"Which V-speed represents maximum flap extended speed?",
+   c:["VFE.","VLOF.","VFC."],
+   a:0, ex:"VFE is defined as maximum flap extended speed."},
+  {s:"C",
+   q:"VS0 is defined as the",
+   c:["stalling speed or minimum steady flight speed in the landing configuration.","stalling speed or minimum steady flight speed in a specified configuration.","stalling speed or minimum takeoff safety speed."],
+   a:0, ex:"VS0 is stalling speed or minimum steady flight speed in a landing configuration. VS1 is the stalling speed in a specified configuration."},
+  {s:"C",
+   q:"(Refer to Figure 4.) What is the full flap operating range for the airplane?",
+   c:["55 to 100 knots.","55 to 208 knots.","55 to 165 knots."],
+   a:0, ex:"The white arc indicates the flap operating range. On this instrument, it is 55 to 100 knots."},
+  {s:"C",
+   q:"As altitude increases, the indicated airspeed at which a given airplane stalls in a particular configuration will",
+   c:["decrease as the true airspeed decreases.","decrease as the true airspeed increases.","remain the same regardless of altitude."],
+   a:2, ex:"Because airspeed indicators are calibrated to read true airspeed only under standard sea level conditions, the indicated airspeed does not reflect lower air density at higher altitudes. As a result, the indicated airspeed of a stall remains the same."},
+  {s:"C",
+   q:"What does the red line on an airspeed indicator represent?",
+   c:["Maneuvering speed.","Turbulence or rough-air speed.","Never-exceed speed."],
+   a:2, ex:"The red line on an airspeed indicator is the never-exceed speed (VNE)."},
+  {s:"C",
+   q:"(Refer to Figure 4.) Which marking identifies the never-exceed speed?",
+   c:["Upper limit of the green arc.","Upper limit of the white arc.","The red radial line."],
+   a:2, ex:"The red line is the never-exceed speed (VNE), the yellow arc is the caution range, the green arc is the normal operating range, and the white arc is the flap operating range."},
+  {s:"C",
+   q:"(Refer to Figure 4.) Which color identifies the power-off stalling speed in a specified configuration?",
+   c:["Upper limit of the green arc.","Upper limit of the white arc.","Lower limit of the green arc."],
+   a:2, ex:"The lower limit of the green arc represents the power-off stall speed in a specified configuration (VS1), which is usually flaps up and gear retracted."},
+  {s:"C",
+   q:"(Refer to Figure 4.) The maximum speed at which the airplane can be operated in smooth air is",
+   c:["100 knots.","165 knots.","208 knots."],
+   a:2, ex:"In smooth air, an airplane can be operated in the yellow arc up to the red line, in this case, 208 knots."},
+  {s:"C",
+   q:"(Refer to Figure 4.) What is the maximum flaps-extended speed?",
+   c:["58 knots.","100 knots.","165 knots."],
+   a:1, ex:"The maximum flaps-extended speed (VFE) is represented by the upper limit of the white arc, which in this case is 100 knots."},
+  {s:"C",
+   q:"(Refer to Figure 4.) What is the caution range of the airplane?",
+   c:["0 to 55 knots.","100 to 165 knots.","165 to 208 knots."],
+   a:2, ex:"The yellow arc indicates the caution range. On this instrument, it is 165 to 208 knots."},
+  {s:"C",
+   q:"What is an important airspeed limitation that is not color coded on airspeed indicators?",
+   c:["Never-exceed speed.","Maneuvering speed.","Maximum structural cruising speed."],
+   a:1, ex:"Maneuvering speed (VA) is not shown on the airspeed indicator as it varies with weight. You can find VA in the AFM/POH or on placards in the airplane."},
+  {s:"C",
+   q:"(Refer to Figure 4.) Which color identifies the normal flap operating range?",
+   c:["The lower limit of the white arc to the upper limit of the green arc.","The green arc.","The white arc."],
+   a:2, ex:"The white arc indicates the normal flap operating range."},
+  {s:"C",
+   q:"(Refer to Figure 4.) What is the maximum structural cruising speed?",
+   c:["100 knots.","165 knots.","208 knots."],
+   a:1, ex:"Maximum structural cruising speed (VNO) is indicated by the upper limit of the green arc, which in this case is 165 knots."},
+  {s:"C",
+   q:"(Refer to Figure 4.) Which color identifies the power-off stalling speed with wing flaps and landing gear in the landing configuration?",
+   c:["Upper limit of the green arc.","Upper limit of the white arc.","Lower limit of the white arc."],
+   a:2, ex:"Power-off stalling speed in the landing configuration (VS0) is represented by the lower limit of the white arc."},
+  {s:"C",
+   q:"(Refer to Figure 3.) Altimeter 1 indicates",
+   c:["500 feet.","1,500 feet.","10,500 feet."],
+   a:2, ex:"The small 10,000 ft pointer is just above the 1, indicating altitude above 10,000 feet. The wide 1,000 ft pointer is between 0 and 1 (less than 1,000 feet). The 100 ft pointer is on 5. Therefore, the reading is 10,500 feet."},
+  {s:"C",
+   q:"(Refer to Figure 3.) Altimeter 2 indicates",
+   c:["1,500 feet.","4,500 feet.","14,500 feet."],
+   a:2, ex:"The 10,000 ft pointer is above 1, the 1,000 ft pointer is above 4, and the 100 ft pointer is on 5. This indicates an altitude of 14,500 feet."},
+  {s:"C",
+   q:"(Refer to Figure 3.) Altimeter 3 indicates",
+   c:["9,500 feet.","10,950 feet.","15,940 feet."],
+   a:0, ex:"The 10,000 ft pointer is near 1, the 1,000 ft pointer is above 9, and the 100 ft pointer is on 5. This indicates the altitude is 9,500 feet."},
+  {s:"C",
+   q:"(Refer to Figure 3.) Which altimeter(s) indicate(s) more than 10,000 feet?",
+   c:["1, 2, and 3.","1 and 2 only.","1 only."],
+   a:1, ex:"Altimeter 1 reads 10,500 feet and Altimeter 2 reads 14,500 feet—both above 10,000 feet. Altimeter 3 reads 9,500 feet, which is below 10,000 feet."},
+  {s:"C",
+   q:"Altimeter setting is the value to which the barometric pressure scale of the altimeter is set so the altimeter indicates",
+   c:["calibrated altitude at field elevation.","absolute altitude at field elevation.","true altitude at field elevation."],
+   a:2, ex:"When the current altimeter setting is set on the ground, the altimeter reads true altitude of the field, which is the actual height above mean sea level."},
+  {s:"C",
+   q:"If the outside air temperature (OAT) at a given altitude is warmer than standard, the density altitude is",
+   c:["equal to pressure altitude.","lower than pressure altitude.","higher than pressure altitude."],
+   a:2, ex:"At standard temperature, density altitude is equal to pressure altitude. However, when the ambient air temperature is above standard, the air density is reduced, density altitude is higher than pressure altitude, and aircraft performance degrades."},
+  {s:"C",
+   q:"How do variations in temperature affect the altimeter?",
+   c:["Pressure levels are raised on warm days and the indicated altitude is lower than true altitude.","Higher temperatures expand the pressure levels and the indicated altitude is higher than true altitude.","Lower temperatures lower the pressure levels and the indicated altitude is lower than true altitude."],
+   a:0, ex:"Because atmospheric pressure levels are raised on warm days, the aircraft is at a higher altitude than indicated. In other words, the indicated altitude is lower than true altitude."},
+  {s:"C",
+   q:"What is true altitude?",
+   c:["The vertical distance of the aircraft above sea level.","The vertical distance of the aircraft above the surface.","The height above the standard datum plane."],
+   a:0, ex:"True altitude is the actual height (vertical distance) above mean sea level. The vertical distance above the surface is absolute altitude and the height above the standard datum plane is pressure altitude."},
+  {s:"C",
+   q:"What is absolute altitude?",
+   c:["The altitude read directly from the altimeter.","The vertical distance of the aircraft above the surface.","The height above the standard datum plane."],
+   a:1, ex:"Absolute altitude, often referred to as altitude above ground level (AGL), is the height (vertical distance) above the surface."},
+  {s:"C",
+   q:"What is density altitude?",
+   c:["The height above the standard datum plane.","The pressure altitude corrected for nonstandard temperature.","The altitude read directly from the altimeter."],
+   a:1, ex:"Density altitude is pressure altitude corrected for nonstandard temperature. Pressure altitude is the height above the standard datum plane, which is indicated when you set 29.92 on the scale in the altimeter setting window."},
+  {s:"C",
+   q:"What is pressure altitude?",
+   c:["The indicated altitude corrected for position and installation error.","The altitude indicated when the barometric pressure scale is set to 29.92.","The indicated altitude corrected for nonstandard temperature and pressure."],
+   a:1, ex:"Pressure altitude is the height above the standard datum plane, which is indicated when you set 29.92 on the scale in the altimeter setting window."},
+  {s:"C",
+   q:"Under what condition is pressure altitude and density altitude the same value?",
+   c:["At sea level, when the temperature is 0°F.","When the altimeter has no installation error.","At standard temperature."],
+   a:2, ex:"Because density altitude is pressure altitude corrected for nonstandard temperature, density altitude and pressure altitude are equal only at standard temperature."},
+  {s:"C",
+   q:"Which condition would cause the altimeter to indicate a lower altitude than true altitude?",
+   c:["Air temperature lower than standard.","Atmospheric pressure lower than standard.","Air temperature warmer than standard."],
+   a:2, ex:"When the air temperature is warmer than standard, indicated altitude is lower than actual (true) altitude."},
+  {s:"C",
+   q:"Under what condition will true altitude be lower than indicated altitude?",
+   c:["In colder than standard air temperature.","In warmer than standard air temperature.","When density altitude is higher than indicated altitude."],
+   a:0, ex:"When the air is colder than standard, the actual (true) altitude of an aircraft is lower than indicated."},
+  {s:"C",
+   q:"If a flight is made from an area of high pressure into an area of low pressure without the altimeter setting being adjusted, the altimeter will indicate",
+   c:["lower than the actual altitude above sea level.","higher than the actual altitude above sea level.","the actual altitude above sea level."],
+   a:1, ex:"The aircraft is at a lower true (actual) altitude above sea level than is indicated because the altimeter indicates higher than actual altitude. Remember, 'from high to low, look out below.'"},
+  {s:"C",
+   q:"If a flight is made from an area of low pressure into an area of high pressure without the altimeter setting being adjusted, the altimeter will indicate",
+   c:["the actual altitude above sea level.","higher than the actual altitude above sea level.","lower than the actual altitude above sea level."],
+   a:2, ex:"The aircraft is at a higher true (actual) altitude above sea level than is indicated because the altimeter indicates lower than the actual altitude."},
+  {s:"C",
+   q:"Under which condition will pressure altitude be equal to true altitude?",
+   c:["When the atmospheric pressure is 29.92 inches Hg.","When standard atmospheric conditions exist.","When indicated altitude is equal to the pressure altitude."],
+   a:1, ex:"Pressure altitude equals true altitude only when standard atmospheric conditions of pressure and temperature exist."},
+  {s:"C",
+   q:"Under what condition is indicated altitude the same as true altitude?",
+   c:["If the altimeter has no mechanical error.","When at sea level under standard conditions.","When at 18,000 feet MSL with the altimeter set at 29.92."],
+   a:1, ex:"If standard conditions (29.92 in Hg and 15°C) exist at sea level, indicated altitude is the same as true altitude, pressure altitude, and density altitude."},
+  {s:"C",
+   q:"What are the standard temperature and pressure values for sea level?",
+   c:["15°C and 29.92 inches Hg.","59°C and 1013.2 millibars.","59°F and 29.92 millibars."],
+   a:0, ex:"The standard atmosphere at sea level is a temperature of 15°C (59°F) and 29.92\" Hg (1013.2 millibars)."},
+  {s:"C",
+   q:"If it is necessary to set the altimeter from 29.15 to 29.85, what change occurs?",
+   c:["70-foot decrease in indicated altitude.","700-foot decrease in indicated altitude.","700-foot increase in indicated altitude."],
+   a:2, ex:"The indicated altitude changes by about 1,000 feet for each one-inch change in the altimeter's setting and in the same direction. You increase the altimeter setting by 0.70 inches (29.85 - 29.15 = 0.70), therefore, the indicated altitude increases by 700 feet."},
+  {s:"C",
+   q:"If you change the altimeter setting from 30.11 to 29.96, what is the approximate change in indication?",
+   c:["Altimeter will indicate .15 inches Hg higher.","Altimeter will indicate 150 feet higher.","Altimeter will indicate 150 feet lower."],
+   a:2, ex:"The indicated altitude changes by about 1,000 feet for each one-inch change in the altimeter's setting and in the same direction. You decrease the altimeter setting by 0.15 inches (30.11 - 29.96 = 0.15), therefore, the indicated altitude decreases by 150 feet."},
+  {s:"C",
+   q:"Which factor would tend to increase the density altitude at a given airport?",
+   c:["An increase in barometric pressure.","An increase in ambient temperature.","A decrease in relative humidity."],
+   a:1, ex:"The factors that decrease air density, increasing density altitude, are increased ambient temperature, decreased barometric pressure, and increased relative humidity."},
+  {s:"C",
+   q:"(Refer to Figure 5.) A turn coordinator provides an indication of the",
+   c:["angle of bank up to but not exceeding 30°.","movement of the aircraft about the yaw and roll axes.","attitude of the aircraft with reference to the longitudinal axis."],
+   a:1, ex:"The turn coordinator senses movement about both the vertical axis (yaw) and the longitudinal axis (roll)."},
+  {s:"C",
+   q:"What is an advantage of an electric turn coordinator if the airplane has a vacuum system for other gyroscopic instruments?",
+   c:["It is a backup in case of vacuum system failure.","It is more reliable than the vacuum-driven indicators.","It will not tumble, unlike vacuum-driven turn indicators."],
+   a:0, ex:"On many light airplanes, the vacuum system supplies power to the attitude and heading indicators, while the electrical system powers the turn coordinator. This configuration provides a backup in case one system fails."},
+  {s:"C",
+   q:"(Refer to Figure 7.) The proper adjustment to make on the attitude indicator during level flight is to align the",
+   c:["horizon bar to the level-flight indication.","horizon bar to the miniature airplane.","miniature airplane to the horizon bar."],
+   a:2, ex:"Set the adjustable miniature airplane to match the level flight indication of the horizon bar."},
+  {s:"C",
+   q:"(Refer to Figure 7.) How should a pilot determine the direction of bank from an attitude indicator such as the one illustrated?",
+   c:["By the direction of deflection of the banking scale (A).","By the direction of deflection of the horizon bar (B).","By the relationship of the miniature airplane (C) to the deflected horizon bar (B)."],
+   a:2, ex:"As the airplane banks, the relationship between the miniature airplane and the horizon bar depict the direction of turn."},
+  {s:"C",
+   q:"The angular difference between true north and magnetic north is",
+   c:["magnetic deviation.","magnetic variation.","compass acceleration error."],
+   a:1, ex:"Magnetic variation occurs because the earth's magnetic poles do not coincide with its geographic poles, and a magnetic compass aligns with the magnetic poles. You can determine local magnetic variation by referencing the isogonic lines on aeronautical charts."},
+  {s:"C",
+   q:"Deviation in a magnetic compass is caused by the",
+   c:["presence of flaws in the permanent magnets of the compass.","difference in the location between true north and magnetic north.","magnetic fields within the aircraft distorting the lines of magnetic force."],
+   a:2, ex:"Metal and electronic components in the aircraft create magnetic fields that distort the lines of magnetic force. These distortions cause deviation errors in the compass readings."},
+  {s:"C",
+   q:"In the Northern Hemisphere, a magnetic compass will normally indicate initially a turn toward the west if",
+   c:["a left turn is entered from a north heading.","a right turn is entered from a north heading.","an aircraft is accelerated while on a north heading."],
+   a:1, ex:"When turning from a northerly heading, the compass initially indicates a turn in the opposite direction. When starting a right turn toward the east, the compass begins to show a turn to the west."},
+  {s:"C",
+   q:"In the Northern Hemisphere, a magnetic compass will normally indicate initially a turn toward the east if",
+   c:["an aircraft is decelerated while on a south heading.","an aircraft is accelerated while on a north heading.","a left turn is entered from a north heading."],
+   a:2, ex:"When turning from a northerly heading, the compass initially indicates a turn in the opposite direction. When starting a left turn toward the west, the compass begins to show a turn to the east."},
+  {s:"C",
+   q:"In the Northern Hemisphere, a magnetic compass will normally indicate a turn toward the north if",
+   c:["a right turn is entered from an east heading.","an aircraft is decelerated while on an east or west heading.","an aircraft is accelerated while on an east or west heading."],
+   a:2, ex:"Acceleration error is most pronounced on east/west headings. In the northern hemisphere, acceleration will show a turn to the north, and deceleration will show a turn to the south. (ANDS: accelerate north, decelerate south)"},
+  {s:"C",
+   q:"In the Northern Hemisphere, the magnetic compass will normally indicate a turn toward the south when",
+   c:["a left turn is entered from an east heading.","a right turn is entered from a west heading.","the aircraft is decelerated while on a west heading."],
+   a:2, ex:"Acceleration error is most pronounced on east/west headings. In the northern hemisphere, deceleration will show a turn to the south. (ANDS: accelerate north, decelerate south)"},
+  {s:"C",
+   q:"In the Northern Hemisphere, if an aircraft is accelerated or decelerated, the magnetic compass will normally indicate",
+   c:["a turn momentarily.","correctly when on a north or south heading.","a turn toward the south."],
+   a:1, ex:"Because acceleration and deceleration errors are most pronounced on east/west headings, accelerating or decelerating on a north or south heading will not show much of an error on the magnetic compass."},
+  {s:"C",
+   q:"During flight, when are the indications of a magnetic compass accurate?",
+   c:["Only in straight-and-level unaccelerated flight.","As long as the airspeed is constant.","During turns if the bank does not exceed 18°."],
+   a:0, ex:"Magnetic dip causes turning and acceleration/deceleration errors. For this reason, magnetic compass indications are accurate only in straight-and-level unaccelerated flight."},
+  {s:"C",
+   q:"What should be the indication on the magnetic compass as you roll into a standard rate turn to the right from a south heading in the Northern Hemisphere?",
+   c:["The compass will initially indicate a turn to the left.","The compass will indicate a turn to the right, but at a faster rate than is actually occurring.","The compass will remain on south for a short time, then gradually catch up to the magnetic heading of the airplane."],
+   a:1, ex:"When turning from a southerly heading, the compass moves the correct direction but at a faster rate than the actual change in heading."},
+  {s:"C",
+   q:"Deviation error of the magnetic compass is caused by",
+   c:["a northerly turning error.","certain metals and electrical systems within the aircraft.","the difference in location of true north and magnetic north."],
+   a:1, ex:"Metal and electronic components in the aircraft create magnetic fields that cause deviation errors in the compass readings. The difference between true north and magnetic north is variation, not deviation."},
+  {s:"C",
+   q:"In the Northern Hemisphere, a magnetic compass will normally indicate a turn toward the north if (acceleration error)",
+   c:["a left turn is entered from a west heading.","an aircraft is decelerated while on an east or west heading.","an aircraft is accelerated while on an east or west heading."],
+   a:2, ex:"Acceleration error is most pronounced on east/west headings. In the northern hemisphere, acceleration will show a turn to the north. (ANDS: accelerate north, decelerate south)"},
+  {s:"C",
+   q:"If the AHRS detects a problem with the integrity of the sensor information for the instruments on a PFD, what occurs?",
+   c:["The system reverts to reversionary mode and PFD information is displayed on the MFD.","A red X is placed over the display of the affected instrument (attitude indicator or HSI).","After an alert message appears, you must determine the affected instrument by comparing the indications of all instruments."],
+   a:1, ex:"When the AHRS system detects a problem, it places a red X over the display of the affected instrument to alert you that the indications are unreliable."},
+  {s:"C",
+   q:"You are flying an airplane with an electronic flight display and the PFD screen fails. What is a back-up option for the PFD instruments?",
+   c:["Display the PFD instruments on the MFD screen.","Monitor traditional back-up instruments that are powered from the main electrical bus.","Reset the AHRS and the ADC and observe whether the PFD turns back on."],
+   a:0, ex:"The electronic flight display is configured so that the functions of the PFD can be transferred to the MFD screen in reversionary mode."},
+  {s:"C",
+   q:"How do you perform a standard-rate turn in an airplane with instruments on a PFD?",
+   c:["Monitor the digital turn coordinator and adjust the angle of bank as needed.","Monitor the trend vector on the HSI and adjust the angle of bank as needed.","Monitor the trend indicator on the digital attitude indicator and adjust the bank as needed."],
+   a:1, ex:"On a PFD, use the turn rate indicator on the HSI to perform a standard-rate turn. The turn rate indicator consists of a trend vector that shows what the airplane's heading will be in six seconds and index marks for making standard rate turns."},
+  {s:"C",
+   q:"Which digital flight instruments are related to the air data computer (ADC)?",
+   c:["Attitude indicator, heading indicator, and turn indicator.","Compass, magnetometer, and ground track indicator.","Airspeed indicator, altimeter, and VSI."],
+   a:2, ex:"The pitot tube, static source, and outside air temperature probe provide information to the ADC. The ADC uses these pressure and temperature inputs to determine the appropriate readings for the airspeed indicator, altimeter, and VSI."}
+];
+
+let answered = 0, correct = 0;
+const sectionCorrect = {A:0, B:0, C:0};
+const sectionTotal   = {A:0, B:0, C:0};
+
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  document.getElementById('total-count').textContent = questions.length;
+
+  const sections = {A: 'Section A – Airplanes', B: 'Section B – Powerplant and Related Systems', C: 'Section C – Flight Instruments'};
+  let currentSection = '';
+
+  questions.forEach((q, idx) => {
+    questions[idx]._answered = false;
+    sectionTotal[q.s]++;
+
+    if (q.s !== currentSection) {
+      currentSection = q.s;
+      const count = questions.filter(x=>x.s===q.s).length;
+      const hdr = document.createElement('div');
+      hdr.className = 'section-header';
+      hdr.innerHTML = sections[q.s] + `<span>${count} questions</span>`;
+      container.appendChild(hdr);
+    }
+
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'q-'+idx;
+
+    const letters = ['A','B','C'];
+    const choicesHtml = q.c.map((ch, ci) =>
+      `<button class="choice-btn" onclick="answer(${idx},${ci})" id="btn-${idx}-${ci}">
+         <span class="letter">${letters[ci]}.</span>${ch}
+       </button>`
+    ).join('');
+
+    card.innerHTML = `
+      <div class="q-number">Q${idx+1} &nbsp;·&nbsp; Section ${q.s}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="choices">${choicesHtml}</div>
+      <div class="explanation" id="ex-${idx}"><strong>Explanation:</strong> ${q.ex}</div>`;
+    container.appendChild(card);
+  });
+}
+
+function answer(qIdx, chosen) {
+  const q = questions[qIdx];
+  if (q._answered) return;
+  q._answered = true;
+  answered++;
+
+  const letters = ['A','B','C'];
+  const card = document.getElementById('q-'+qIdx);
+  const ex   = document.getElementById('ex-'+qIdx);
+
+  letters.forEach((_, ci) => {
+    const btn = document.getElementById(`btn-${qIdx}-${ci}`);
+    btn.disabled = true;
+    if (ci === q.a) btn.classList.add('correct');
+    else if (ci === chosen && chosen !== q.a) btn.classList.add('wrong');
+  });
+
+  ex.classList.add('visible');
+
+  if (chosen === q.a) {
+    correct++;
+    sectionCorrect[q.s]++;
+    card.classList.add('answered-correct');
+  } else {
+    card.classList.add('answered-wrong');
+  }
+
+  // Update score bar
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent  = correct;
+  const pct = Math.round(correct / answered * 100);
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = (answered / questions.length * 100) + '%';
+
+  if (answered === questions.length) showEnd();
+}
+
+function showEnd() {
+  document.getElementById('end-screen').style.display = 'block';
+  const pct = Math.round(correct / questions.length * 100);
+  document.getElementById('final-score').textContent = pct + '%';
+  document.getElementById('final-detail').textContent = `You answered ${correct} out of ${questions.length} questions correctly.`;
+  const sNames = {A:'Section A – Airplanes', B:'Section B – Powerplant', C:'Section C – Flight Instruments'};
+  document.getElementById('section-scores').innerHTML = Object.keys(sNames).map(s =>
+    `<div class="section-score">${sNames[s]}: <strong>${sectionCorrect[s]}/${sectionTotal[s]}</strong> (${Math.round(sectionCorrect[s]/sectionTotal[s]*100)}%)</div>`
+  ).join('');
+  document.getElementById('end-screen').scrollIntoView({behavior:'smooth'});
+}
+
+function restartQuiz() {
+  answered = 0; correct = 0;
+  Object.keys(sectionCorrect).forEach(k => sectionCorrect[k] = 0);
+  Object.keys(sectionTotal).forEach(k => sectionTotal[k] = 0);
+  document.getElementById('answered-count').textContent = 0;
+  document.getElementById('correct-count').textContent  = 0;
+  document.getElementById('score-pct').textContent = '0%';
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('end-screen').style.display = 'none';
+  buildQuiz();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+buildQuiz();
+</script>
+</body>
+</html>
