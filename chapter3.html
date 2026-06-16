@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 3 — Aerodynamic Principles Quiz</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f0f4f8;
+    color: #1a2535;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, #1a3a5c 0%, #2563a8 100%);
+    color: #fff;
+    padding: 24px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  }
+  header h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: 0.02em; }
+  header p { font-size: 0.85rem; opacity: 0.85; margin-top: 4px; }
+  #scorebar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .score-pill {
+    background: rgba(255,255,255,0.18);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+  #progress-bar-wrap {
+    flex: 1;
+    min-width: 120px;
+    height: 8px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  #progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #4ade80;
+    border-radius: 4px;
+    transition: width 0.3s;
+  }
+  #reset-btn {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #fff;
+    padding: 5px 14px;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    transition: background 0.2s;
+  }
+  #reset-btn:hover { background: rgba(255,255,255,0.35); }
+
+  main { max-width: 860px; margin: 28px auto; padding: 0 16px 60px; }
+
+  .section-header {
+    background: #1a3a5c;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin: 32px 0 16px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+  .section-header span { opacity: 0.75; font-weight: 400; font-size: 0.9rem; margin-left: 10px; }
+
+  .question-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px 22px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    border-left: 4px solid #cbd5e1;
+    transition: border-color 0.3s;
+  }
+  .question-card.answered-correct { border-left-color: #22c55e; }
+  .question-card.answered-wrong  { border-left-color: #ef4444; }
+
+  .q-num {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  .q-text {
+    font-size: 0.97rem;
+    font-weight: 600;
+    line-height: 1.55;
+    margin-bottom: 14px;
+    color: #1e293b;
+  }
+  .fig-note {
+    font-size: 0.8rem;
+    color: #0369a1;
+    background: #e0f2fe;
+    border-radius: 5px;
+    padding: 4px 10px;
+    margin-bottom: 10px;
+    display: inline-block;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 7px;
+    border: 1.5px solid #e2e8f0;
+    background: #f8fafc;
+    cursor: pointer;
+    text-align: left;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    color: #1e293b;
+    transition: border-color 0.15s, background 0.15s;
+    width: 100%;
+  }
+  .option-btn:not(.disabled):hover {
+    border-color: #3b82f6;
+    background: #eff6ff;
+  }
+  .option-btn .opt-label {
+    font-weight: 700;
+    min-width: 20px;
+    color: #3b82f6;
+  }
+  .option-btn.correct {
+    border-color: #16a34a;
+    background: #dcfce7;
+    color: #14532d;
+  }
+  .option-btn.correct .opt-label { color: #16a34a; }
+  .option-btn.wrong {
+    border-color: #dc2626;
+    background: #fee2e2;
+    color: #7f1d1d;
+  }
+  .option-btn.wrong .opt-label { color: #dc2626; }
+  .option-btn.disabled { cursor: default; }
+  .option-btn.show-correct {
+    border-color: #16a34a;
+    background: #dcfce7;
+    color: #14532d;
+  }
+  .option-btn.show-correct .opt-label { color: #16a34a; }
+
+  .feedback {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: 7px;
+    font-size: 0.88rem;
+    line-height: 1.55;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+  .feedback.wrong-fb   { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+  .feedback strong { display: block; margin-bottom: 4px; }
+
+  #final-banner {
+    display: none;
+    background: linear-gradient(135deg, #1a3a5c, #2563a8);
+    color: #fff;
+    text-align: center;
+    padding: 36px 24px;
+    border-radius: 12px;
+    margin-top: 40px;
+  }
+  #final-banner h2 { font-size: 1.6rem; margin-bottom: 8px; }
+  #final-banner p  { font-size: 1.1rem; opacity: 0.9; }
+  #final-banner .grade { font-size: 2.8rem; font-weight: 800; margin: 16px 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>✈ Chapter 3 — Aerodynamic Principles</h1>
+  <p>Private Pilot FAA Airmen Knowledge Test Guide 2024 (Jeppesen) &nbsp;|&nbsp; 54 Questions</p>
+  <div id="scorebar">
+    <div class="score-pill">✅ <span id="correct-count">0</span> Correct</div>
+    <div class="score-pill">❌ <span id="wrong-count">0</span> Wrong</div>
+    <div class="score-pill">📝 <span id="answered-count">0</span> / 54</div>
+    <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+    <button id="reset-btn" onclick="resetQuiz()">↺ Reset</button>
+  </div>
+</header>
+
+<main id="quiz-container">
+
+<!-- ═══════════════════════════════ SECTION A ══════════════════════════════ -->
+<div class="section-header">Section A — Four Forces of Flight <span>Questions 1 – 14</span></div>
+
+<!-- Q1 -->
+<div class="question-card" id="card-1">
+  <div class="q-num">Question 1 of 54</div>
+  <div class="q-text">The four forces acting on an airplane in flight are</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(1,'A','A')"><span class="opt-label">A.</span> lift, weight, thrust, and drag.</button>
+    <button class="option-btn" onclick="answer(1,'B','A')"><span class="opt-label">B.</span> lift, weight, gravity, and thrust.</button>
+    <button class="option-btn" onclick="answer(1,'C','A')"><span class="opt-label">C.</span> lift, gravity, power, and friction.</button>
+  </div>
+  <div class="feedback" id="fb-1"></div>
+</div>
+
+<!-- Q2 -->
+<div class="question-card" id="card-2">
+  <div class="q-num">Question 2 of 54</div>
+  <div class="q-text">When are the four forces that act on an airplane in equilibrium?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(2,'A','A')"><span class="opt-label">A.</span> During unaccelerated flight.</button>
+    <button class="option-btn" onclick="answer(2,'B','A')"><span class="opt-label">B.</span> When the aircraft is accelerating.</button>
+    <button class="option-btn" onclick="answer(2,'C','A')"><span class="opt-label">C.</span> When the aircraft is at rest on the ground.</button>
+  </div>
+  <div class="feedback" id="fb-2"></div>
+</div>
+
+<!-- Q3 -->
+<div class="question-card" id="card-3">
+  <div class="q-num">Question 3 of 54</div>
+  <div class="q-text">What is the relationship of lift, drag, thrust, and weight when the airplane is in straight-and-level flight?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(3,'A','C')"><span class="opt-label">A.</span> Lift, drag, and weight equal thrust.</button>
+    <button class="option-btn" onclick="answer(3,'B','C')"><span class="opt-label">B.</span> Lift and weight equal thrust and drag.</button>
+    <button class="option-btn" onclick="answer(3,'C','C')"><span class="opt-label">C.</span> Lift equals weight and thrust equals drag.</button>
+  </div>
+  <div class="feedback" id="fb-3"></div>
+</div>
+
+<!-- Q4 -->
+<div class="question-card" id="card-4">
+  <div class="q-num">Question 4 of 54</div>
+  <div class="q-text">Which statement relates to Bernoulli's principle?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(4,'A','C')"><span class="opt-label">A.</span> For every action there is an equal and opposite reaction.</button>
+    <button class="option-btn" onclick="answer(4,'B','C')"><span class="opt-label">B.</span> An additional upward force is generated as the lower surface of the wing deflects air downward.</button>
+    <button class="option-btn" onclick="answer(4,'C','C')"><span class="opt-label">C.</span> Air traveling faster over the curved upper surface of an airfoil causes lower pressure on the top surface.</button>
+  </div>
+  <div class="feedback" id="fb-4"></div>
+</div>
+
+<!-- Q5 -->
+<div class="question-card" id="card-5">
+  <div class="q-num">Question 5 of 54</div>
+  <div class="q-text">(Refer to Figure 1.) The acute angle A is the angle of</div>
+  <div class="fig-note">📊 Refers to Figure 1 — diagram showing angle between chord line and relative wind</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(5,'A','B')"><span class="opt-label">A.</span> incidence.</button>
+    <button class="option-btn" onclick="answer(5,'B','B')"><span class="opt-label">B.</span> attack.</button>
+    <button class="option-btn" onclick="answer(5,'C','B')"><span class="opt-label">C.</span> dihedral.</button>
+  </div>
+  <div class="feedback" id="fb-5"></div>
+</div>
+
+<!-- Q6 -->
+<div class="question-card" id="card-6">
+  <div class="q-num">Question 6 of 54</div>
+  <div class="q-text">The term "angle of attack" is defined as the angle between the</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(6,'A','A')"><span class="opt-label">A.</span> chord line of the wing and the relative wind.</button>
+    <button class="option-btn" onclick="answer(6,'B','A')"><span class="opt-label">B.</span> airplane's longitudinal axis and that of the air striking the airfoil.</button>
+    <button class="option-btn" onclick="answer(6,'C','A')"><span class="opt-label">C.</span> airplane's center line and the relative wind.</button>
+  </div>
+  <div class="feedback" id="fb-6"></div>
+</div>
+
+<!-- Q7 -->
+<div class="question-card" id="card-7">
+  <div class="q-num">Question 7 of 54</div>
+  <div class="q-text">The angle between the chord line of an airfoil and the relative wind is known as the angle of</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(7,'A','B')"><span class="opt-label">A.</span> lift.</button>
+    <button class="option-btn" onclick="answer(7,'B','B')"><span class="opt-label">B.</span> attack.</button>
+    <button class="option-btn" onclick="answer(7,'C','B')"><span class="opt-label">C.</span> incidence.</button>
+  </div>
+  <div class="feedback" id="fb-7"></div>
+</div>
+
+<!-- Q8 -->
+<div class="question-card" id="card-8">
+  <div class="q-num">Question 8 of 54</div>
+  <div class="q-text">One of the main functions of flaps during approach and landing is to</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(8,'A','C')"><span class="opt-label">A.</span> decrease the angle of descent without increasing the airspeed.</button>
+    <button class="option-btn" onclick="answer(8,'B','C')"><span class="opt-label">B.</span> enable a touchdown at a higher indicated airspeed.</button>
+    <button class="option-btn" onclick="answer(8,'C','C')"><span class="opt-label">C.</span> increase the angle of descent without increasing the airspeed.</button>
+  </div>
+  <div class="feedback" id="fb-8"></div>
+</div>
+
+<!-- Q9 -->
+<div class="question-card" id="card-9">
+  <div class="q-num">Question 9 of 54</div>
+  <div class="q-text">What is one purpose of wing flaps?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(9,'A','C')"><span class="opt-label">A.</span> To decrease wing area to vary the lift.</button>
+    <button class="option-btn" onclick="answer(9,'B','C')"><span class="opt-label">B.</span> To relieve the pilot of maintaining continuous pressure on the controls.</button>
+    <button class="option-btn" onclick="answer(9,'C','C')"><span class="opt-label">C.</span> To enable you to make steeper approaches to a landing without increasing the airspeed.</button>
+  </div>
+  <div class="feedback" id="fb-9"></div>
+</div>
+
+<!-- Q10 -->
+<div class="question-card" id="card-10">
+  <div class="q-num">Question 10 of 54</div>
+  <div class="q-text">The angle of attack at which an airplane wing stalls</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(10,'A','C')"><span class="opt-label">A.</span> increases if the CG is moved forward.</button>
+    <button class="option-btn" onclick="answer(10,'B','C')"><span class="opt-label">B.</span> changes with an increase in gross weight.</button>
+    <button class="option-btn" onclick="answer(10,'C','C')"><span class="opt-label">C.</span> remains the same regardless of gross weight.</button>
+  </div>
+  <div class="feedback" id="fb-10"></div>
+</div>
+
+<!-- Q11 -->
+<div class="question-card" id="card-11">
+  <div class="q-num">Question 11 of 54</div>
+  <div class="q-text">What is ground effect?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(11,'A','A')"><span class="opt-label">A.</span> The result of the interference of the surface of the Earth with the airflow patterns about an airplane.</button>
+    <button class="option-btn" onclick="answer(11,'B','A')"><span class="opt-label">B.</span> The result of an alteration in airflow patterns increasing induced drag about the wings of an airplane.</button>
+    <button class="option-btn" onclick="answer(11,'C','A')"><span class="opt-label">C.</span> The result of the disruption of the airflow patterns about the wings of an airplane to the point where the wings can no longer support the airplane in flight.</button>
+  </div>
+  <div class="feedback" id="fb-11"></div>
+</div>
+
+<!-- Q12 -->
+<div class="question-card" id="card-12">
+  <div class="q-num">Question 12 of 54</div>
+  <div class="q-text">Floating caused by the phenomenon of ground effect is most realized during an approach to land when at</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(12,'A','B')"><span class="opt-label">A.</span> a higher-than-normal angle of attack.</button>
+    <button class="option-btn" onclick="answer(12,'B','B')"><span class="opt-label">B.</span> less than the length of the wingspan above the surface.</button>
+    <button class="option-btn" onclick="answer(12,'C','B')"><span class="opt-label">C.</span> twice the length of the wingspan above the surface.</button>
+  </div>
+  <div class="feedback" id="fb-12"></div>
+</div>
+
+<!-- Q13 -->
+<div class="question-card" id="card-13">
+  <div class="q-num">Question 13 of 54</div>
+  <div class="q-text">What must you be aware of as a result of ground effect?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(13,'A','B')"><span class="opt-label">A.</span> Wingtip vortices increase, creating wake turbulence problems for arriving and departing aircraft.</button>
+    <button class="option-btn" onclick="answer(13,'B','B')"><span class="opt-label">B.</span> Induced drag decreases; therefore, any excess speed at the point of flare may cause considerable floating.</button>
+    <button class="option-btn" onclick="answer(13,'C','B')"><span class="opt-label">C.</span> A full stall landing requires less up elevator deflection than a full stall that is done free of ground effect.</button>
+  </div>
+  <div class="feedback" id="fb-13"></div>
+</div>
+
+<!-- Q14 -->
+<div class="question-card" id="card-14">
+  <div class="q-num">Question 14 of 54</div>
+  <div class="q-text">Ground effect is most likely to result in which problem?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(14,'A','B')"><span class="opt-label">A.</span> Settling to the surface abruptly during landing.</button>
+    <button class="option-btn" onclick="answer(14,'B','B')"><span class="opt-label">B.</span> Becoming airborne before reaching the recommended takeoff speed.</button>
+    <button class="option-btn" onclick="answer(14,'C','B')"><span class="opt-label">C.</span> Inability to get airborne even though airspeed is sufficient for normal takeoff needs.</button>
+  </div>
+  <div class="feedback" id="fb-14"></div>
+</div>
+
+<!-- ═══════════════════════════════ SECTION B ══════════════════════════════ -->
+<div class="section-header">Section B — Stability <span>Questions 15 – 31</span></div>
+
+<!-- Q15 -->
+<div class="question-card" id="card-15">
+  <div class="q-num">Question 15 of 54</div>
+  <div class="q-text">An airplane said to be inherently stable</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(15,'A','C')"><span class="opt-label">A.</span> will not spin.</button>
+    <button class="option-btn" onclick="answer(15,'B','C')"><span class="opt-label">B.</span> is difficult to stall.</button>
+    <button class="option-btn" onclick="answer(15,'C','C')"><span class="opt-label">C.</span> requires less effort to control.</button>
+  </div>
+  <div class="feedback" id="fb-15"></div>
+</div>
+
+<!-- Q16 -->
+<div class="question-card" id="card-16">
+  <div class="q-num">Question 16 of 54</div>
+  <div class="q-text">Changes in the center of pressure of a wing affect the aircraft's</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(16,'A','C')"><span class="opt-label">A.</span> lift/drag ratio.</button>
+    <button class="option-btn" onclick="answer(16,'B','C')"><span class="opt-label">B.</span> lifting capacity.</button>
+    <button class="option-btn" onclick="answer(16,'C','C')"><span class="opt-label">C.</span> aerodynamic balance and controllability.</button>
+  </div>
+  <div class="feedback" id="fb-16"></div>
+</div>
+
+<!-- Q17 -->
+<div class="question-card" id="card-17">
+  <div class="q-num">Question 17 of 54</div>
+  <div class="q-text">What determines the longitudinal stability of an airplane?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(17,'A','A')"><span class="opt-label">A.</span> The location of the CG with respect to the center of lift.</button>
+    <button class="option-btn" onclick="answer(17,'B','A')"><span class="opt-label">B.</span> The effectiveness of the horizontal stabilizer, rudder, and rudder trim tab.</button>
+    <button class="option-btn" onclick="answer(17,'C','A')"><span class="opt-label">C.</span> The relationship of thrust and lift to weight and drag.</button>
+  </div>
+  <div class="feedback" id="fb-17"></div>
+</div>
+
+<!-- Q18 -->
+<div class="question-card" id="card-18">
+  <div class="q-num">Question 18 of 54</div>
+  <div class="q-text">An airplane has been loaded in such a manner that the CG is located aft of the aft CG limit. One undesirable flight characteristic a pilot might experience with this airplane would be</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(18,'A','B')"><span class="opt-label">A.</span> a longer takeoff run.</button>
+    <button class="option-btn" onclick="answer(18,'B','B')"><span class="opt-label">B.</span> difficulty in recovering from a stalled condition.</button>
+    <button class="option-btn" onclick="answer(18,'C','B')"><span class="opt-label">C.</span> stalling at higher-than-normal airspeed.</button>
+  </div>
+  <div class="feedback" id="fb-18"></div>
+</div>
+
+<!-- Q19 -->
+<div class="question-card" id="card-19">
+  <div class="q-num">Question 19 of 54</div>
+  <div class="q-text">Loading an airplane to the most aft CG causes the airplane to be</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(19,'A','A')"><span class="opt-label">A.</span> less stable at all speeds.</button>
+    <button class="option-btn" onclick="answer(19,'B','A')"><span class="opt-label">B.</span> less stable at slow speeds, but more stable at high speeds.</button>
+    <button class="option-btn" onclick="answer(19,'C','A')"><span class="opt-label">C.</span> less stable at high speeds, but more stable at low speeds.</button>
+  </div>
+  <div class="feedback" id="fb-19"></div>
+</div>
+
+<!-- Q20 -->
+<div class="question-card" id="card-20">
+  <div class="q-num">Question 20 of 54</div>
+  <div class="q-text">What causes an airplane (except a T-tail) to pitch nose down when power is reduced and controls are not adjusted?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(20,'A','B')"><span class="opt-label">A.</span> The CG shifts forward when thrust and drag are reduced.</button>
+    <button class="option-btn" onclick="answer(20,'B','B')"><span class="opt-label">B.</span> The downwash on the elevator from the propeller slipstream is reduced and elevator effectiveness is reduced.</button>
+    <button class="option-btn" onclick="answer(20,'C','B')"><span class="opt-label">C.</span> When thrust is reduced to less than weight, lift is also reduced and the wings can no longer support the weight.</button>
+  </div>
+  <div class="feedback" id="fb-20"></div>
+</div>
+
+<!-- Q21 -->
+<div class="question-card" id="card-21">
+  <div class="q-num">Question 21 of 54</div>
+  <div class="q-text">Which of the following changes would increase the airplane's tendency to pitch up, potentially leading to a stall when flying at slow airspeeds?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(21,'A','B')"><span class="opt-label">A.</span> Decreasing the angle of attack while maintaining the same power setting.</button>
+    <button class="option-btn" onclick="answer(21,'B','B')"><span class="opt-label">B.</span> Shifting the center of gravity towards the rear of the airplane.</button>
+    <button class="option-btn" onclick="answer(21,'C','B')"><span class="opt-label">C.</span> Decreasing the power setting while maintaining the same airspeed.</button>
+  </div>
+  <div class="feedback" id="fb-21"></div>
+</div>
+
+<!-- Q22 -->
+<div class="question-card" id="card-22">
+  <div class="q-num">Question 22 of 54</div>
+  <div class="q-text">Which of the following is a common indication of an impending stall?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(22,'A','C')"><span class="opt-label">A.</span> The engine noise becomes significantly louder.</button>
+    <button class="option-btn" onclick="answer(22,'B','C')"><span class="opt-label">B.</span> The airplane's speed increases dramatically.</button>
+    <button class="option-btn" onclick="answer(22,'C','C')"><span class="opt-label">C.</span> The flight controls become less responsive.</button>
+  </div>
+  <div class="feedback" id="fb-22"></div>
+</div>
+
+<!-- Q23 -->
+<div class="question-card" id="card-23">
+  <div class="q-num">Question 23 of 54</div>
+  <div class="q-text">You are practicing emergency landings with the engine power at idle. Which of the following situations could lead to a power-off stall?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(23,'A','B')"><span class="opt-label">A.</span> You are too high and push the nose down.</button>
+    <button class="option-btn" onclick="answer(23,'B','B')"><span class="opt-label">B.</span> You are too low and increase your angle of attack to try to stretch your glide.</button>
+    <button class="option-btn" onclick="answer(23,'C','B')"><span class="opt-label">C.</span> You are flying with a strong tailwind.</button>
+  </div>
+  <div class="feedback" id="fb-23"></div>
+</div>
+
+<!-- Q24 -->
+<div class="question-card" id="card-24">
+  <div class="q-num">Question 24 of 54</div>
+  <div class="q-text">You are practicing flight maneuvers and you have just recognized signs of an impending stall. What is the first fundamental step in stall recovery?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(24,'A','B')"><span class="opt-label">A.</span> Reduce the power.</button>
+    <button class="option-btn" onclick="answer(24,'B','B')"><span class="opt-label">B.</span> Lower the nose to decrease the angle of attack.</button>
+    <button class="option-btn" onclick="answer(24,'C','B')"><span class="opt-label">C.</span> Level the wings using the ailerons.</button>
+  </div>
+  <div class="feedback" id="fb-24"></div>
+</div>
+
+<!-- Q25 -->
+<div class="question-card" id="card-25">
+  <div class="q-num">Question 25 of 54</div>
+  <div class="q-text">Which is true regarding spin recovery procedures?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(25,'A','C')"><span class="opt-label">A.</span> The same spin recovery procedure applies to every airplane.</button>
+    <button class="option-btn" onclick="answer(25,'B','C')"><span class="opt-label">B.</span> Recovery from a flat spin might be impossible due to ineffective ailerons.</button>
+    <button class="option-btn" onclick="answer(25,'C','C')"><span class="opt-label">C.</span> Control inputs involve stopping the rotation and reducing the angle of attack to recover from the stall.</button>
+  </div>
+  <div class="feedback" id="fb-25"></div>
+</div>
+
+<!-- Q26 -->
+<div class="question-card" id="card-26">
+  <div class="q-num">Question 26 of 54</div>
+  <div class="q-text">In small airplanes, normal recovery from spins might become difficult if the</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(26,'A','B')"><span class="opt-label">A.</span> CG is too far rearward, and rotation is around the longitudinal axis.</button>
+    <button class="option-btn" onclick="answer(26,'B','B')"><span class="opt-label">B.</span> CG is too far rearward, and rotation is around the CG.</button>
+    <button class="option-btn" onclick="answer(26,'C','B')"><span class="opt-label">C.</span> spin is entered before the stall is fully developed.</button>
+  </div>
+  <div class="feedback" id="fb-26"></div>
+</div>
+
+<!-- Q27 -->
+<div class="question-card" id="card-27">
+  <div class="q-num">Question 27 of 54</div>
+  <div class="q-text">In what flight condition must an aircraft be placed in order to spin?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(27,'A','C')"><span class="opt-label">A.</span> Partially stalled with one wing low.</button>
+    <button class="option-btn" onclick="answer(27,'B','C')"><span class="opt-label">B.</span> In a steep diving spiral.</button>
+    <button class="option-btn" onclick="answer(27,'C','C')"><span class="opt-label">C.</span> Stalled.</button>
+  </div>
+  <div class="feedback" id="fb-27"></div>
+</div>
+
+<!-- Q28 -->
+<div class="question-card" id="card-28">
+  <div class="q-num">Question 28 of 54</div>
+  <div class="q-text">During a spin to the left, which wing is stalled?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(28,'A','A')"><span class="opt-label">A.</span> Both wings are stalled.</button>
+    <button class="option-btn" onclick="answer(28,'B','A')"><span class="opt-label">B.</span> Neither wing is stalled.</button>
+    <button class="option-btn" onclick="answer(28,'C','A')"><span class="opt-label">C.</span> Only the left wing is stalled.</button>
+  </div>
+  <div class="feedback" id="fb-28"></div>
+</div>
+
+<!-- Q29 -->
+<div class="question-card" id="card-29">
+  <div class="q-num">Question 29 of 54</div>
+  <div class="q-text">Which is a characteristic of the incipient phase of a spin in light airplanes?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(29,'A','B')"><span class="opt-label">A.</span> Consists of at least 4 turns.</button>
+    <button class="option-btn" onclick="answer(29,'B','B')"><span class="opt-label">B.</span> Usually occurs within about 4 to 6 seconds.</button>
+    <button class="option-btn" onclick="answer(29,'C','B')"><span class="opt-label">C.</span> Angular rotation rate, airspeed, and vertical speed are stabilized with a nearly vertical flight path.</button>
+  </div>
+  <div class="feedback" id="fb-29"></div>
+</div>
+
+<!-- Q30 -->
+<div class="question-card" id="card-30">
+  <div class="q-num">Question 30 of 54</div>
+  <div class="q-text">To recover from a nose-high unusual attitude, perform these actions almost simultaneously but in the following sequence:</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(30,'A','A')"><span class="opt-label">A.</span> Add power; lower the nose; level the wings.</button>
+    <button class="option-btn" onclick="answer(30,'B','A')"><span class="opt-label">B.</span> Reduce power; level the wings; raise the nose.</button>
+    <button class="option-btn" onclick="answer(30,'C','A')"><span class="opt-label">C.</span> Add power; raise the nose; level the wings.</button>
+  </div>
+  <div class="feedback" id="fb-30"></div>
+</div>
+
+<!-- Q31 -->
+<div class="question-card" id="card-31">
+  <div class="q-num">Question 31 of 54</div>
+  <div class="q-text">To recover from a nose-low unusual attitude, perform these actions almost simultaneously but in the following sequence:</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(31,'A','B')"><span class="opt-label">A.</span> Add power; lower the nose; level the wings.</button>
+    <button class="option-btn" onclick="answer(31,'B','B')"><span class="opt-label">B.</span> Reduce power; level the wings; raise the nose.</button>
+    <button class="option-btn" onclick="answer(31,'C','B')"><span class="opt-label">C.</span> Add power; raise the nose; level the wings.</button>
+  </div>
+  <div class="feedback" id="fb-31"></div>
+</div>
+
+<!-- ═══════════════════════════════ SECTION C ══════════════════════════════ -->
+<div class="section-header">Section C — Aerodynamics of Maneuvering Flight <span>Questions 32 – 54</span></div>
+
+<!-- Q32 -->
+<div class="question-card" id="card-32">
+  <div class="q-num">Question 32 of 54</div>
+  <div class="q-text">What are the four flight fundamentals that are involved in maneuvering an aircraft?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(32,'A','C')"><span class="opt-label">A.</span> Aircraft power, pitch, bank, and trim.</button>
+    <button class="option-btn" onclick="answer(32,'B','C')"><span class="opt-label">B.</span> Starting, taxiing, takeoff, and landing.</button>
+    <button class="option-btn" onclick="answer(32,'C','C')"><span class="opt-label">C.</span> Straight-and-level flight, turns, climbs, and descents.</button>
+  </div>
+  <div class="feedback" id="fb-32"></div>
+</div>
+
+<!-- Q33 -->
+<div class="question-card" id="card-33">
+  <div class="q-num">Question 33 of 54</div>
+  <div class="q-text">In what flight conditions are torque effects more pronounced in a single-engine airplane?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(33,'A','A')"><span class="opt-label">A.</span> Low airspeed, high power, high angle of attack.</button>
+    <button class="option-btn" onclick="answer(33,'B','A')"><span class="opt-label">B.</span> Low airspeed, low power, low angle of attack.</button>
+    <button class="option-btn" onclick="answer(33,'C','A')"><span class="opt-label">C.</span> High airspeed, high power, high angle of attack.</button>
+  </div>
+  <div class="feedback" id="fb-33"></div>
+</div>
+
+<!-- Q34 -->
+<div class="question-card" id="card-34">
+  <div class="q-num">Question 34 of 54</div>
+  <div class="q-text">The left-turning tendency of an airplane caused by P-factor is the result of the</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(34,'A','B')"><span class="opt-label">A.</span> clockwise rotation of the engine and the propeller turning the airplane counter-clockwise.</button>
+    <button class="option-btn" onclick="answer(34,'B','B')"><span class="opt-label">B.</span> propeller blade descending on the right, producing more thrust than the ascending blade on the left.</button>
+    <button class="option-btn" onclick="answer(34,'C','B')"><span class="opt-label">C.</span> gyroscopic forces applied to the rotating propeller blades acting 90° in advance of the point the force was applied.</button>
+  </div>
+  <div class="feedback" id="fb-34"></div>
+</div>
+
+<!-- Q35 -->
+<div class="question-card" id="card-35">
+  <div class="q-num">Question 35 of 54</div>
+  <div class="q-text">When does P-factor cause the airplane to yaw to the left?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(35,'A','B')"><span class="opt-label">A.</span> When at low angles of attack.</button>
+    <button class="option-btn" onclick="answer(35,'B','B')"><span class="opt-label">B.</span> When at high angles of attack.</button>
+    <button class="option-btn" onclick="answer(35,'C','B')"><span class="opt-label">C.</span> When at high airspeeds.</button>
+  </div>
+  <div class="feedback" id="fb-35"></div>
+</div>
+
+<!-- Q36 -->
+<div class="question-card" id="card-36">
+  <div class="q-num">Question 36 of 54</div>
+  <div class="q-text">Which is true about your approach after an engine failure?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(36,'A','B')"><span class="opt-label">A.</span> Flying upwind increases glide distance and flying downwind decreases glide distance.</button>
+    <button class="option-btn" onclick="answer(36,'B','B')"><span class="opt-label">B.</span> A stabilized approach at best glide speed provides the least drag and maximum gliding distance.</button>
+    <button class="option-btn" onclick="answer(36,'C','B')"><span class="opt-label">C.</span> Flying at minimum sink speed provides the same gliding distance as flying at best glide speed.</button>
+  </div>
+  <div class="feedback" id="fb-36"></div>
+</div>
+
+<!-- Q37 -->
+<div class="question-card" id="card-37">
+  <div class="q-num">Question 37 of 54</div>
+  <div class="q-text">When executing an emergency approach to land in a single-engine airplane, it is important to maintain a constant glide speed because variations in glide speed will</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(37,'A','C')"><span class="opt-label">A.</span> increase the chances of shock cooling the engine.</button>
+    <button class="option-btn" onclick="answer(37,'B','C')"><span class="opt-label">B.</span> assure the proper descent angle is maintained until entering the flare.</button>
+    <button class="option-btn" onclick="answer(37,'C','C')"><span class="opt-label">C.</span> nullify all attempts at accuracy in judgment of gliding distance and landing spot.</button>
+  </div>
+  <div class="feedback" id="fb-37"></div>
+</div>
+
+<!-- Q38 -->
+<div class="question-card" id="card-38">
+  <div class="q-num">Question 38 of 54</div>
+  <div class="q-text">(Refer to Figure 2.) If an airplane weighs 2,300 pounds, what approximate weight would the airplane structure be required to support during a 60° banked turn while maintaining altitude?</div>
+  <div class="fig-note">📊 Refers to Figure 2 — Load Factor vs. Angle of Bank chart. At 60° bank, load factor = 2.0</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(38,'A','C')"><span class="opt-label">A.</span> 2,300 pounds.</button>
+    <button class="option-btn" onclick="answer(38,'B','C')"><span class="opt-label">B.</span> 3,400 pounds.</button>
+    <button class="option-btn" onclick="answer(38,'C','C')"><span class="opt-label">C.</span> 4,600 pounds.</button>
+  </div>
+  <div class="feedback" id="fb-38"></div>
+</div>
+
+<!-- Q39 -->
+<div class="question-card" id="card-39">
+  <div class="q-num">Question 39 of 54</div>
+  <div class="q-text">(Refer to Figure 2.) If an airplane weighs 3,300 pounds, what approximate weight would the airplane structure be required to support during a 30° banked turn while maintaining altitude?</div>
+  <div class="fig-note">📊 Refers to Figure 2 — Load Factor vs. Angle of Bank chart. At 30° bank, load factor ≈ 1.154</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(39,'A','C')"><span class="opt-label">A.</span> 1,200 pounds.</button>
+    <button class="option-btn" onclick="answer(39,'B','C')"><span class="opt-label">B.</span> 3,100 pounds.</button>
+    <button class="option-btn" onclick="answer(39,'C','C')"><span class="opt-label">C.</span> 3,800 pounds.</button>
+  </div>
+  <div class="feedback" id="fb-39"></div>
+</div>
+
+<!-- Q40 -->
+<div class="question-card" id="card-40">
+  <div class="q-num">Question 40 of 54</div>
+  <div class="q-text">(Refer to Figure 2.) If an airplane weighs 4,500 pounds, what approximate weight would the airplane structure be required to support during a 45° banked turn while maintaining altitude?</div>
+  <div class="fig-note">📊 Refers to Figure 2 — Load Factor vs. Angle of Bank chart. At 45° bank, load factor ≈ 1.414</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(40,'A','B')"><span class="opt-label">A.</span> 4,500 pounds.</button>
+    <button class="option-btn" onclick="answer(40,'B','B')"><span class="opt-label">B.</span> 6,400 pounds.</button>
+    <button class="option-btn" onclick="answer(40,'C','B')"><span class="opt-label">C.</span> 7,200 pounds.</button>
+  </div>
+  <div class="feedback" id="fb-40"></div>
+</div>
+
+<!-- Q41 -->
+<div class="question-card" id="card-41">
+  <div class="q-num">Question 41 of 54</div>
+  <div class="q-text">The amount of excess load that can be imposed on the wing of an airplane depends upon the</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(41,'A','B')"><span class="opt-label">A.</span> position of the CG.</button>
+    <button class="option-btn" onclick="answer(41,'B','B')"><span class="opt-label">B.</span> speed of the airplane.</button>
+    <button class="option-btn" onclick="answer(41,'C','B')"><span class="opt-label">C.</span> abruptness at which the load is applied.</button>
+  </div>
+  <div class="feedback" id="fb-41"></div>
+</div>
+
+<!-- Q42 -->
+<div class="question-card" id="card-42">
+  <div class="q-num">Question 42 of 54</div>
+  <div class="q-text">Which basic flight maneuver increases the load factor on an airplane as compared to straight-and-level flight?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(42,'A','B')"><span class="opt-label">A.</span> Climbs.</button>
+    <button class="option-btn" onclick="answer(42,'B','B')"><span class="opt-label">B.</span> Turns.</button>
+    <button class="option-btn" onclick="answer(42,'C','B')"><span class="opt-label">C.</span> Stalls.</button>
+  </div>
+  <div class="feedback" id="fb-42"></div>
+</div>
+
+<!-- Q43 -->
+<div class="question-card" id="card-43">
+  <div class="q-num">Question 43 of 54</div>
+  <div class="q-text">What force makes an airplane turn?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(43,'A','A')"><span class="opt-label">A.</span> The horizontal component of lift.</button>
+    <button class="option-btn" onclick="answer(43,'B','A')"><span class="opt-label">B.</span> The vertical component of lift.</button>
+    <button class="option-btn" onclick="answer(43,'C','A')"><span class="opt-label">C.</span> Centrifugal force.</button>
+  </div>
+  <div class="feedback" id="fb-43"></div>
+</div>
+
+<!-- Q44 -->
+<div class="question-card" id="card-44">
+  <div class="q-num">Question 44 of 54</div>
+  <div class="q-text">When practicing a steep turn during private pilot training, you should normally</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(44,'A','B')"><span class="opt-label">A.</span> Maintain a 30 degree bank angle.</button>
+    <button class="option-btn" onclick="answer(44,'B','B')"><span class="opt-label">B.</span> Increase the angle of attack to maintain altitude.</button>
+    <button class="option-btn" onclick="answer(44,'C','B')"><span class="opt-label">C.</span> Decrease the power to maintain altitude.</button>
+  </div>
+  <div class="feedback" id="fb-44"></div>
+</div>
+
+<!-- Q45 -->
+<div class="question-card" id="card-45">
+  <div class="q-num">Question 45 of 54</div>
+  <div class="q-text">What is the cause of overbanking tendency during a turn?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(45,'A','A')"><span class="opt-label">A.</span> Additional lift on the outside, or raised, wing.</button>
+    <button class="option-btn" onclick="answer(45,'B','A')"><span class="opt-label">B.</span> Uncoordinated flight.</button>
+    <button class="option-btn" onclick="answer(45,'C','A')"><span class="opt-label">C.</span> Spiraling slipstream.</button>
+  </div>
+  <div class="feedback" id="fb-45"></div>
+</div>
+
+<!-- Q46 -->
+<div class="question-card" id="card-46">
+  <div class="q-num">Question 46 of 54</div>
+  <div class="q-text">Which is correct with respect to rate and radius of turn for an airplane flown in a coordinated turn at a constant altitude?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(46,'A','A')"><span class="opt-label">A.</span> For a specific angle of bank and airspeed, the rate and radius of turn will not vary.</button>
+    <button class="option-btn" onclick="answer(46,'B','A')"><span class="opt-label">B.</span> To maintain a steady rate of turn, the angle of bank must be increased as the airspeed is decreased.</button>
+    <button class="option-btn" onclick="answer(46,'C','A')"><span class="opt-label">C.</span> The faster the true airspeed, the faster the rate and larger the radius of turn regardless of the angle of bank.</button>
+  </div>
+  <div class="feedback" id="fb-46"></div>
+</div>
+
+<!-- Q47 -->
+<div class="question-card" id="card-47">
+  <div class="q-num">Question 47 of 54</div>
+  <div class="q-text">To increase the rate of turn and at the same time decrease the radius, you should</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(47,'A','C')"><span class="opt-label">A.</span> increase the bank and decrease airspeed.</button>
+    <button class="option-btn" onclick="answer(47,'B','C')"><span class="opt-label">B.</span> increase the bank and increase airspeed.</button>
+    <button class="option-btn" onclick="answer(47,'C','C')"><span class="opt-label">C.</span> maintain the bank and decrease airspeed.</button>
+  </div>
+  <div class="feedback" id="fb-47"></div>
+</div>
+
+<!-- Q48 -->
+<div class="question-card" id="card-48">
+  <div class="q-num">Question 48 of 54</div>
+  <div class="q-text">If the airspeed is decreased from 98 knots to 85 knots during a coordinated level 45° banked turn, the load factor will</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(48,'A','A')"><span class="opt-label">A.</span> Remain the same, but the radius of turn will decrease.</button>
+    <button class="option-btn" onclick="answer(48,'B','A')"><span class="opt-label">B.</span> Decrease, and the rate of turn will decrease.</button>
+    <button class="option-btn" onclick="answer(48,'C','A')"><span class="opt-label">C.</span> Remain the same, but the radius of turn will increase.</button>
+  </div>
+  <div class="feedback" id="fb-48"></div>
+</div>
+
+<!-- Q49 -->
+<div class="question-card" id="card-49">
+  <div class="q-num">Question 49 of 54</div>
+  <div class="q-text">During an approach to a stall, an increased load factor causes the airplane to</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(49,'A','A')"><span class="opt-label">A.</span> stall at a higher airspeed.</button>
+    <button class="option-btn" onclick="answer(49,'B','A')"><span class="opt-label">B.</span> have a tendency to spin.</button>
+    <button class="option-btn" onclick="answer(49,'C','A')"><span class="opt-label">C.</span> be more difficult to control.</button>
+  </div>
+  <div class="feedback" id="fb-49"></div>
+</div>
+
+<!-- Q50 -->
+<div class="question-card" id="card-50">
+  <div class="q-num">Question 50 of 54</div>
+  <div class="q-text">Which is a situation that could lead to an inadvertent accelerated stall?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(50,'A','A')"><span class="opt-label">A.</span> Improperly performing a steep turn.</button>
+    <button class="option-btn" onclick="answer(50,'B','A')"><span class="opt-label">B.</span> Leveling off too slowly from a steep descent.</button>
+    <button class="option-btn" onclick="answer(50,'C','A')"><span class="opt-label">C.</span> Flying at too slow of an airspeed on final approach.</button>
+  </div>
+  <div class="feedback" id="fb-50"></div>
+</div>
+
+<!-- Q51 -->
+<div class="question-card" id="card-51">
+  <div class="q-num">Question 51 of 54</div>
+  <div class="q-text">At any given time, the energy state of the airplane is determined by the amount and distribution of energy stored as</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(51,'A','C')"><span class="opt-label">A.</span> thrust and drag.</button>
+    <button class="option-btn" onclick="answer(51,'B','C')"><span class="opt-label">B.</span> fuel and combustion.</button>
+    <button class="option-btn" onclick="answer(51,'C','C')"><span class="opt-label">C.</span> altitude and airspeed.</button>
+  </div>
+  <div class="feedback" id="fb-51"></div>
+</div>
+
+<!-- Q52 -->
+<div class="question-card" id="card-52">
+  <div class="q-num">Question 52 of 54</div>
+  <div class="q-text">How does an airplane gain and lose energy?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(52,'A','B')"><span class="opt-label">A.</span> The airplane gains energy from heat and loses energy to ambient temperature.</button>
+    <button class="option-btn" onclick="answer(52,'B','B')"><span class="opt-label">B.</span> The airplane gains energy from engine thrust and loses energy to aerodynamic drag.</button>
+    <button class="option-btn" onclick="answer(52,'C','B')"><span class="opt-label">C.</span> The airplane gains energy from lift and loses energy from aerodynamic drag.</button>
+  </div>
+  <div class="feedback" id="fb-52"></div>
+</div>
+
+<!-- Q53 -->
+<div class="question-card" id="card-53">
+  <div class="q-num">Question 53 of 54</div>
+  <div class="q-text">Which is true regarding energy management?</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(53,'A','B')"><span class="opt-label">A.</span> The total mechanical energy of an airplane in flight is the sum of its potential energy from airspeed, and kinetic energy from altitude.</button>
+    <button class="option-btn" onclick="answer(53,'B','B')"><span class="opt-label">B.</span> An airplane that is low and slow on final approach is an example of a total energy error.</button>
+    <button class="option-btn" onclick="answer(53,'C','B')"><span class="opt-label">C.</span> An airplane that is high and slow on final approach is an example of a total energy error.</button>
+  </div>
+  <div class="feedback" id="fb-53"></div>
+</div>
+
+<!-- Q54 -->
+<div class="question-card" id="card-54">
+  <div class="q-num">Question 54 of 54</div>
+  <div class="q-text">If you are flying "on the back side of the power curve"</div>
+  <div class="options">
+    <button class="option-btn" onclick="answer(54,'A','C')"><span class="opt-label">A.</span> the airplane is at a low angle of attack and a low airspeed.</button>
+    <button class="option-btn" onclick="answer(54,'B','C')"><span class="opt-label">B.</span> a great amount of power is required to overcome parasite drag.</button>
+    <button class="option-btn" onclick="answer(54,'C','C')"><span class="opt-label">C.</span> any reduction in airspeed requires an increase in power to maintain level flight.</button>
+  </div>
+  <div class="feedback" id="fb-54"></div>
+</div>
+
+<div id="final-banner">
+  <h2>Quiz Complete!</h2>
+  <div class="grade" id="final-score">–</div>
+  <p id="final-msg"></p>
+</div>
+
+</main>
+
+<script>
+const TOTAL = 54;
+let correctCount = 0;
+let wrongCount   = 0;
+let answeredCount = 0;
+const answered = {};
+
+const explanations = {
+  1:  "Lift (upward), Weight (downward gravity), Thrust (forward), and Drag (retarding) are the four forces.",
+  2:  "In unaccelerated (straight-and-level) flight the forces balance: lift = weight, thrust = drag.",
+  3:  "In straight-and-level unaccelerated flight: Lift = Weight and Thrust = Drag.",
+  4:  "Bernoulli's principle: as velocity of a fluid increases, its pressure decreases — faster airflow over the curved top surface creates lower pressure (lift).",
+  5:  "The angle between the chord line and the relative wind is the angle of attack.",
+  6:  "Angle of attack = angle between the chord line of the wing and the relative wind.",
+  7:  "The angle between the chord line of an airfoil and the relative wind is the angle of attack. Angle of incidence is measured from the longitudinal axis.",
+  8:  "Flaps increase both lift and drag, enabling a steeper descent angle without increasing airspeed.",
+  9:  "Flaps allow steeper approaches without increasing airspeed by increasing both lift and drag.",
+  10: "An airplane always stalls at its critical angle of attack regardless of weight, airspeed, or flight attitude.",
+  11: "Ground effect is the interference of the Earth's surface with airflow patterns around an airplane — it reduces induced drag.",
+  12: "Ground effect becomes noticeable (and floating occurs) when the airplane is less than one wingspan above the surface.",
+  13: "Ground effect decreases induced drag, so any excess speed during flare causes the airplane to float — especially low-wing airplanes.",
+  14: "Ground effect reduces induced drag enough to let the airplane become airborne before reaching recommended takeoff speed. On landing, it can cause floating.",
+  15: "An inherently stable airplane tends to return to its original attitude after being displaced, requiring less control effort.",
+  16: "As angle of attack changes, the center of pressure moves, altering the air load distribution and thus aerodynamic balance and controllability.",
+  17: "Longitudinal stability depends primarily on CG location relative to the center of lift. CG forward of CL = more stable.",
+  18: "An aft CG makes the airplane tail-heavy and pitch-unstable — difficult to recover from a stall or spin.",
+  19: "At the most aft CG, the horizontal stabilizer is less effective, making the airplane less stable at all speeds.",
+  20: "Reducing power reduces propeller slipstream downwash on the elevator, lowering elevator effectiveness and causing nose-down pitch (except T-tail).",
+  21: "Rearward CG reduces pitch stability, increasing tendency to pitch up — can lead to a stall.",
+  22: "As a stall approaches, reduced airflow makes control surfaces (ailerons, elevator, rudder) less responsive.",
+  23: "Pulling up to stretch a glide when already low increases angle of attack beyond the critical angle, causing a stall.",
+  24: "The first step in stall recovery is to lower the nose to decrease angle of attack and restore airflow over the wings.",
+  25: "Spin recovery requires stopping rotation and reducing angle of attack below CLmax. Procedure varies by airplane — always follow the POH.",
+  26: "An aft CG causes flatter spins (rotation around the CG), where upward flow over the tail renders elevators and rudder ineffective, making recovery impossible.",
+  27: "An airplane must be stalled before it can spin. A spin involves both wings stalled, with one more stalled than the other.",
+  28: "During any spin, both wings are stalled — but the inside (lower) wing is MORE stalled than the outside wing.",
+  29: "The incipient spin (from stall/rotation start until fully developed) occurs in about 4–6 seconds, comprising approximately the first two turns.",
+  30: "Nose-high recovery: Add power → Lower nose → Level wings. Prompt action avoids a stall.",
+  31: "Nose-low recovery: Reduce power → Level wings → Raise nose. Leveling wings first prevents an accelerated stall during pullout.",
+  32: "All controlled flight consists of four fundamental maneuvers: straight-and-level flight, turns, climbs, and descents.",
+  33: "Torque is greatest at low airspeed, high power, and high angle of attack — e.g., during takeoff rotation.",
+  34: "P-factor (asymmetric propeller loading): the descending blade on the right takes a bigger 'bite' and produces more thrust, causing left yaw.",
+  35: "P-factor is most pronounced at high angles of attack (low airspeed, high power) where blade angle difference is greatest.",
+  36: "Best glide speed minimizes total drag and maximizes gliding distance. Flying faster or slower than best glide speed increases drag.",
+  37: "Variations in glide speed nullify attempts to judge gliding distance and the landing spot — maintain constant best glide speed.",
+  38: "At 60° bank, load factor = 2.0. Wing loading = 2,300 × 2 = 4,600 lb.",
+  39: "At 30° bank, load factor ≈ 1.154. Wing loading = 3,300 × 1.154 ≈ 3,808 ≈ 3,800 lb.",
+  40: "At 45° bank, load factor ≈ 1.414. Wing loading = 4,500 × 1.414 ≈ 6,363 ≈ 6,400 lb.",
+  41: "The excess load an airplane can handle depends on speed. At low speed, the airplane stalls before load becomes excessive. At high speed, sudden inputs or gusts can exceed structural limits.",
+  42: "In a level turn, wings must support airplane weight PLUS centrifugal force, increasing load factor above 1G.",
+  43: "The horizontal component of lift (centripetal force) makes the airplane turn. The vertical component opposes gravity.",
+  44: "In a steep turn (45° bank for PPL), decreased vertical lift must be compensated by increasing angle of attack (back pressure).",
+  45: "The outside wing of a turn travels faster, generates more lift, and tends to roll the airplane into a steeper bank (overbanking tendency).",
+  46: "For a given airspeed and bank angle, rate and radius of turn remain constant. Rate varies directly with bank; inversely with airspeed.",
+  47: "Holding bank constant and decreasing airspeed: decreases radius and increases rate. This is the most efficient way to tighten a turn.",
+  48: "Load factor depends only on bank angle. At constant 45° bank, load factor stays the same. Decreased airspeed → smaller radius of turn.",
+  49: "An increased load factor raises stall speed (accelerated stall). Stall speed increases with the square root of the load factor.",
+  50: "Improperly performing a steep turn (abrupt pull-up or over-banking) imposes excessive load factors, causing an accelerated stall.",
+  51: "An airplane's energy state = potential energy (altitude) + kinetic energy (airspeed).",
+  52: "An airplane gains energy from engine thrust and loses energy to aerodynamic drag.",
+  53: "A total energy error means too much or too little total energy — altitude and airspeed deviate in the SAME direction (low+slow or high+fast). Low and slow = total energy error.",
+  54: "On the back side of the power curve, flight requires high angle of attack and high power. Any reduction in airspeed demands MORE power to maintain altitude."
+};
+
+function answer(qNum, chosen, correct) {
+  if (answered[qNum]) return;
+  answered[qNum] = true;
+  answeredCount++;
+
+  const card = document.getElementById('card-' + qNum);
+  const btns = card.querySelectorAll('.option-btn');
+  const fb   = document.getElementById('fb-' + qNum);
+  const isCorrect = (chosen === correct);
+
+  btns.forEach(btn => {
+    btn.classList.add('disabled');
+    btn.onclick = null;
+  });
+
+  // Map letter to index
+  const map = {A:0, B:1, C:2};
+  btns[map[chosen]].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) btns[map[correct]].classList.add('show-correct');
+
+  if (isCorrect) {
+    correctCount++;
+    card.classList.add('answered-correct');
+    fb.innerHTML = '<strong>✅ Correct!</strong>' + explanations[qNum];
+    fb.className = 'feedback show correct-fb';
+  } else {
+    wrongCount++;
+    card.classList.add('answered-wrong');
+    fb.innerHTML = '<strong>❌ Incorrect — correct answer is ' + correct + '.</strong>' + explanations[qNum];
+    fb.className = 'feedback show wrong-fb';
+  }
+
+  updateScore();
+
+  if (answeredCount === TOTAL) showFinal();
+}
+
+function updateScore() {
+  document.getElementById('correct-count').textContent  = correctCount;
+  document.getElementById('wrong-count').textContent    = wrongCount;
+  document.getElementById('answered-count').textContent = answeredCount;
+  document.getElementById('progress-bar').style.width  = (answeredCount / TOTAL * 100) + '%';
+}
+
+function showFinal() {
+  const pct = Math.round(correctCount / TOTAL * 100);
+  let grade, msg;
+  if (pct >= 90)      { grade = '🏆 ' + pct + '%'; msg = 'Outstanding! Ready for the real test.'; }
+  else if (pct >= 70) { grade = '✅ ' + pct + '%'; msg = 'Passing score! Keep reviewing the missed questions.'; }
+  else                { grade = '📚 ' + pct + '%'; msg = 'Keep studying — aim for 70% to pass the FAA test.'; }
+
+  document.getElementById('final-score').textContent = grade;
+  document.getElementById('final-msg').textContent   = correctCount + ' / ' + TOTAL + ' correct. ' + msg;
+  const banner = document.getElementById('final-banner');
+  banner.style.display = 'block';
+  banner.scrollIntoView({behavior:'smooth'});
+}
+
+function resetQuiz() {
+  if (!confirm('Reset the quiz? All answers will be cleared.')) return;
+  correctCount = wrongCount = answeredCount = 0;
+  Object.keys(answered).forEach(k => delete answered[k]);
+  updateScore();
+
+  document.querySelectorAll('.question-card').forEach(card => {
+    card.className = 'question-card';
+  });
+  document.querySelectorAll('.option-btn').forEach(btn => {
+    btn.className = 'option-btn';
+    const qNum = btn.closest('.question-card').id.replace('card-','');
+    const letter = btn.querySelector('.opt-label').textContent.replace('.','').trim();
+    // Re-bind onclick by re-parsing from original — simplest: reload page
+  });
+  document.querySelectorAll('.feedback').forEach(fb => {
+    fb.className = 'feedback';
+    fb.innerHTML = '';
+  });
+  document.getElementById('final-banner').style.display = 'none';
+  // Easiest full reset:
+  location.reload();
+}
+</script>
+</body>
+</html>
