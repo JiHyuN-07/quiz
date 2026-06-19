@@ -69,6 +69,17 @@
   .ans{color:var(--green); font-weight:700;}
   .dot{display:inline-block; width:42px; height:13px; border-radius:3px; vertical-align:middle; margin-right:6px;}
   .callout-quote{font-style:italic; color:#b45309; background:#fdecd2; padding:8px 12px; border-radius:6px; display:inline-block;}
+  .qa{border-top:1px solid var(--line); padding-top:16px; margin-top:16px;}
+  .qa:first-of-type{border-top:none; padding-top:0; margin-top:0;}
+  .qq{font-weight:700; margin:0 0 10px; color:var(--text);}
+  .qq .n{color:var(--accent2); margin-right:4px;}
+  .qc{background:var(--card2); border-radius:6px; padding:10px 14px; margin:0 0 10px; font-size:14.5px; line-height:1.9;}
+  .qa details{margin:0; background:#effaf1; border-color:#c7e8cd;}
+  .qa summary{color:var(--green); font-weight:700; list-style:none;}
+  .qa summary::-webkit-details-marker{display:none;}
+  .qa summary::before{content:"▼ "; font-size:11px;}
+  .qa details[open] summary::before{content:"▲ ";}
+
   footer{text-align:center; color:var(--muted); font-size:13px; padding:20px;}
   @media(max-width:640px){nav.toc ol{columns:1;} .grid3{grid-template-columns:1fr;}}
 </style>
@@ -466,83 +477,106 @@
 <!-- Quiz -->
 <section id="quiz">
   <h2 class="sec">14. ข้อสอบท้ายบท + เฉลย</h2>
-  <p class="en">คำถามภาษาอังกฤษจากท้ายบท Ch5-B จริง • เฉลยอ้างอิง Appendix A (Answers)</p>
+  <p class="en">คำถามภาษาอังกฤษจากท้ายบท Ch5-B จริง • อ่านคำถาม/ช้อยส์ก่อน แล้วกด "ดูเฉลย" • เฉลยอ้างอิง Appendix A</p>
 
-  <details>
-    <summary>1. Select the true statement regarding general aviation aircraft communication radios.</summary>
-    <p>A. The antennas are usually fin shaped and mounted below the cabin.<br>
+  <div class="qa">
+    <p class="qq"><span class="n">1.</span>Select the true statement regarding general aviation aircraft communication radios.</p>
+    <p class="qc">A. The antennas are usually fin shaped and mounted below the cabin.<br>
        B. The radios use a portion of the very high frequency (VHF) range from 118.0 MHz to 135.975 MHz.<br>
        C. The range of transmissions is not limited by obstructions, such as buildings, terrain, or the curvature of the earth.</p>
-    <p class="ans">ตอบ B — เสาติดบนหลังคา (ไม่ใช่ใต้ cabin), และ range จำกัดด้วย line of sight (A, C จึงผิด)</p>
-  </details>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">ตอบ B — เสาติดบนหลังคา (ไม่ใช่ใต้ cabin), และ range จำกัดด้วย line of sight (A, C จึงผิด)</p>
+    </details>
+  </div>
 
-  <details>
-    <summary>2. Using the phonetic alphabet, write out the pronunciation of the following aircraft call sign: Cessna 649SP.</summary>
-    <p class="ans">"Cessna six four niner Sierra Papa"</p>
-  </details>
+  <div class="qa">
+    <p class="qq"><span class="n">2.</span>Using the phonetic alphabet, write out the pronunciation of the following aircraft call sign: Cessna 649SP.</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">"Cessna six four niner Sierra Papa"</p>
+    </details>
+  </div>
 
-  <details>
-    <summary>3. What is the correct method of stating 10,500 feet MSL to ATC?</summary>
-    <p>A. Ten thousand, five hundred<br>
+  <div class="qa">
+    <p class="qq"><span class="n">3.</span>What is the correct method of stating 10,500 feet MSL to ATC?</p>
+    <p class="qc">A. Ten thousand, five hundred<br>
        B. Ten point five<br>
        C. One zero thousand, five hundred</p>
-    <p class="ans">ตอบ C — "One zero thousand, five hundred" (อ่านทีละหลัก ตามเฉลย Appendix A)</p>
-  </details>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">ตอบ C — "One zero thousand, five hundred" (อ่านทีละหลัก ตามเฉลย Appendix A)</p>
+    </details>
+  </div>
 
-  <details>
-    <summary>4. If you depart an airport in the Central Standard Time zone at 1:00 p.m. and arrive in a city on the west coast two hours later, what is your arrival time in Zulu?</summary>
-    <p class="ans"><b>2100Z</b> = 1300 (T/O CST) + 2:00 (time enroute) − 2:00 (time difference CST to PST) + 8:00 (PST to UTC)</p>
-  </details>
+  <div class="qa">
+    <p class="qq"><span class="n">4.</span>If you depart an airport in the Central Standard Time zone at 1:00 p.m. and arrive in a city on the west coast two hours later, what is your arrival time in Zulu?</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans"><b>2100Z</b> = 1300 (T/O CST) + 2:00 (time enroute) − 2:00 (time difference CST to PST) + 8:00 (PST to UTC)</p>
+    </details>
+  </div>
 
-  <details>
-    <summary>5. If you fly from a city in the Pacific Daylight Time zone to a city in the Central Daylight Time zone, and you leave at 0700 PDT with an estimated time enroute of three hours, what is your estimated time of arrival in Zulu?</summary>
-    <p class="ans"><b>1700Z</b> = 0700 (T/O PDT) + 3:00 (time enroute) + 2:00 (time difference PDT to CDT) + 5:00 (CDT to UTC)</p>
-  </details>
+  <div class="qa">
+    <p class="qq"><span class="n">5.</span>If you fly from a city in the Pacific Daylight Time zone to a city in the Central Daylight Time zone, and you leave at 0700 PDT with an estimated time enroute of three hours, what is your estimated time of arrival in Zulu?</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans"><b>1700Z</b> = 0700 (T/O PDT) + 3:00 (time enroute) + 2:00 (time difference PDT to CDT) + 5:00 (CDT to UTC)</p>
+    </details>
+  </div>
 
-  <details>
-    <summary>6. What is the recommended communications procedure for landing at Fillmore County Airport?</summary>
-    <p>A. Listen to AWOS and transmit intentions on 122.9 MHz at 10 miles out and give position reports in the traffic pattern.<br>
+  <div class="qa">
+    <p class="qq"><span class="n">6.</span>What is the recommended communications procedure for landing at Fillmore County Airport?</p>
+    <p class="qc">A. Listen to AWOS and transmit intentions on 122.9 MHz at 10 miles out and give position reports in the traffic pattern.<br>
        B. Contact the tower on 118.55, state your call sign, position, and intention to land. Follow the tower's instructions for entering the traffic pattern.<br>
        C. Contact the UNICOM on 122.9 at 10 miles out, receive wind and runway information, and make position reports when in the traffic pattern.</p>
-    <p class="ans">ตอบ A — สนามไม่มี tower (118.55 คือ AWOS ไม่ใช่ tower), CTAF คือ 122.9; ฟัง AWOS แล้ว self-announce ที่ 10 ไมล์ + รายงานใน pattern</p>
-  </details>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">ตอบ A — สนามไม่มี tower (118.55 คือ AWOS ไม่ใช่ tower), CTAF คือ 122.9; ฟัง AWOS แล้ว self-announce ที่ 10 ไมล์ + รายงานใน pattern</p>
+    </details>
+  </div>
 
-  <details>
-    <summary>7. Select the actions that you would take to comply with the following ATC clearance: "Cessna 52 Sierra, Runway 17, taxi via Bravo, hold short Runway 26 Right."</summary>
-    <p>A. Taxi onto Runway 17.<br>
+  <div class="qa">
+    <p class="qq"><span class="n">7.</span>Select the actions that you would take to comply with the following ATC clearance: "Cessna 52 Sierra, Runway 17, taxi via Bravo, hold short Runway 26 Right."</p>
+    <p class="qc">A. Taxi onto Runway 17.<br>
        B. Taxi along taxiway Bravo toward Runway 17, stopping at the hold line for Runway 26 Right and waiting for ATC clearance to cross Runway 26 Right.<br>
        C. Taxi on Runway 17, crossing taxiway Bravo, to Runway 26 Right, stopping at Runway 26 Right until cleared to proceed by ground control.</p>
-    <p class="ans">ตอบ B — Taxi ตามทาง Bravo ไปทาง Runway 17 หยุดที่ hold line ของ Runway 26R รอ clearance ข้าม (ห้ามขึ้น/ข้าม runway โดยไม่มี clearance)</p>
-  </details>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">ตอบ B — Taxi ตามทาง Bravo ไปทาง Runway 17 หยุดที่ hold line ของ Runway 26R รอ clearance ข้าม (ห้ามขึ้น/ข้าม runway โดยไม่มี clearance)</p>
+    </details>
+  </div>
 
-  <details>
-    <summary>8. After landing at a tower-controlled airport, when should you contact ground control?</summary>
-    <p>A. Prior to turning off the runway.<br>
+  <div class="qa">
+    <p class="qq"><span class="n">8.</span>After landing at a tower-controlled airport, when should you contact ground control?</p>
+    <p class="qc">A. Prior to turning off the runway.<br>
        B. When advised by the tower to do so.<br>
        C. After reaching a taxiway that leads directly to the parking area.</p>
-    <p class="ans">ตอบ B — เมื่อ tower สั่งให้ติดต่อ (อย่าสลับไป ground เอง)</p>
-  </details>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">ตอบ B — เมื่อ tower สั่งให้ติดต่อ (อย่าสลับไป ground เอง)</p>
+    </details>
+  </div>
 
-  <details>
-    <summary>9. Describe the lost communication procedure used for landing at a Class D airspace primary airport.</summary>
-    <p class="ans">Set your transponder code to <b>7600</b>. Remain outside or above the Class D airspace until you have determined the direction and flow of traffic. Then, join the airport traffic pattern and maintain visual contact with the tower to receive light signals. In the daytime, acknowledge light signals by <b>rocking your wings</b>; at night, by <b>blinking your landing or navigation lights</b>.</p>
-  </details>
+  <div class="qa">
+    <p class="qq"><span class="n">9.</span>Describe the lost communication procedure used for landing at a Class D airspace primary airport.</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">Set your transponder code to <b>7600</b>. Remain outside or above the Class D airspace until you have determined the direction and flow of traffic. Then, join the airport traffic pattern and maintain visual contact with the tower to receive light signals. In the daytime, acknowledge light signals by <b>rocking your wings</b>; at night, by <b>blinking your landing or navigation lights</b>.</p>
+    </details>
+  </div>
 
-  <details>
-    <summary>10. What is the meaning of these light signals in flight and on the ground? (Steady green / Flashing green / Steady red / Flashing red / Flashing white / Alternating red and green)</summary>
-    <p class="ans">
-    Steady green: <b>ground</b>=cleared for takeoff / <b>flight</b>=cleared to land<br>
-    Flashing green: ground=cleared to taxi / flight=return for landing<br>
-    Steady red: ground=stop / flight=give way to other aircraft and continue circling<br>
-    Flashing red: ground=taxi clear of landing area (runway) in use / flight=airport unsafe, do not land<br>
-    Flashing white: ground=return to starting point on airport / flight=no assigned meaning<br>
-    Alternating red &amp; green: ground and flight=exercise extreme caution</p>
-  </details>
+  <div class="qa">
+    <p class="qq"><span class="n">10.</span>What is the meaning of these light signals in flight and on the ground?</p>
+    <p class="qc">• Steady green<br>• Flashing green<br>• Steady red<br>• Flashing red<br>• Flashing white<br>• Alternating red and green</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">
+      Steady green: <b>ground</b>=cleared for takeoff / <b>flight</b>=cleared to land<br>
+      Flashing green: ground=cleared to taxi / flight=return for landing<br>
+      Steady red: ground=stop / flight=give way to other aircraft and continue circling<br>
+      Flashing red: ground=taxi clear of landing area (runway) in use / flight=airport unsafe, do not land<br>
+      Flashing white: ground=return to starting point on airport / flight=no assigned meaning<br>
+      Alternating red &amp; green: ground and flight=exercise extreme caution</p>
+    </details>
+  </div>
 
-  <details>
-    <summary>11. How often must the ELT battery be replaced or recharged if the battery is rechargeable?</summary>
-    <p class="ans">เปลี่ยน/ชาร์จแบตเมื่อใช้ไป <b>ครึ่งหนึ่งของอายุใช้งานแบต</b> หรือเมื่อ transmitter ทำงานสะสมเกิน <b>1 ชั่วโมง</b> (one-half of the battery's useful life, or more than one cumulative hour of use)</p>
-  </details>
+  <div class="qa">
+    <p class="qq"><span class="n">11.</span>How often must the ELT battery be replaced or recharged if the battery is rechargeable?</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">เปลี่ยน/ชาร์จแบตเมื่อใช้ไป <b>ครึ่งหนึ่งของอายุใช้งานแบต</b> หรือเมื่อ transmitter ทำงานสะสมเกิน <b>1 ชั่วโมง</b> (one-half of the battery's useful life, or more than one cumulative hour of use)</p>
+    </details>
+  </div>
 </section>
 
 <footer>
