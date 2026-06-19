@@ -3,102 +3,166 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ground School Quizzes — Private Pilot</title>
+<title>Ground School Hub — Private Pilot</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: 'Segoe UI', -apple-system, Arial, sans-serif;
+    font-family: 'Segoe UI', -apple-system, 'Sarabun', Arial, sans-serif;
     background: linear-gradient(160deg, #0f2942 0%, #1a3a5c 50%, #2563a8 100%);
     color: #fff;
     min-height: 100vh;
     padding: 32px 16px 60px;
   }
-  .wrap { max-width: 600px; margin: 0 auto; }
-  header { text-align: center; margin-bottom: 36px; }
-  header .icon { font-size: 3rem; }
-  header h1 { font-size: 1.6rem; font-weight: 700; margin-top: 8px; letter-spacing: 0.02em; }
-  header p { opacity: 0.8; margin-top: 6px; font-size: 0.9rem; }
+  .page { max-width: 1080px; margin: 0 auto; }
 
-  .quiz-list { display: flex; flex-direction: column; gap: 16px; }
-  .quiz-card {
+  header.top { text-align: center; margin-bottom: 36px; }
+  header.top .icon { font-size: 3rem; }
+  header.top h1 { font-size: 1.7rem; font-weight: 700; margin-top: 8px; letter-spacing: 0.02em; }
+  header.top p { opacity: 0.8; margin-top: 6px; font-size: 0.9rem; }
+
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+  }
+  @media (max-width: 760px) {
+    .columns { grid-template-columns: 1fr; }
+  }
+
+  .col {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 16px;
+    padding: 20px 18px;
+  }
+  .col-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 6px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    margin-bottom: 16px;
+  }
+  .col-head .badge {
+    font-size: 1.5rem;
+  }
+  .col-head h2 { font-size: 1.2rem; font-weight: 700; letter-spacing: 0.02em; }
+  .col-head .count { margin-left: auto; font-size: 0.78rem; opacity: 0.7; }
+
+  .card {
     display: flex;
     align-items: center;
-    gap: 16px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.18);
-    border-radius: 14px;
-    padding: 20px 22px;
+    gap: 14px;
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 12px;
+    padding: 15px 16px;
     text-decoration: none;
     color: #fff;
     transition: transform 0.15s, background 0.15s, border-color 0.15s;
-    backdrop-filter: blur(6px);
+    margin-bottom: 12px;
   }
-  .quiz-card:hover, .quiz-card:active {
+  .card:hover, .card:active {
     transform: translateY(-2px);
-    background: rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.16);
     border-color: rgba(255,255,255,0.4);
   }
-  .quiz-card .ch-num {
+  .card .tag {
     flex-shrink: 0;
-    width: 52px; height: 52px;
-    background: linear-gradient(135deg, #4ade80, #22c55e);
-    border-radius: 12px;
+    min-width: 48px; height: 48px; padding: 0 8px;
+    border-radius: 11px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.4rem; font-weight: 800;
-    color: #0f2942;
+    font-size: 0.95rem; font-weight: 800;
+    color: #0f2942; text-align: center; line-height: 1.1;
   }
-  .quiz-card .info { flex: 1; }
-  .quiz-card .info .title { font-size: 1.1rem; font-weight: 700; }
-  .quiz-card .info .sub { font-size: 0.82rem; opacity: 0.75; margin-top: 3px; }
-  .quiz-card .arrow { font-size: 1.4rem; opacity: 0.6; }
+  .summarize .tag { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+  .testguide .tag { background: linear-gradient(135deg, #4ade80, #22c55e); }
+  .card .info { flex: 1; min-width: 0; }
+  .card .info .title { font-size: 1rem; font-weight: 700; }
+  .card .info .sub { font-size: 0.78rem; opacity: 0.72; margin-top: 3px; }
+  .card .arrow { font-size: 1.3rem; opacity: 0.55; }
 
-  footer { text-align: center; margin-top: 40px; font-size: 0.78rem; opacity: 0.6; line-height: 1.6; }
+  .empty-note {
+    font-size: 0.8rem; opacity: 0.55; text-align: center;
+    padding: 14px 8px; font-style: italic;
+  }
+
+  footer { text-align: center; margin-top: 36px; font-size: 0.78rem; opacity: 0.6; line-height: 1.7; }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
+<div class="page">
+  <header class="top">
     <div class="icon">✈️</div>
     <h1>Private Pilot Ground School</h1>
-    <p>FAA Airmen Knowledge Test — Quiz (Jeppesen 2024)</p>
+    <p>Jeppesen 2024 · สรุปบทเรียน &amp; แบบทดสอบ</p>
   </header>
 
-  <div class="quiz-list">
-    <a class="quiz-card" href="chapter2.html">
-      <div class="ch-num">2</div>
-      <div class="info">
-        <div class="title">Airplane Systems</div>
-        <div class="sub">กดตอบ + เฉลยทันที</div>
-      </div>
-      <div class="arrow">›</div>
-    </a>
+  <div class="columns">
 
-    <a class="quiz-card" href="chapter3.html">
-      <div class="ch-num">3</div>
-      <div class="info">
-        <div class="title">Aerodynamic Principles</div>
-        <div class="sub">54 ข้อ · Section A–C · กดตอบ + เฉลยทันที</div>
+    <!-- LEFT: Jeppeson Summarize -->
+    <div class="col summarize">
+      <div class="col-head">
+        <span class="badge">📘</span>
+        <h2>Jeppeson Summarize</h2>
+        <span class="count">สรุปบทเรียน</span>
       </div>
-      <div class="arrow">›</div>
-    </a>
 
-    <a class="quiz-card" href="chapter4.html">
-      <div class="ch-num">4</div>
-      <div class="info">
-        <div class="title">The Flight Environment</div>
-        <div class="sub">Section A–D · กดตอบ + เฉลยทันที</div>
-      </div>
-      <div class="arrow">›</div>
-    </a>
+      <a class="card" href="summary-ch5b.html">
+        <div class="tag">5-B</div>
+        <div class="info">
+          <div class="title">Radio Procedures</div>
+          <div class="sub">ขั้นตอนการใช้วิทยุสื่อสารการบิน + ข้อสอบท้ายบท</div>
+        </div>
+        <div class="arrow">›</div>
+      </a>
 
-    <a class="quiz-card" href="chapter5.html">
-      <div class="ch-num">5</div>
-      <div class="info">
-        <div class="title">Communication and Flight Information</div>
-        <div class="sub">กดตอบ + เฉลยทันที</div>
+      <div class="empty-note">บทอื่น ๆ กำลังทยอยเพิ่ม…</div>
+    </div>
+
+    <!-- RIGHT: Test Guide -->
+    <div class="col testguide">
+      <div class="col-head">
+        <span class="badge">📝</span>
+        <h2>Test Guide</h2>
+        <span class="count">Quiz กดตอบ + เฉลย</span>
       </div>
-      <div class="arrow">›</div>
-    </a>
+
+      <a class="card" href="chapter2.html">
+        <div class="tag">2</div>
+        <div class="info">
+          <div class="title">Airplane Systems</div>
+          <div class="sub">กดตอบ + เฉลยทันที</div>
+        </div>
+        <div class="arrow">›</div>
+      </a>
+
+      <a class="card" href="chapter3.html">
+        <div class="tag">3</div>
+        <div class="info">
+          <div class="title">Aerodynamic Principles</div>
+          <div class="sub">54 ข้อ · Section A–C</div>
+        </div>
+        <div class="arrow">›</div>
+      </a>
+
+      <a class="card" href="chapter4.html">
+        <div class="tag">4</div>
+        <div class="info">
+          <div class="title">The Flight Environment</div>
+          <div class="sub">Section A–D</div>
+        </div>
+        <div class="arrow">›</div>
+      </a>
+
+      <a class="card" href="chapter5.html">
+        <div class="tag">5</div>
+        <div class="info">
+          <div class="title">Communication and Flight Information</div>
+          <div class="sub">59 ข้อ · Section A–C · มีรูปประกอบ</div>
+        </div>
+        <div class="arrow">›</div>
+      </a>
+    </div>
+
   </div>
 
   <footer>

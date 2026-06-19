@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สรุป Ch5-B: Radio Procedures</title>
+<style>
+  :root{
+    --bg:#f4f7fb; --card:#ffffff; --card2:#eef3f9; --accent:#1769c0; --accent2:#d97706;
+    --red:#dc2626; --green:#16a34a; --text:#1f2a37; --muted:#5c6b7a; --line:#d7e0ea;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; font-family:"Segoe UI","Sarabun",Tahoma,sans-serif; background:var(--bg);
+    color:var(--text); line-height:1.7; font-size:16px;
+  }
+  header{
+    background:linear-gradient(135deg,#2c7fd0,#1769c0); padding:34px 24px; border-bottom:3px solid var(--accent2);
+    color:#fff;
+  }
+  header h1{margin:0; font-size:28px; letter-spacing:.5px; color:#fff;}
+  header .sub{color:#ffe9c9; font-size:15px; margin-top:6px;}
+  header .meta{color:#d6e6f7; font-size:13px; margin-top:10px;}
+  .wrap{max-width:980px; margin:0 auto; padding:24px;}
+  nav.toc{
+    background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 22px; margin-bottom:26px;
+  }
+  nav.toc h2{margin:0 0 10px; font-size:16px; color:var(--accent);}
+  nav.toc ol{margin:0; padding-left:20px; columns:2; column-gap:30px;}
+  nav.toc a{color:var(--text); text-decoration:none; font-size:14px;}
+  nav.toc a:hover{color:var(--accent2); text-decoration:underline;}
+  section{
+    background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px 24px; margin-bottom:22px;
+    scroll-margin-top:14px; box-shadow:0 1px 3px rgba(20,40,70,.06);
+  }
+  h2.sec{
+    margin:0 0 16px; font-size:21px; color:var(--accent); border-left:4px solid var(--accent);
+    padding-left:12px; scroll-margin-top:14px;
+  }
+  h3{font-size:17px; color:var(--accent2); margin:18px 0 8px;}
+  p{margin:8px 0;}
+  ul{margin:8px 0; padding-left:22px;}
+  li{margin:5px 0;}
+  .term{color:var(--accent); font-weight:700;}
+  .en{color:var(--muted); font-style:italic;}
+  .key{
+    background:var(--card2); border-left:3px solid var(--accent2); padding:10px 14px; border-radius:6px;
+    margin:12px 0; font-size:14.5px;
+  }
+  .warn{border-left-color:var(--red);}
+  .num{color:var(--accent2); font-weight:700;}
+  table{width:100%; border-collapse:collapse; margin:12px 0; font-size:14px;}
+  th,td{border:1px solid var(--line); padding:7px 10px; text-align:left;}
+  th{background:var(--card2); color:var(--accent);}
+  td.code{font-family:"Consolas",monospace; color:#b45309; letter-spacing:1px;}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:0;}
+  .freq{
+    display:inline-block; background:#fdecd2; color:#b45309; font-family:"Consolas",monospace;
+    padding:1px 7px; border-radius:4px; font-size:13.5px;
+  }
+  .squawk{
+    display:inline-block; background:#fde0e0; color:var(--red); font-family:"Consolas",monospace;
+    padding:1px 7px; border-radius:4px; font-weight:700;
+  }
+  details{background:var(--card2); border:1px solid var(--line); border-radius:8px; padding:10px 14px; margin:10px 0;}
+  summary{cursor:pointer; font-weight:600; color:var(--accent);}
+  details[open] summary{margin-bottom:8px;}
+  .ans{color:var(--green); font-weight:700;}
+  .dot{display:inline-block; width:42px; height:13px; border-radius:3px; vertical-align:middle; margin-right:6px;}
+  .callout-quote{font-style:italic; color:#b45309; background:#fdecd2; padding:8px 12px; border-radius:6px; display:inline-block;}
+  footer{text-align:center; color:var(--muted); font-size:13px; padding:20px;}
+  @media(max-width:640px){nav.toc ol{columns:1;} .grid3{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Chapter 5 — Section B: Radio Procedures</h1>
+  <div class="sub">ขั้นตอนการใช้วิทยุสื่อสารการบิน (Jeppesen Private Pilot)</div>
+  <div class="meta">สรุปเข้มข้น • หน้า 5-22 ถึง 5-41</div>
+</header>
+
+<div class="wrap">
+
+<nav class="toc">
+  <h2>สารบัญ</h2>
+  <ol>
+    <li><a href="#vhf">VHF Communication Equipment</a></li>
+    <li><a href="#using">การใช้วิทยุ &amp; Phonetic Alphabet</a></li>
+    <li><a href="#numbers">การพูดตัวเลขในวิทยุ</a></li>
+    <li><a href="#utc">เวลา UTC / Zulu</a></li>
+    <li><a href="#ctaf">CTAF / UNICOM / MULTICOM / LAA</a></li>
+    <li><a href="#self">CTAF Self-Announce</a></li>
+    <li><a href="#controlled">สนามบินมีหอบังคับการบิน (Controlled)</a></li>
+    <li><a href="#dep">Departure &amp; Taxi &amp; Arrival</a></li>
+    <li><a href="#readback">Reading Back Clearances</a></li>
+    <li><a href="#lostcom">Lost Communication</a></li>
+    <li><a href="#lights">Light Gun Signals</a></li>
+    <li><a href="#emerg">Emergency Procedures &amp; ELT</a></li>
+    <li><a href="#summary">Summary Checklist</a></li>
+    <li><a href="#quiz">ข้อสอบท้ายบท + เฉลย</a></li>
+  </ol>
+</nav>
+
+<!-- VHF -->
+<section id="vhf">
+  <h2 class="sec">1. VHF Communication Equipment</h2>
+  <ul>
+    <li>วิทยุการบินทั่วไปใช้ย่าน <span class="term">Very High Frequency (VHF)</span> ระหว่าง <span class="freq">118.0 – 135.975 MHz</span></li>
+    <li>จัดประเภทตามจำนวนช่อง (channel spacing):
+      <ul>
+        <li><b>360-channel</b> → spacing 50 kHz (.05 MHz) เช่น 118.05, 118.10, 118.15</li>
+        <li><b>720-channel</b> → spacing 25 kHz (.025 MHz) เช่น 118.025, 118.050, 118.075</li>
+      </ul>
+    </li>
+    <li>ต้องใช้ <b>720-channel</b> ขึ้นไปเพื่อรับบริการ ATC เต็มรูปแบบ โดยเฉพาะในเขต terminal ที่จราจรหนาแน่น</li>
+    <li>วิทยุที่รวม transmitter + receiver เรียกว่า <span class="term">Transceiver</span></li>
+  </ul>
+  <h3>ปุ่มควบคุมหลัก</h3>
+  <ul>
+    <li><b>Frequency Selector</b> — หมุน knob นอก/ใน เปลี่ยนความถี่; ดึง knob เพื่อเลือกเศษ .025 MHz</li>
+    <li><b>Standby/Active Button</b> — สลับระหว่างความถี่ active กับ standby (ตั้งความถี่ถัดไปไว้ล่วงหน้า เก็บความถี่เดิมไว้จนแน่ใจว่าไม่ใช้แล้ว)</li>
+    <li><b>Volume &amp; Squelch</b> — หมุนปรับเสียง; เปิด squelch ช่วยเพิ่มระยะรับสัญญาณอ่อน</li>
+  </ul>
+  <div class="key"><b>Antenna &amp; Range:</b> เสา VHF เป็นแบบ bent whip rod หรือ blade ติดบนหลังคา ติดตั้ง 1 เสาต่อ 1 transceiver — สัญญาณ VHF จำกัดด้วย <span class="term">Line of Sight</span> สิ่งกีดขวาง (ตึก ภูเขา ความโค้งโลก) บังสัญญาณได้</div>
+  <h3>ความสัมพันธ์ ระดับสูง ↔ ระยะรับส่ง (Line of Sight)</h3>
+  <table>
+    <tr><th>ระดับสูง (ft AGL)</th><th>ระยะ (n.m.)</th><th>ระดับสูง (ft AGL)</th><th>ระยะ (n.m.)</th></tr>
+    <tr><td>500</td><td>28</td><td>5,000</td><td>87</td></tr>
+    <tr><td>1,000</td><td>39</td><td>10,000</td><td>122</td></tr>
+    <tr><td>1,500</td><td>48</td><td>15,000</td><td>152</td></tr>
+    <tr><td>2,000</td><td>55</td><td>20,000</td><td>174</td></tr>
+    <tr><td>3,000</td><td>69</td><td></td><td></td></tr>
+  </table>
+  <p class="en">→ บินยิ่งสูง ยิ่งรับ-ส่งได้ไกล</p>
+</section>
+
+<!-- Using radio -->
+<section id="using">
+  <h2 class="sec">2. การใช้วิทยุ &amp; Phonetic Alphabet</h2>
+  <ul>
+    <li>พูดอย่างมืออาชีพ — ห้ามใช้ slang / CB jargon / ขั้นตอนผิด เพราะกระทบความปลอดภัย</li>
+    <li>การส่งให้ <b>สั้นที่สุด</b> เพื่อลดความแออัดของความถี่</li>
+    <li>ก่อนกดไมค์ (key the mic): คิดก่อนว่าจะพูดอะไร และฟังว่ามีคนพูดอยู่หรือไม่</li>
+    <li>ถือไมค์ใกล้ปาก พูดน้ำเสียงปกติ — ถ้าไม่ตอบ ลองใหม่; ระวังไมค์ค้างตำแหน่งส่ง (stuck mic) เพราะบล็อกการสื่อสารทั้งความถี่</li>
+  </ul>
+  <h3>Initial Callup — 5 ตัว "W"</h3>
+  <div class="key">
+    <b>1. WHO</b> เรียกใคร (Dubuque Tower) →
+    <b>2. WHO</b> คุณคือใคร (Diamond 505 Juliet Foxtrot) →
+    <b>3. WHERE</b> อยู่ที่ไหน (15 miles west at 3,000) →
+    <b>4. WHAT</b> ขอบริการอะไร (Landing) →
+    <b>5. WITH</b> ได้ ATIS แล้วหรือไม่ (With Oscar)
+  </div>
+  <h3>Phonetic Alphabet (ICAO) + Morse Code</h3>
+  <p>ICAO แนะนำใช้ <b>ภาษาอังกฤษ</b> สำหรับสื่อสาร air/ground สากล และใช้ phonetic alphabet ป้องกันสับสนระหว่างตัวอักษรคล้ายเสียง (B, C, D, E)</p>
+  <table>
+    <tr><th>ตัว</th><th>คำ</th><th>Morse</th><th>ตัว</th><th>คำ</th><th>Morse</th></tr>
+    <tr><td>A</td><td>Alfa</td><td class="code">· —</td><td>N</td><td>November</td><td class="code">— ·</td></tr>
+    <tr><td>B</td><td>Bravo</td><td class="code">— · · ·</td><td>O</td><td>Oscar</td><td class="code">— — —</td></tr>
+    <tr><td>C</td><td>Charlie</td><td class="code">— · — ·</td><td>P</td><td>Papa</td><td class="code">· — — ·</td></tr>
+    <tr><td>D</td><td>Delta</td><td class="code">— · ·</td><td>Q</td><td>Quebec</td><td class="code">— — · —</td></tr>
+    <tr><td>E</td><td>Echo</td><td class="code">·</td><td>R</td><td>Romeo</td><td class="code">· — ·</td></tr>
+    <tr><td>F</td><td>Foxtrot</td><td class="code">· · — ·</td><td>S</td><td>Sierra</td><td class="code">· · ·</td></tr>
+    <tr><td>G</td><td>Golf</td><td class="code">— — ·</td><td>T</td><td>Tango</td><td class="code">—</td></tr>
+    <tr><td>H</td><td>Hotel</td><td class="code">· · · ·</td><td>U</td><td>Uniform</td><td class="code">· · —</td></tr>
+    <tr><td>I</td><td>India</td><td class="code">· ·</td><td>V</td><td>Victor</td><td class="code">· · · —</td></tr>
+    <tr><td>J</td><td>Juliett</td><td class="code">· — — —</td><td>W</td><td>Whiskey</td><td class="code">· — —</td></tr>
+    <tr><td>K</td><td>Kilo</td><td class="code">— · —</td><td>X</td><td>X-ray</td><td class="code">— · · —</td></tr>
+    <tr><td>L</td><td>Lima</td><td class="code">· — · ·</td><td>Y</td><td>Yankee</td><td class="code">— · — —</td></tr>
+    <tr><td>M</td><td>Mike</td><td class="code">— —</td><td>Z</td><td>Zulu</td><td class="code">— — · ·</td></tr>
+  </table>
+  <p class="en">ใช้ฟัง Morse code identifier (รหัส 3 ตัวอักษร) เพื่อยืนยัน navigation facility</p>
+</section>
+
+<!-- Numbers -->
+<section id="numbers">
+  <h2 class="sec">3. การพูดตัวเลขในวิทยุ</h2>
+  <ul>
+    <li>พูดตัวเลขปกติ <b>ยกเว้น 9</b> → พูดว่า <span class="callout-quote">"niner"</span> (กันสับสนกับคำเยอรมัน "nein" = ไม่)</li>
+    <li>ความถี่: จุดทศนิยมพูดว่า <span class="callout-quote">"point"</span></li>
+    <li>Altimeter setting: <b>ตัด</b> จุดทศนิยมออก (พูดเป็นเลขเรียง)</li>
+    <li><span class="term">N-Number</span> (tail number): เครื่องบินจดทะเบียนสหรัฐขึ้นต้นด้วย "N"; ถ้าพูดยี่ห้อ/รุ่นนำหน้า สามารถตัด "N" ทิ้งได้</li>
+  </ul>
+  <table>
+    <tr><th>ประเภท</th><th>ตัวอย่าง</th><th>พูดว่า</th></tr>
+    <tr><td>Runway</td><td>17 L</td><td>"Runway one seven left"</td></tr>
+    <tr><td>Runway</td><td>01</td><td>"Runway one"</td></tr>
+    <tr><td>Heading</td><td>340°</td><td>"Heading three four zero"</td></tr>
+    <tr><td>Altimeter</td><td>29.80</td><td>"two niner eight zero" (ไม่มี point)</td></tr>
+    <tr><td>Airway</td><td>V15</td><td>"Victor fifteen"</td></tr>
+    <tr><td>Airspeed</td><td>120 kt</td><td>"one two zero knots"</td></tr>
+    <tr><td>Altitude</td><td>8,500</td><td>"eight thousand five hundred"</td></tr>
+    <tr><td>Altitude</td><td>12,500</td><td>"one two thousand five hundred"</td></tr>
+    <tr><td>Flight Level</td><td>FL330</td><td>"flight level three three zero"</td></tr>
+    <tr><td>Frequency</td><td>118.9</td><td>"one one eight point niner"</td></tr>
+    <tr><td>N-Number</td><td>N2108E</td><td>"Cessna two one zero eight Echo"</td></tr>
+    <tr><td>N-Number</td><td>N6409P</td><td>"Mooney six four zero niner Papa"</td></tr>
+  </table>
+</section>
+
+<!-- UTC -->
+<section id="utc">
+  <h2 class="sec">4. เวลา UTC / Zulu Time</h2>
+  <ul>
+    <li>การบินใช้ <b>นาฬิกา 24 ชั่วโมง</b> (ไม่มี a.m./p.m.) เช่น 9 a.m. = 0900, 1 p.m. = 1300</li>
+    <li><span class="term">Coordinated Universal Time (UTC)</span> = <span class="term">Zulu Time</span> = เวลาที่เส้นลองจิจูด 0° (Greenwich) — ทั้งโลกใช้มาตรฐานเดียว</li>
+    <li>ในสหรัฐฯ: เวลาท้องถิ่น → Zulu ให้ <b>บวก</b> ชั่วโมง; Zulu → ท้องถิ่นให้ <b>ลบ</b></li>
+  </ul>
+  <table>
+    <tr><th>เขตเวลา (Standard)</th><th>แปลงเป็น UTC (Zulu)</th></tr>
+    <tr><td>Eastern Standard Time (EST)</td><td>+5 ชม.</td></tr>
+    <tr><td>Central Standard Time (CST)</td><td>+6 ชม.</td></tr>
+    <tr><td>Mountain Standard Time (MST)</td><td>+7 ชม.</td></tr>
+    <tr><td>Pacific Standard Time (PST)</td><td>+8 ชม.</td></tr>
+  </table>
+  <div class="key warn"><b>Daylight Saving Time:</b> ลบออก 1 ชั่วโมงจากค่าแปลง ก่อนแปลงเป็น UTC (เช่น PDT = +7 แทน +8)</div>
+  <p class="en">ตัวอย่าง: New York 4:00 p.m. = 1600 → +5 = 2100Z | LA 1:00 p.m. = 1300 → +8 = 2100Z</p>
+</section>
+
+<!-- CTAF -->
+<section id="ctaf">
+  <h2 class="sec">5. CTAF / UNICOM / MULTICOM / LAA</h2>
+  <p><span class="term">Common Traffic Advisory Frequency (CTAF)</span> — ความถี่กลางสำหรับสนามบินที่ <b>ไม่มีหอบังคับการบิน</b> หรือหอปิด; ใช้ broadcast ตำแหน่งและความตั้งใจให้เครื่องอื่นทราบ และเปิดไฟสนาม (pilot-controlled lighting) ได้ หาได้จาก Chart Supplement / charts / EFB</p>
+  <table>
+    <tr><th>ประเภท</th><th>ความถี่</th><th>รายละเอียด</th></tr>
+    <tr><td><b>UNICOM</b></td><td class="code">122.7, 122.725, 122.8, 122.975, 123.0</td><td>สถานี air/ground เอกชน ให้ advisory (ลม/runway ที่ใช้/จราจร) ขอเติมน้ำมันได้; <b>AUNICOM</b> = แบบอัตโนมัติ (อากาศ+advisory+radio check)</td></tr>
+    <tr><td><b>LAA</b></td><td class="code">ปกติ 123.6</td><td>Local Airport Advisory — สนาม uncontrolled ใน <b>Alaska</b> ที่มี FSS ในสนาม; ครอบคลุม 10 statute miles (ให้ลม, runway, altimeter, traffic, NOTAMs, taxi routes)</td></tr>
+    <tr><td><b>MULTICOM</b></td><td class="code">122.9</td><td>ใช้เมื่อสนามไม่มี tower, FSS, หรือ UNICOM — เป็นความถี่ air-to-air</td></tr>
+  </table>
+</section>
+
+<!-- Self announce -->
+<section id="self">
+  <h2 class="sec">6. CTAF Self-Announce Procedure</h2>
+  <ul>
+    <li><span class="term">Self-announce</span> = broadcast ตำแหน่ง/กิจกรรมการบิน/การปฏิบัติภาคพื้นบนความถี่ CTAF</li>
+    <li>ก่อนประกาศ: ฟัง <b>ASOS / AWOS</b> (อากาศอัตโนมัติ) ก่อน เพื่อทราบลม → เลือก runway</li>
+  </ul>
+  <h3>ขาเข้า (Arrival)</h3>
+  <ul>
+    <li>เรียกครั้งแรกเมื่อห่างสนาม <b>10 ไมล์</b></li>
+    <li>รายงานเมื่อเข้า <b>downwind, base, final</b> และเมื่อ <b>ออกจาก runway</b></li>
+  </ul>
+  <h3>ขาออก (Departure)</h3>
+  <ul>
+    <li>Monitor + สื่อสารบน CTAF ตั้งแต่ <b>สตาร์ทเครื่อง → taxi → จนห่าง 10 ไมล์</b></li>
+    <li>ถ้าฝึก maneuver หรือบินผ่านในพื้นที่ที่เครื่องอื่นใช้ระดับสูงเดียวกัน → monitor + ประกาศภายใน 10 ไมล์</li>
+  </ul>
+  <div class="key">💡 <b>ทิป:</b> ทวนชื่อสนามท้ายข้อความเสมอ (เช่น "...Longmont") เพราะสนาม uncontrolled อื่นอาจใช้ CTAF เดียวกันและอยู่ในระยะรับสัญญาณ</div>
+  <details>
+    <summary>ตัวอย่างวิทยุที่สนามมี UNICOM (Longmont, Cessna 50826)</summary>
+    <p><b>ขาเข้า (10 ไมล์):</b> "Longmont UNICOM, Cessna 50826, 10 miles south, descending through 7,500, landing Longmont, request wind and runway information, Longmont."</p>
+    <p><b>เข้า downwind:</b> "Longmont traffic, Cessna 50826 entering downwind for Runway 29, full stop, Longmont."</p>
+    <p><b>ก่อน taxi:</b> "Longmont UNICOM, Cessna 50826, at Corporate Air, taxiing to Runway 26, request wind and traffic information, Longmont."</p>
+    <p><b>ขาออก:</b> "Longmont traffic, Cessna 50826, departing Runway 29, departing the pattern to the south, Longmont."</p>
+  </details>
+</section>
+
+<!-- Controlled -->
+<section id="controlled">
+  <h2 class="sec">7. สนามบินมีหอบังคับการบิน (Controlled Airports)</h2>
+  <ul>
+    <li>Initial callup ควรมี: ชื่อ facility + aircraft ID เต็ม + ประเภทข้อความ/คำขอ (ถ้าสั้น) — เช่น "Great Falls Tower, Cessna 8458 Romeo"</li>
+    <li><span class="term">ATC Clearance</span> = การอนุญาตจาก ATC ให้ดำเนินการภายใต้เงื่อนไขจราจรที่กำหนดในเขต controlled airspace — จุดประสงค์เพื่อ <b>ป้องกันการชน</b></li>
+  </ul>
+  <h3>วลีสำคัญ (Phraseology)</h3>
+  <table>
+    <tr><th>วลี</th><th>ความหมาย</th></tr>
+    <tr><td>"stand by"</td><td>controller จะกลับมาหาเร็วที่สุด</td></tr>
+    <tr><td>"say again"</td><td>ขอให้ทวนข้อความล่าสุด</td></tr>
+    <tr><td>"speak slower"</td><td>ขอให้พูดช้าลง</td></tr>
+    <tr><td>"that is correct"</td><td>ยืนยันว่าได้ยินถูกต้อง</td></tr>
+    <tr><td>"over"</td><td>ส่งจบแล้ว รอการตอบกลับ (ตัดได้ถ้าตอบชัดเจนไม่กำกวม)</td></tr>
+    <tr><td>"roger"</td><td>รับทราบ (พร้อม readback คำสั่ง เช่น "roger, turn right heading 210")</td></tr>
+    <tr><td>"unable"</td><td>ปฏิบัติตามไม่ได้ (เกินขีดความสามารถเครื่อง/ไม่ปลอดภัย/ผิด FAR) → ATC ออก clearance ใหม่</td></tr>
+  </table>
+  <h3>การย่อ Call Sign &amp; Hand-off</h3>
+  <ul>
+    <li>ATC ย่อ call sign ได้โดยใช้ prefix + 3 ตัวท้าย (เช่น Piper 3064 Papa → Piper 64 Papa) — <b>ห้ามย่อก่อนที่ controller ย่อให้</b></li>
+    <li>เปลี่ยนความถี่กับ controller เดิม: "change to my frequency, 123.4" → ตอบย่อ "Cessna 58 Romeo on 123.4"</li>
+    <li>Class B/C อาจถูก hand-off ผ่านหลาย controller — readback ความถี่ใหม่ทุกครั้ง เช่น "roger, contact tower 118.3"</li>
+  </ul>
+  <div class="key">🎓 <b>Student Pilot:</b> แจ้งว่าเป็นนักบินฝึกได้ เช่น "Centennial Tower, Cessna 8458 Romeo, student pilot" — ไม่บังคับ แต่ช่วยให้ controller ให้ความช่วยเหลือพิเศษ (ใช้ได้ทั้งสนาม controlled และ self-announce บน CTAF)</div>
+  <details>
+    <summary>Formation Flight (กล่องเสริม)</summary>
+    <p>ฝูงบินมี lead + wingmen บินใกล้กันแบบ coordinated; ใช้ความถี่ air-to-air <span class="freq">122.75</span>; lead รับผิดชอบ traffic avoidance, navigation และสื่อสาร ATC — initial callup เช่น "Centennial Tower, Cessna 6319 Lima, flight of two"</p>
+  </details>
+</section>
+
+<!-- Departure/Taxi/Arrival -->
+<section id="dep">
+  <h2 class="sec">8. Departure / Taxi / Control Tower / Arrival</h2>
+  <h3>Departure Procedures (ลำดับ Class C/B)</h3>
+  <ol>
+    <li>ฟัง <b>ATIS</b></li>
+    <li>ติดต่อ <b>Clearance Delivery</b> ก่อน taxi → แจ้ง N-number, ประเภทเครื่อง, ว่าเป็น VFR, ได้ ATIS แล้ว, และปลายทาง/ทิศทาง → รับ <b>transponder code</b> + departure instructions (Class B มักได้ heading + altitude หลัง takeoff)</li>
+    <li>ติดต่อ <b>Ground Control</b> → รับ clearance taxi ไป active runway</li>
+  </ol>
+  <div class="key warn"><b>Movement Area</b> = runways + taxiways (ไม่รวม ramp/parking) — ต้องมี clearance จึงเข้าได้</div>
+  <h3>Taxi Clearances</h3>
+  <ul>
+    <li><b>"hold short"</b> → ต้อง <b>readback</b> คำสั่ง, หยุดที่ hold line, ตรวจจราจร, ไปต่อเมื่อได้ clearance</li>
+    <li><span class="term">Progressive Taxi</span> — ขอให้ controller บอก taxi เป็นขั้นๆ (สนามที่ไม่คุ้น)</li>
+    <li>ATC ออก clearance <b>ชัดเจนทุกครั้ง</b> สำหรับการข้าม runway — ห้ามข้าม runway โดยไม่มี clearance; taxi clearance ไม่อนุญาตให้เข้า/ข้าม departure runway</li>
+  </ul>
+  <details>
+    <summary>เช็กลิสต์สื่อสารกับ Ground &amp; เลี่ยง Runway Incursion</summary>
+    <ul>
+      <li>ดู airport diagram โดยเฉพาะจุด hot spot</li>
+      <li>แจ้งตำแหน่งเมื่อติดต่อ ground ขอ taxi</li>
+      <li>ไม่แน่ใจว่าอยู่ใน movement area → ติดต่อ ground ก่อน taxi</li>
+      <li>ไม่แน่ใจว่าได้ clearance ข้าม runway → หยุดก่อนเข้า แล้วถาม</li>
+      <li>เห็นจราจรขัดแย้งระหว่าง taxi → หยุดแล้วถาม controller</li>
+      <li>ไม่คุ้นสนาม/เส้นทาง → ขอ progressive taxi</li>
+    </ul>
+  </details>
+  <h3>Control Tower (Takeoff)</h3>
+  <ul>
+    <li>หลัง Before-Takeoff checklist → สลับไป tower frequency รับ takeoff clearance; ตรวจจราจรก่อนเข้า runway</li>
+    <li><b>"line up and wait"</b> = เข้าตำแหน่งบน runway รอ (เครื่องอื่นกำลังพ้น runway) แล้วจะได้ takeoff clearance</li>
+  </ul>
+  <h3>Departure Control</h3>
+  <ul>
+    <li>หลัง takeoff ติดต่อ departure control → controller แจ้ง <span class="term">"radar contact"</span> = ระบุเครื่องบนจอด้วย ATC surveillance แล้ว และจะให้ <b>flight following</b> จนกว่าจะ terminate</li>
+    <li>Flight following = ATC ดูความคืบหน้าให้ ขณะที่คุณ navigate เอง; ถ้าขอ enroute flight following → hand off ไป <b>ARTCC</b></li>
+  </ul>
+  <h3>Arrival Procedures</h3>
+  <ul>
+    <li>ฟัง ATIS → ติดต่อ <b>Approach Control</b> ขณะยัง <b>นอก</b> Class B/C (Class B ควรแจ้ง call sign รอตอบก่อนค่อยให้ตำแหน่ง+คำขอ)</li>
+    <li>เข้า Class B ได้เฉพาะเมื่อ controller พูด <span class="callout-quote">"cleared to enter Class B"</span></li>
+    <li>ความถี่ approach อยู่บน sectional + ATIS; terminal ใหญ่มีหลายความถี่ตาม sector</li>
+    <li><b>"have numbers"</b> = นักบินได้แค่ ลม/runway/altimeter แต่ <b>ยังไม่ได้ฟัง ATIS</b></li>
+    <li>ตอบ time-critical request ทันที; ทำตามไม่ได้ → "unable"</li>
+  </ul>
+  <h3>Traffic Pattern &amp; หลังลงจอด</h3>
+  <ul>
+    <li>ฝึก landing: แจ้ง "remaining in the pattern"; controller อาจให้ "make closed traffic"; รอบสุดท้ายขอ "full-stop"</li>
+    <li>หลังลงจอด <b>ห้ามสลับไป ground control จนกว่า tower สั่ง</b> (tower อาจสั่ง hold short runway/taxiway อื่น)</li>
+    <li>ระวังเป็นพิเศษบน taxiway ระหว่าง parallel runways (บางสนามอยู่ใต้การควบคุมของ tower); ถ้ารอนานเกินควรยังไม่ได้สั่ง taxi/contact ground → ถาม tower</li>
+  </ul>
+</section>
+
+<!-- Readback -->
+<section id="readback">
+  <h2 class="sec">9. Reading Back Clearances</h2>
+  <ul>
+    <li>เตรียมจดและ readback clearance; ใช้ airport diagram ช่วยจำ taxi clearance</li>
+    <li>ต้อง readback: <b>runway assignment, ส่วนสำคัญของเส้นทาง, hold short instructions, clearance เข้า/ข้าม runway</b></li>
+    <li>ถ้าลืม readback hold short → controller <b>ต้องร้องขอ</b> readback จากคุณ</li>
+    <li>ระหว่างบิน: ทวน altitude/heading assignment + ตั้ง bug บน heading indicator และ altimeter</li>
+    <li>ใกล้สนาม: readback คำสั่ง pattern entry + runway → ใช้ chart + compass card นึกภาพทิศทาง runway และการเข้า pattern</li>
+  </ul>
+</section>
+
+<!-- Lost com -->
+<section id="lostcom">
+  <h2 class="sec">10. Lost Communication Procedures</h2>
+  <p>ต้องสร้าง two-way comm กับ tower ก่อนเข้า Class D — ถ้าวิทยุเสีย ยังลงสนาม controlled ได้ด้วย lost comm procedure</p>
+  <div class="key warn">📡 วิทยุเสีย → ตั้ง transponder <span class="squawk">7600</span> (ในเขต radar coverage จะเตือน ATC)</div>
+  <h3>Troubleshoot ก่อน (ถ้าติดต่อ ATC ไม่ได้)</h3>
+  <ul>
+    <li>เช็กว่าใช้ความถี่ถูก; ลองความถี่อื่นของ facility นั้น</li>
+    <li>เช็ก volume และ squelch</li>
+    <li>เช็กตำแหน่ง switch บน audio control panel</li>
+    <li>เช็กว่าปลั๊กไมค์/หูฟัง (หรือ handheld mic) เสียบแน่น</li>
+    <li>ลอง handheld mic (ถ้าใช้ headset)</li>
+    <li>มีวิทยุ 2 ตัว → ลอง transceiver สำรอง</li>
+    <li>ลองขอความช่วยเหลือจาก ATC facility สุดท้ายที่ติดต่อได้ (ถ้ายังในระยะ)</li>
+  </ul>
+  <h3>ถ้ายังเสียทั้ง TX และ RX</h3>
+  <ul>
+    <li>อยู่ <b>นอก/เหนือ</b> Class D จนกว่าจะรู้ทิศทางและ flow ของจราจร → เข้า pattern + คอยดู <b>light signals</b> จาก tower</li>
+    <li>ตอบรับสัญญาณ: <b>กลางวัน</b> โยกปีก (rock wings); <b>กลางคืน</b> กระพริบไฟ landing/navigation</li>
+  </ul>
+  <h3>เสียเฉพาะ Receiver (รับไม่ได้ แต่ส่งได้)</h3>
+  <ul>
+    <li>อยู่นอก/เหนือ Class D จนรู้ flow → แจ้ง tower (ประเภทเครื่อง, ตำแหน่ง, ระดับสูง, ตั้งใจลง, ขอควบคุมด้วย light signal)</li>
+    <li>ห่างสนาม 3–5 ไมล์: แจ้งตำแหน่งและเข้า pattern; ดู light signal; ถ้าบินครบ pattern ให้ self-announce ตอน downwind และ/หรือ turning base</li>
+  </ul>
+  <h3>เสียเฉพาะ Transmitter (ส่งไม่ได้ แต่รับได้)</h3>
+  <ul>
+    <li>ทำเหมือนกรณี receiver เสีย แต่ <b>ไม่ต้อง self-announce</b>; monitor ความถี่สนามฟังข้อมูล landing/traffic และมองหา light signal</li>
+  </ul>
+</section>
+
+<!-- Light signals -->
+<section id="lights">
+  <h2 class="sec">11. Light Gun Signals (สัญญาณไฟจากหอ)</h2>
+  <table>
+    <tr><th>สัญญาณ</th><th>บนพื้น (On Ground)</th><th>ในอากาศ (In Flight)</th></tr>
+    <tr><td><span class="dot" style="background:#4ade80"></span>Steady Green</td><td>Cleared for takeoff</td><td>Cleared to land</td></tr>
+    <tr><td><span class="dot" style="background:repeating-linear-gradient(90deg,#4ade80 0 8px,#c9d4e0 8px 12px)"></span>Flashing Green</td><td>Cleared to taxi</td><td>Return for landing (ตามด้วย steady green เมื่อถึงเวลา)</td></tr>
+    <tr><td><span class="dot" style="background:#ff5c5c"></span>Steady Red</td><td>Stop</td><td>Give way to other aircraft and continue circling</td></tr>
+    <tr><td><span class="dot" style="background:repeating-linear-gradient(90deg,#ff5c5c 0 8px,#c9d4e0 8px 12px)"></span>Flashing Red</td><td>Taxi clear of landing area (runway) in use</td><td>Airport unsafe — do not land</td></tr>
+    <tr><td><span class="dot" style="background:repeating-linear-gradient(90deg,#fff 0 8px,#c9d4e0 8px 12px)"></span>Flashing White</td><td>Return to starting point on airport</td><td>(ไม่มีความหมายกำหนด)</td></tr>
+    <tr><td><span class="dot" style="background:repeating-linear-gradient(90deg,#ff5c5c 0 6px,#4ade80 6px 12px)"></span>Alternating Red &amp; Green</td><td>Exercise extreme caution</td><td>Exercise extreme caution</td></tr>
+  </table>
+  <details>
+    <summary>กรณีศึกษา: Avianca Flight 052 (1990)</summary>
+    <p>เครื่อง Avianca ตกใกล้ Long Island, NY เพราะน้ำมันหมด เสียชีวิต 73 ราย NTSB สรุปสาเหตุรวมถึง <b>ลูกเรือไม่สื่อสารสถานการณ์น้ำมันฉุกเฉินให้ ATC ทราบ</b> ก่อนน้ำมันหมด — ถูกสั่งเข้า holding 3 ครั้งที่ JFK บอกแค่ "need priority" แต่ยังบอกว่ารออีก 5 นาทีได้ บทเรียน: <b>อย่าให้ความกลัว/ศักดิ์ศรีขวางการแจ้ง emergency กับ ATC</b></p>
+  </details>
+</section>
+
+<!-- Emergency -->
+<section id="emerg">
+  <h2 class="sec">12. Emergency Procedures &amp; ELT</h2>
+  <h3>Distress vs Urgency</h3>
+  <ul>
+    <li><span class="term">Distress</span> — ถูกคุกคามด้วยอันตรายร้ายแรง/ใกล้ตัว ต้องการความช่วยเหลือทันที (ไฟไหม้, เครื่องยนต์ขัดข้อง, โครงสร้างเสียหาย)</li>
+    <li><span class="term">Urgency</span> — เมื่อเริ่มสงสัยเรื่องตำแหน่ง/น้ำมัน/อากาศ หรือสิ่งที่กระทบความปลอดภัย → <b>ขอความช่วยเหลือทันที อย่ารอให้กลายเป็น distress</b></li>
+  </ul>
+  <h3>ความถี่ &amp; Squawk Code ฉุกเฉิน</h3>
+  <table>
+    <tr><th>รายการ</th><th>ค่า</th><th>หมายเหตุ</th></tr>
+    <tr><td>ความถี่ฉุกเฉิน</td><td class="code">121.5 MHz</td><td>guarded โดย military towers, civil towers ส่วนใหญ่, Flight Service, radar facilities (จำกัด line-of-sight)</td></tr>
+    <tr><td>Squawk distress</td><td class="squawk">7700</td><td>เกิด alarm ที่ทุก radar control position; ถ้าอยู่ใต้ radar control แล้ว ให้ squawk code เดิมต่อ เว้นแต่สั่งเป็นอย่างอื่น</td></tr>
+    <tr><td>"MAYDAY" (×3)</td><td>distress</td><td>สั่งให้ทุกสถานีเงียบบนความถี่นั้น</td></tr>
+    <tr><td>"PAN-PAN" (×3)</td><td>urgency</td><td>มีลำดับความสำคัญเหนือการสื่อสารอื่น เตือนสถานีอื่นไม่รบกวน</td></tr>
+  </table>
+  <h3>Emergency Message (ลำดับการแจ้ง)</h3>
+  <div class="key">
+    MAYDAY×3 (หรือ PAN-PAN×3) → ชื่อสถานีที่เรียก → ID + ประเภทเครื่อง → ลักษณะเหตุ → อากาศ → ความตั้งใจ/คำขอ → ตำแหน่ง+heading → ระดับสูง → น้ำมันคงเหลือ (ชม./นาที) → จำนวนคนบนเครื่อง → ข้อมูลอื่นที่เป็นประโยชน์
+  </div>
+  <h3>หลงทาง → จำ <span class="num">5 Cs</span></h3>
+  <ul>
+    <li><b>Climb</b> — ไต่ระดับ เพิ่มการรับวิทยุ/navaid และ radar coverage</li>
+    <li><b>Communicate</b> — ติดต่อ facility ใกล้ที่สุด (ความถี่บน sectional)</li>
+    <li><b>Confess</b> — ยอมรับว่าหลงทาง ถ้าวิกฤตใช้ 121.5</li>
+    <li><b>Comply</b> — ทำตามคำแนะนำ</li>
+    <li><b>Conserve</b> — ลดกำลังเครื่อง/leaning mixture ประหยัดน้ำมัน เพิ่มระยะและ endurance</li>
+  </ul>
+  <h3>Emergency Locator Transmitter (ELT)</h3>
+  <ul>
+    <li>อุปกรณ์ส่งสัญญาณช่วยค้นหาเครื่องตก — บังคับติดตั้งใน GA ส่วนใหญ่</li>
+    <li>ส่งบนความถี่ <span class="freq">243 MHz</span> และ <span class="freq">406 MHz</span> (รุ่นเก่า <span class="freq">121.5 MHz</span>)</li>
+    <li>ทำงานอัตโนมัติเมื่อ armed + เจอแรง crash; ทำงานต่อเนื่องอย่างน้อย <b>48 ชั่วโมง</b>; มีสวิตช์ remote ในห้องนักบินเปิดเองได้</li>
+  </ul>
+  <div class="key warn">
+    <b>การดูแล ELT (FARs):</b> เปลี่ยน/ชาร์จแบตเตอรี่เมื่อใช้ไป <b>ครึ่งหนึ่งของอายุใช้งาน</b> หรือเมื่อ transmitter ทำงานสะสมเกิน <b>1 ชั่วโมง</b><br>
+    <b>การทดสอบ:</b> ควรทำใน screened room; ถ้าทำไม่ได้ ทดสอบในเครื่องได้เฉพาะ <b>5 นาทีแรกของชั่วโมง</b> และไม่เกิน <b>3 audible sweeps</b>; <b>ห้ามทดสอบขณะบิน</b>
+  </div>
+</section>
+
+<!-- Summary -->
+<section id="summary">
+  <h2 class="sec">13. Summary Checklist (สรุปจุดสอบ)</h2>
+  <ul>
+    <li>VHF การบิน: <span class="freq">118.0–135.975 MHz</span>; range = line of sight</li>
+    <li>Initial callup = Who(เรียกใคร) / Who(คือใคร) / Where / What / With ATIS</li>
+    <li>ICAO phonetic alphabet ใช้ในวิทยุ</li>
+    <li>ใช้นาฬิกา 24 ชม. + UTC/Zulu (มาตรฐานโลก)</li>
+    <li>CTAF: broadcast ตำแหน่ง/ความตั้งใจ ที่สนามไม่มี tower หรือ tower ปิด</li>
+    <li>UNICOM = สถานีเอกชน ให้ advisory; MULTICOM <span class="freq">122.9</span> เมื่อไม่มี tower/FSS/UNICOM</li>
+    <li>ATC clearance = อนุญาตให้ดำเนินการใน controlled airspace</li>
+    <li>Clearance delivery ให้ transponder code + departure freq; แจ้ง N-number, ประเภท, VFR, มี ATIS, ปลายทาง</li>
+    <li>Movement area ต้องมี clearance; hold short ต้อง readback; ข้าม runway ต้องมี clearance ชัดเจน</li>
+    <li>"radar contact" = ระบุเครื่องบนจอแล้ว + ให้ flight following</li>
+    <li>หลังลงจอด ห้ามไป ground จนกว่า tower สั่ง</li>
+    <li>ติดต่อ approach ขณะยังนอก Class B/C; เข้า Class B ต้องได้ "cleared to enter Class B"</li>
+    <li>วิทยุเสีย → squawk <span class="squawk">7600</span> + lost comm procedure; tower ใช้ light signal</li>
+    <li>ELT: ทำงานอัตโนมัติเมื่อ crash; เปลี่ยนแบตเมื่อใช้ครึ่งอายุ หรือเกิน 1 ชม.สะสม</li>
+  </ul>
+</section>
+
+<!-- Quiz -->
+<section id="quiz">
+  <h2 class="sec">14. ข้อสอบท้ายบท + เฉลย</h2>
+
+  <details>
+    <summary>1. ข้อความที่ถูกต้องเกี่ยวกับวิทยุ GA</summary>
+    <p>A. เสาเป็น fin ติดใต้ cabin | B. ใช้ VHF 118.0–135.975 MHz | C. ระยะไม่จำกัดด้วยสิ่งกีดขวาง</p>
+    <p class="ans">ตอบ B — เสาติดบนหลังคา, range จำกัดด้วย line of sight (A, C ผิด)</p>
+  </details>
+
+  <details>
+    <summary>2. เขียน phonetic call sign: Cessna 649SP</summary>
+    <p class="ans">"Cessna six four niner Sierra Papa"</p>
+  </details>
+
+  <details>
+    <summary>3. วิธีพูด 10,500 ฟุต MSL ที่ถูกต้อง</summary>
+    <p>A. Ten thousand, five hundred | B. Ten point five | C. One zero thousand, five hundred</p>
+    <p class="ans">ตอบ A — "Ten thousand, five hundred"</p>
+  </details>
+
+  <details>
+    <summary>4. ออกจากเขต CST 1:00 p.m. ถึงเมืองฝั่งตะวันตก 2 ชม.ต่อมา → เวลามาถึงเป็น Zulu?</summary>
+    <p class="ans">ออกเวลา 1:00 p.m. CST = 1300 → บิน 2 ชม. → arrival 1500 (เวลานาฬิกาของผู้โดยสาร/clock time). แปลง: เวลาออก CST 1300 + 6 = 1900Z, บวกเวลาบิน 2 ชม. = <b>2100Z</b></p>
+  </details>
+
+  <details>
+    <summary>5. บินจาก PDT → CDT, ออก 0700 PDT, ETE 3 ชม. → ETA เป็น Zulu?</summary>
+    <p class="ans">PDT = +7 (daylight ลบ 1 จาก PST +8). 0700 + 7 = 1400Z ออก → + ETE 3 ชม. = <b>1700Z</b></p>
+  </details>
+
+  <details>
+    <summary>6. วิธีสื่อสารที่แนะนำสำหรับลงที่ Fillmore County (FKA): AWOS-3 118.55, CTAF 122.9 ⓒ</summary>
+    <p>A. ฟัง AWOS, ส่ง intention 122.9 ที่ 10 ไมล์ + รายงานใน pattern | B. ติดต่อ tower 118.55 | C. ติดต่อ UNICOM 122.9</p>
+    <p class="ans">ตอบ A — สนามไม่มี tower (118.55 คือ AWOS ไม่ใช่ tower), CTAF คือ 122.9; ฟัง AWOS แล้ว self-announce ที่ 10 ไมล์ + รายงานใน pattern</p>
+  </details>
+
+  <details>
+    <summary>7. "Cessna 52 Sierra, Runway 17, taxi via Bravo, hold short Runway 26 Right" → ทำอย่างไร?</summary>
+    <p class="ans">ตอบ B — Taxi ตามทาง Bravo ไปทาง Runway 17 หยุดที่ hold line ของ Runway 26R รอ clearance ข้าม (ห้ามขึ้น runway หรือข้ามโดยไม่มี clearance)</p>
+  </details>
+
+  <details>
+    <summary>8. หลังลงจอดสนาม controlled ควรติดต่อ ground control เมื่อไร?</summary>
+    <p class="ans">ตอบ B — เมื่อ tower สั่งให้ติดต่อ (อย่าสลับเอง)</p>
+  </details>
+
+  <details>
+    <summary>9. อธิบาย lost comm procedure สำหรับลงสนาม Class D primary</summary>
+    <p class="ans">Squawk <b>7600</b> → อยู่นอก/เหนือ Class D จนรู้ทิศทาง/flow จราจร → เข้า pattern คอยดู light signals จาก tower → ตอบรับ: กลางวันโยกปีก, กลางคืนกระพริบไฟ landing/navigation</p>
+  </details>
+
+  <details>
+    <summary>10. ความหมาย light signal ในอากาศ / บนพื้น</summary>
+    <p class="ans">
+    Steady green: <b>พื้น</b>=cleared takeoff / <b>อากาศ</b>=cleared land<br>
+    Flashing green: พื้น=cleared taxi / อากาศ=return for landing<br>
+    Steady red: พื้น=stop / อากาศ=give way + circle<br>
+    Flashing red: พื้น=taxi clear of runway in use / อากาศ=airport unsafe, do not land<br>
+    Flashing white: พื้น=return to starting point / อากาศ=ไม่มีความหมาย<br>
+    Alternating red &amp; green: extreme caution (ทั้งสอง)</p>
+  </details>
+
+  <details>
+    <summary>11. ต้องเปลี่ยน/ชาร์จแบต ELT บ่อยแค่ไหน?</summary>
+    <p class="ans">เมื่อใช้ไป <b>ครึ่งหนึ่งของอายุใช้งานแบต</b> หรือเมื่อ transmitter ทำงานสะสมเกิน <b>1 ชั่วโมง</b></p>
+  </details>
+</section>
+
+<footer>
+  สรุปจาก Jeppesen Chapter 5, Section B — Radio Procedures (หน้า 5-22 ถึง 5-41)<br>
+  สำหรับใช้ทบทวน Ground School • คลิกหัวข้อในสารบัญเพื่อกระโดดไปยังส่วนนั้น
+</footer>
+
+</div>
+</body>
+</html>
