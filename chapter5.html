@@ -91,6 +91,15 @@
   .choice-btn.wrong   .letter { color: #e74c3c; }
   .choice-btn:disabled { cursor: default; }
 
+  .explanation {
+    display: none; margin-top: 14px;
+    background: #f0f6ff; border-left: 3px solid #2d6abf;
+    border-radius: 6px; padding: 12px 16px;
+    font-size: 0.88rem; line-height: 1.6; color: #333;
+  }
+  .explanation.visible { display: block; }
+  .explanation strong { color: #1a3c6e; }
+
   #end-screen {
     display: none; text-align: center;
     background: #fff; margin: 32px; border-radius: 12px;
@@ -147,165 +156,165 @@ const QUESTIONS = [
   { s:"A", fig:null, q:"The automatic dependent surveillance-broadcast (ADS-B) system includes what primary components?",
     o:["ADS-B radar transmitter; aircraft radar receiver, ADS-B Out transmitter, and ADS-B In receiver.",
        "ADS-B ground station; aircraft GPS receiver, ADS-B Out transmitter, and ADS-B In receiver.",
-       "ADS-B ground station; aircraft VOR/DME or GPS receiver, and ADS-B In receiver."], a:1 },
+       "ADS-B ground station; aircraft VOR/DME or GPS receiver, and ADS-B In receiver."], a:1, ex:"The ADS-B system depends on accurate GPS positions transmitted from each aircraft-GPS is a core component. The ADS-B Out transmitter in your aircraft sends your GPS position to ATC through the ADS-B ground station, which transmits information back to aircraft through the ADS-B In receiver." },
   { s:"A", fig:null, q:"Automatic dependent surveillance-broadcast (ADS-B) provides what services?",
     o:["Weather products on FIS-B through your ADS-B Out transceiver.",
        "Traffic alert and collision avoidance system (TCAS) with conflict resolution through your ADS-B In receiver.",
-       "Traffic information service-broadcast (TIS-B) through your ADS-B Out transmitter and ADS-B In receiver."], a:2 },
+       "Traffic information service-broadcast (TIS-B) through your ADS-B Out transmitter and ADS-B In receiver."], a:2, ex:"The ADS-B ground station receives the position that each aircraft transmits through ADS-B out, integrates it with non-ADS-B radar targets, and transmits the complete traffic picture back to aircraft. Properly equipped aircraft receive the traffic information broadcast through their ADS-B In receivers. Aircraft equipped with ADS-B In and Out can also receive traffic information directly from other aircraft, but this capability is not the same as the TCAS system that is required on airliners." },
   { s:"A", fig:null, q:"When making routine transponder code changes, pilots should avoid inadvertent selection of which code?",
-    o:["7200.","7000.","7500."], a:2 },
+    o:["7200.","7000.","7500."], a:2, ex:"Avoid inadvertent selection of transponder codes that set off alarms at ATC facilities. These codes are: 7500 for hijacking, 7600 for two-way radio communications failure, and 7700 for other emergencies." },
   { s:"A", fig:null, q:"Unless otherwise authorized, if flying a transponder equipped aircraft, you should squawk which VFR code?",
-    o:["1200.","7600.","7700."], a:0 },
+    o:["1200.","7600.","7700."], a:0, ex:"The transponder code for standard VFR is 1200. Code 7700 is to communicate an emergency and 7600 is for two-way radio communications failure." },
   { s:"A", fig:null, q:"What happens when you activate the IDENT function on your transponder?",
     o:["A data block appears on the ATC display that contains your aircraft call sign and type.",
        "The transponder return from your aircraft momentarily blossoms on the ATC display to enable easy identification.",
-       "The ATC display momentarily zooms in on the transponder return from your aircraft to enable easy identification."], a:1 },
+       "The ATC display momentarily zooms in on the transponder return from your aircraft to enable easy identification."], a:1, ex:"Pressing the IDENT button or softkey on your transponder system causes the transponder return to blossom on the ATC display and enables easy identification of your aircraft. It does not cause any change to the data block or zoom level on the ATC display." },
   { s:"A", fig:null, q:"When should you activate the IDENT function on your transponder?",
-    o:["On initial callup.","On ATC request.","When setting or changing a transponder code."], a:1 },
+    o:["On initial callup.","On ATC request.","When setting or changing a transponder code."], a:1, ex:"Press the IDENT button or softkey on your transponder system only when ATC asks you to \"Ident.\"" },
   { s:"A", fig:null, q:"An ATC transponder was tested and inspected on March 15, 2024. The next test is due on",
-    o:["September 30, 2024.","March 31, 2025.","March 31, 2026."], a:2 },
+    o:["September 30, 2024.","March 31, 2025.","March 31, 2026."], a:2, ex:"An ATC transponder must have been tested and inspected within the preceding 24 calendar months, or its use is not permitted." },
   { s:"A", fig:null, q:"You can obtain pilot reports and updated weather information along your route of flight by contacting",
-    o:["CTAF.","UNICOM.","Flight Service."], a:2 },
+    o:["CTAF.","UNICOM.","Flight Service."], a:2, ex:"Flight Service provides all non-ATC services to pilots before and during flight. UNICOM is a privately owned air/ground communication station. CTAF stands for common traffic advisory CTA frequency, designated for the purpose of carrying out airport advisory practices while operating to or from an airport without an operating control tower. UNICOM advisories usually include wind direction A and speed, favored runway, and known traffic. NOITCES" },
   { s:"A", fig:null, q:"Absence of the sky condition and visibility on an ATIS broadcast indicates that",
     o:["weather conditions are at or above VFR minimums.",
        "the sky condition is clear and visibility is unrestricted.",
-       "the ceiling is at least 5,000 feet and visibility is 5 miles or more."], a:2 },
+       "the ceiling is at least 5,000 feet and visibility is 5 miles or more."], a:2, ex:"ATIS is broadcast at certain busy airports, and provides noncontrol weather and runway information. If the ceiling is at least 5,000 feet and visibility is 5 miles or more, reporting of the ceiling/sky condition, visibility, and obstructions to vision is optional." },
   { s:"A", fig:null, q:"Automatic terminal information service (ATIS) is the continuous broadcast of recorded information concerning",
     o:["pilots of radar-identified aircraft whose aircraft is in dangerous proximity to terrain or to an obstruction.",
        "nonessential information to reduce frequency congestion.",
-       "noncontrol information in selected high-activity terminal areas."], a:2 },
+       "noncontrol information in selected high-activity terminal areas."], a:2, ex:"ATIS is broadcast at certain busy airports, and provides noncontrol weather and runway information." },
   { s:"A", fig:null, q:"During ground operations, from whom should a departing VFR aircraft request radar traffic information?",
-    o:["Flight Service.","Ground control, on initial contact.","Tower, just before takeoff."], a:1 },
+    o:["Flight Service.","Ground control, on initial contact.","Tower, just before takeoff."], a:1, ex:"Request radar traffic information by notifying ground control on initial contact with your request and proposed direction of flight. At airports in Class B or C airspace, you might make this request from clearance delivery. Flight Service does not provide radar services and requesting radar service from the tower just before takeoff could delay your departure." },
   { s:"A", fig:null, q:"What basic terminal radar services does ATC provide to VFR aircraft?",
     o:["Traffic advisories, safety alerts, limited vectoring, and, in Class B airspace, separation between all aircraft.",
        "Sequencing and separation between all aircraft operating in Class B and C airspace.",
-       "Wind shear warning at participating airports."], a:0 },
+       "Wind shear warning at participating airports."], a:0, ex:"Basic radar service for VFR aircraft provides safety alerts, traffic advisories, and limited vectoring on a workload-permitting basis. In Class B airspace, ATC provides sequencing and separation for all aircraft. In Class C airspace, ATC provides sequencing for all aircraft and separation of VFR aircraft only from IFR aircraft; not other VFR aircraft." },
   { s:"A", fig:null, q:"TRSA service in the terminal radar program provides",
     o:["sequencing and separation for all VFR aircraft.",
        "IFR separation (1,000 feet vertical and 3 miles lateral) between all aircraft.",
-       "warning to pilots when their aircraft are in unsafe proximity to terrain, obstructions, or other aircraft."], a:2 },
+       "warning to pilots when their aircraft are in unsafe proximity to terrain, obstructions, or other aircraft."], a:2, ex:"Terminal radar service areas (TRSAs) are airspace areas surrounding about 30 U.S. airports that offer radar services, but where contact with ATC is not mandatory outside of the Class D airspace. TRSA provides basic radar service, including safety alerts-warnings to pilots when their aircraft are in unsafe proximity to terrain, obstructions, or other aircraft. In addition, TRSA service provides sequencing for participating VFR aircraft to the primary airport. Separation is provided between IFR aircraft, not all aircraft." },
   { s:"A", fig:null, q:"If air traffic control advises that radar service is terminated when you are departing Class C airspace, you should set the transponder code to",
-    o:["0000.","1200.","4096."], a:1 },
+    o:["0000.","1200.","4096."], a:1, ex:"When radar service is terminated, you no longer squawk a discrete code and should switch to the standard VFR code of 1200." },
   { s:"A", fig:null, q:"ATC issues a safety alert to aircraft under their control",
     o:["that are at an altitude believed to place the aircraft in unsafe proximity to terrain or obstructions.",
        "when another aircraft under their control is at an altitude that places the aircraft in unsafe proximity to each other.",
-       "if radar shows that the aircraft is headed into level 5 or 6 convective activity."], a:0 },
+       "if radar shows that the aircraft is headed into level 5 or 6 convective activity."], a:0, ex:"The types of safety alerts are: Terrain or obstruction alert- i mmediately issued to an aircraft under ATC control if ATC is aware that the aircraft is at an altitude believed to place the aircraft in unsafe proximity to terrain or obstructions. Aircraft conflict alert-immediately issued to secivreS an aircraft under ATC control if ATC is aware of an aircraft not under their control at an altitude believed to place the aircraft in unsafe proximity to each other. ATC does not provide convective thunderstorm avoidance assistance unless a pilot requests it and ATC agrees to provide the service based on ■ workload." },
   { s:"A", fig:"52", q:"Which type radar service is provided to VFR aircraft at Lincoln Municipal?",
     o:["Sequencing to the primary Class C airport and standard separation.",
        "Sequencing to the primary Class C airport and conflict resolution so that radar targets do not touch, or 1,000 feet vertical separation.",
-       "Sequencing to the primary Class C airport, traffic advisories, conflict resolution, and safety alerts."], a:2 },
+       "Sequencing to the primary Class C airport, traffic advisories, conflict resolution, and safety alerts."], a:2, ex:"The VFR services provided within a Class C airspace area include: Sequencing for all arriving aircraft to the primary Class C airport. Traffic advisories and safety alerts between VFR aircraft. Traffic advisories and conflict resolution (radar targets do not touch or 500 feet vertical separation) between IFR and VFR aircraft." },
   { s:"A", fig:null, q:"An ATC radar facility issues the following advisory to a pilot flying on a heading of 090°: \"TRAFFIC 3 O'CLOCK, 2 MILES, WESTBOUND...\" Where should the pilot look for this traffic?",
-    o:["East.","South.","West."], a:1 },
+    o:["East.","South.","West."], a:1, ex:"Because the pilot is heading east, the 3 o'clock position is to the right, which is south." },
   { s:"A", fig:null, q:"An ATC radar facility issues the following advisory to a pilot flying on a heading of 360°: \"TRAFFIC 10 O'CLOCK, 2 MILES, SOUTHBOUND...\" Where should the pilot look for this traffic?",
-    o:["Northwest.","Northeast.","Southwest."], a:0 },
+    o:["Northwest.","Northeast.","Southwest."], a:0, ex:"Because the pilot's 12 o'clock position is north, the 10 o'clock position is northwest." },
   { s:"A", fig:null, q:"An ATC radar facility issues the following advisory to a pilot during a local flight: \"TRAFFIC 2 O'CLOCK, 5 MILES, NORTHBOUND...\" Where should the pilot look for this traffic?",
     o:["Between directly ahead and 90° to the left.",
        "Between directly behind and 90° to the right.",
-       "Between directly ahead and 90° to the right."], a:2 },
+       "Between directly ahead and 90° to the right."], a:2, ex:"The pilot's 12 o'clock position is directly ahead, and the 3 o'clock position is 90° to the right. The 2 o'clock position is approximately 60° right." },
   { s:"A", fig:null, q:"An ATC radar facility issues the following advisory to a pilot flying north in a calm wind: \"TRAFFIC 9 O'CLOCK, 2 MILES, SOUTHBOUND...\" Where should the pilot look for this traffic?",
-    o:["South.","North.","West."], a:2 },
+    o:["South.","North.","West."], a:2, ex:"The pilot's 12 o'clock position is north, so the 9 o'clock position is west." },
   { s:"A", fig:null, q:"ATC advises, \"traffic at your 12 o'clock.\" This advisory is relative to your",
-    o:["true course.","ground track.","magnetic heading."], a:1 },
+    o:["true course.","ground track.","magnetic heading."], a:1, ex:"Controllers can see the ground track of an aircraft on radar, but cannot factor in any crab angle applied for wind correction. You must consider this when interpreting ATC traffic advisories." },
 
   // ===================== SECTION B — Radio Procedures =====================
   { s:"B", fig:null, q:"When flying HAWK N666CB, the proper phraseology for initial contact with McAlester FSS is",
     o:["\"MCALESTER RADIO, HAWK SIX SIX SIX CHARLIE BRAVO, RECEIVING ARDMORE VORTAC, OVER.\"",
        "\"MCALESTER STATION, HAWK SIX SIX SIX CEE BEE, RECEIVING ARDMORE VORTAC, OVER.\"",
-       "\"MCALESTER FLIGHT SERVICE STATION, HAWK NOVEMBER SIX CHARLIE BRAVO, RECEIVING ARDMORE VORTAC, OVER.\""], a:0 },
+       "\"MCALESTER FLIGHT SERVICE STATION, HAWK NOVEMBER SIX CHARLIE BRAVO, RECEIVING ARDMORE VORTAC, OVER.\""], a:0, ex:"When transmitting to Flight Service in flight, use the name of the Flight Service facility in the area followed by the word \"radio.\" Give your full call sign of your aircraft, using the phonetic alphabet." },
   { s:"B", fig:null, q:"The correct method of stating 5,500 feet MSL to ATC is",
-    o:["\"FIVE POINT FIVE.\"","\"FIFTY-FIVE HUNDRED FEET MSL.\"","\"FIVE THOUSAND FIVE HUNDRED.\""], a:2 },
+    o:["\"FIVE POINT FIVE.\"","\"FIFTY-FIVE HUNDRED FEET MSL.\"","\"FIVE THOUSAND FIVE HUNDRED.\""], a:2, ex:"Altitudes should be stated as individual numbers with the word hundreds or thousands added as appropriate. In this case, 5,500 feet should be read as \"FIVE THOUSAND FIVE HUNDRED.\"" },
   { s:"B", fig:null, q:"The correct method of stating 10,500 feet MSL to ATC is",
-    o:["\"TEN THOUSAND, FIVE HUNDRED FEET.\"","\"TEN POINT FIVE.\"","\"ONE ZERO THOUSAND, FIVE HUNDRED.\""], a:2 },
+    o:["\"TEN THOUSAND, FIVE HUNDRED FEET.\"","\"TEN POINT FIVE.\"","\"ONE ZERO THOUSAND, FIVE HUNDRED.\""], a:2, ex:"For altitudes at 10,000 feet MSL and above, pronounce each digit of the thousands, so that 10,500 becomes \"ONE ZERO THOUSAND FIVE HUNDRED.\"" },
   { s:"B", fig:"27", q:"An aircraft departs an airport in the eastern daylight time zone at 0945 EDT for a 2-hour flight to an airport located in the central daylight time zone. The landing should be at what coordinated universal time?",
-    o:["1345Z.","1445Z.","1545Z."], a:2 },
+    o:["1345Z.","1445Z.","1545Z."], a:2, ex:"To convert the local departure time to UTC, add four hours (0945 + 4 = 1345). Two hours later is 1545Z." },
   { s:"B", fig:"27", q:"An aircraft departs an airport in the central standard time zone at 0930 CST for a two-hour flight to an airport located in the mountain standard time zone. The landing should be at what time?",
-    o:["0930 MST.","1030 MST.","1130 MST."], a:1 },
+    o:["0930 MST.","1030 MST.","1130 MST."], a:1, ex:"To find the arrival time, add two hours to the 0930 departure time to get 1130 CST. Because mountain time is one hour earlier than central time, subtract one hour, for a landing time of 1030 MST." },
   { s:"B", fig:"27", q:"An aircraft departs an airport in the central standard time zone at 0845 CST for a 2-hour flight to an airport located in the mountain standard time zone. The landing should be at what coordinated universal time?",
-    o:["1345Z.","1445Z.","1645Z."], a:2 },
+    o:["1345Z.","1445Z.","1645Z."], a:2, ex:"Departure time (0845) plus two hours is 1045 CST. Convert CST to UTC by adding six hours, for a landing time of 1645Z." },
   { s:"B", fig:"27", q:"An aircraft departs an airport in the mountain standard time zone at 1615 MST for a 2-hour 15-minute flight to an airport located in the Pacific standard time zone. The estimated time of arrival at the destination airport should be",
-    o:["1630 PST.","1730 PST.","1830 PST."], a:1 },
+    o:["1630 PST.","1730 PST.","1830 PST."], a:1, ex:"Add 2:15 to 1615 MST to find the arrival time of 1830 MST. Because PST is one hour earlier than MST, the arrival time is 1730 PST." },
   { s:"B", fig:"27", q:"An aircraft departs an airport in the Pacific standard time zone at 1030 PST for a 4-hour flight to an airport located in the central standard time zone. The landing should be at what coordinated universal time?",
-    o:["2030Z.","2130Z.","2230Z."], a:2 },
+    o:["2030Z.","2130Z.","2230Z."], a:2, ex:"Add four hours to 1030 PST to find the arrival time of 1430 PST. To convert PST to UTC, add eight hours. The landing time is 2230Z." },
   { s:"B", fig:"27", q:"An aircraft departs an airport in the mountain standard time zone at 1515 MST for a 2-hour 30-minute flight to an airport located in the Pacific standard time zone. What is the estimated time of arrival at the destination airport?",
-    o:["1645 PST.","1745 PST.","1845 PST."], a:0 },
+    o:["1645 PST.","1745 PST.","1845 PST."], a:0, ex:"Add 2:30 to 1515 MST to find the arrival time of 1745 MST. Convert MST to PST by subtracting one hour. The answer is 1645 PST." },
   { s:"B", fig:"52", q:"What is the recommended communication procedure for landing at Lincoln Municipal during the hours when the tower is not in operation?",
     o:["Monitor airport traffic and announce your position and intentions on 118.5 MHz.",
        "Contact UNICOM on 122.95 MHz for traffic advisories.",
-       "Monitor ATIS for airport conditions, then announce your position on 122.95 MHz."], a:0 },
+       "Monitor ATIS for airport conditions, then announce your position on 122.95 MHz."], a:0, ex:"B, Chart Supplement The CTAF frequency is listed as 118.5, and is used when the tower is not in operation. Standard procedures are to monitor airport traffic and announce your position on CTAF." },
   { s:"B", fig:null, q:"As standard operating practice, all inbound traffic to an airport without a control tower should continuously monitor the appropriate facility from a distance of",
-    o:["25 miles.","20 miles.","10 miles."], a:2 },
+    o:["25 miles.","20 miles.","10 miles."], a:2, ex:"In addition to monitoring a CTAF within 10 miles when inbound or outbound from a non-towered airport, you should also make an initial call to serudecorP announce your intention if you plan to land at the airport. You should then report on each leg of the pattern." },
   { s:"B", fig:"20", q:"(Area 3) What is the recommended communication procedure for a landing at Currituck County Airport?",
     o:["Transmit intentions on 122.9 MHz when 10 miles out and give position reports in the traffic pattern.",
        "Contact Elizabeth City Tower on 120.5 MHz for airport and traffic advisories.",
-       "Contact FSS for area traffic information."], a:0 },
+       "Contact FSS for area traffic information."], a:0, ex:"The CTAF symbol is next to the frequency of ■ the MULTICOM frequency of 122.9. The normal B procedure is to transmit intentions when 10 miles out and give position reports in the pattern." },
   { s:"B", fig:"26", q:"(Area 2) What is the recommended communication procedure when inbound to land at Cooperstown Airport?",
     o:["Broadcast intentions when 10 miles out on the CTAF/MULTICOM frequency, 122.9 MHz.",
        "Contact UNICOM when 10 miles out on 122.8 MHz.",
-       "Circle the airport in a left turn before entering traffic."], a:0 },
+       "Circle the airport in a left turn before entering traffic."], a:0, ex:"The CTAF symbol is next to the frequency of the MULTICOM frequency of 122.9. The normal procedure is to transmit intentions when 10 miles out and give position reports in the pattern." },
   { s:"B", fig:null, q:"After landing at a tower-controlled airport, when should the pilot contact ground control?",
-    o:["When advised by the tower to do so.","Before turning off the runway.","After reaching a taxiway that leads directly to the parking area."], a:0 },
+    o:["When advised by the tower to do so.","Before turning off the runway.","After reaching a taxiway that leads directly to the parking area."], a:0, ex:"The tower normally instructs you to exit the runway and contact ground control." },
   { s:"B", fig:null, q:"If instructed by ground control to taxi to Runway 9, the pilot may proceed",
     o:["via taxiways and across runways to, but not onto, Runway 9.",
        "to the next intersecting runway where further clearance is required.",
-       "via taxiways and across runways to Runway 9, where an immediate takeoff may be made."], a:1 },
+       "via taxiways and across runways to Runway 9, where an immediate takeoff may be made."], a:1, ex:"You must have an explicit clearance to cross any runway to taxi to your departure runway, and you must have a clearance to taxi onto the departure runway." },
   { s:"B", fig:null, q:"An ATC clearance provides",
-    o:["priority over all other traffic.","adequate separation from all traffic.","authorization to proceed under specified traffic conditions in controlled airspace."], a:2 },
+    o:["priority over all other traffic.","adequate separation from all traffic.","authorization to proceed under specified traffic conditions in controlled airspace."], a:2, ex:"A clearance is authorization from ATC to operate under specific conditions in controlled airspace." },
   { s:"B", fig:null, q:"Which is an action you should take if you are unable to contact ATC as you are nearing an airport with a control tower?",
     o:["Immediately squawk 7600 on your transponder.",
        "Troubleshoot the problem by taking actions such as trying a different frequency; checking the radio volume and squelch; or switching to an alternate transceiver.",
-       "Enter the traffic pattern and land as soon as possible."], a:1 },
+       "Enter the traffic pattern and land as soon as possible."], a:1, ex:"If you are unable to contact ATC: Ensure that you are using the correct frequency. Try a different frequency for the ATC facility, if available. Check the volume and squelch on your transceiver. Check the switch position on your audio control panel. Ensure that the headset mic and speaker plugs (or the handheld mic plug, if applicable) are properly inserted into the jacks. Try the handheld mic if you are using headsets. If your aircraft is equipped with more than one serudecorP radio, try the alternate transceiver. If it is within range, try requesting assistance from the last ATC facility with which you had contact. If after taking these steps, you still are unable to contact ATC, follow the lost communication procedures." },
   { s:"B", fig:null, q:"If the radio fails in an aircraft, what is the recommended procedure when landing at a controlled airport?",
     o:["Observe the traffic flow, enter the pattern, and look for a light signal from the tower.",
        "Enter a crosswind leg and rock the wings.",
-       "Flash the landing lights and cycle the landing gear while circling the airport."], a:0 },
+       "Flash the landing lights and cycle the landing gear while circling the airport."], a:0, ex:"B To avoid conflicts and cause the least disruption NOITCES in the traffic flow, determine the landing direction, and enter the pattern. Watch the tower for a light signal and acknowledge by rocking the wings. At night, acknowledge by flashing the landing or navigation lights." },
   { s:"B", fig:null, q:"A steady green light signal directed from the control tower to an aircraft in flight is a signal that the pilot",
-    o:["is cleared to land.","should give way to other aircraft and continue circling.","should return for landing."], a:0 },
+    o:["is cleared to land.","should give way to other aircraft and continue circling.","should return for landing."], a:0, ex:"A steady green light while in flight means that you are cleared to land." },
   { s:"B", fig:null, q:"Which light signal from the control tower clears a pilot to taxi?",
-    o:["Flashing green.","Steady green.","Flashing white."], a:0 },
+    o:["Flashing green.","Steady green.","Flashing white."], a:0, ex:"While on the ground, a flashing green light means cleared to taxi." },
   { s:"B", fig:null, q:"If the control tower uses a light signal to direct a pilot to give way to other aircraft and continue circling, the light is",
-    o:["flashing red.","steady red.","alternating red and green."], a:1 },
+    o:["flashing red.","steady red.","alternating red and green."], a:1, ex:"While in flight, a steady red light means give way and continue circling." },
   { s:"B", fig:null, q:"A flashing white light signal from the control tower to a taxiing aircraft is an indication to",
-    o:["taxi at a faster speed.","taxi only on taxiways and not cross runways.","return to the starting point on the airport."], a:2 },
+    o:["taxi at a faster speed.","taxi only on taxiways and not cross runways.","return to the starting point on the airport."], a:2, ex:"A flashing white light while operating on the ground means return to your starting point on the airport." },
   { s:"B", fig:null, q:"An alternating red and green light signal directed from the control tower to an aircraft in flight is a signal to",
-    o:["hold position.","exercise extreme caution.","not land; the airport is unsafe."], a:1 },
+    o:["hold position.","exercise extreme caution.","not land; the airport is unsafe."], a:1, ex:"An alternating red and green signal means the same whether you are in flight or on the ground - exercise extreme caution." },
   { s:"B", fig:null, q:"While on final approach for landing, an alternating green and red light followed by a flashing red light is received from the control tower. Under these circumstances, the pilot should",
     o:["discontinue the approach, fly the same traffic pattern and approach again, and land.",
        "exercise extreme caution and abandon the approach, realizing the airport is unsafe for landing.",
-       "abandon the approach, circle the airport to the right, and expect a flashing white light when the airport is safe for landing."], a:1 },
+       "abandon the approach, circle the airport to the right, and expect a flashing white light when the airport is safe for landing."], a:1, ex:"An alternating red and green signal means exercise extreme caution. The flashing red signal that follows means that the airport is unsafe." },
   { s:"B", fig:null, q:"While on a VFR cross-country flight and not in contact with ATC, what frequency would you use in the event of an emergency?",
-    o:["121.5 MHz.","122.5 MHz.","128.725 MHz."], a:0 },
+    o:["121.5 MHz.","122.5 MHz.","128.725 MHz."], a:0, ex:"serudecorP If you are not already talking to ATC on another frequency, squawk 7700 and use the emergency frequency of 121.5 to obtain assistance." },
   { s:"B", fig:null, q:"When activated, an emergency locator transmitter (ELT) transmits on",
-    o:["118.0 MHz, 118.8 MHz, and 119.1 MHz.","121.5 MHz, 243.0 MHz, and 406 MHz.","119.0 MHz, 123.0 MHz, and 124.0 MHz."], a:1 },
+    o:["118.0 MHz, 118.8 MHz, and 119.1 MHz.","121.5 MHz, 243.0 MHz, and 406 MHz.","119.0 MHz, 123.0 MHz, and 124.0 MHz."], a:1, ex:"B The operating frequencies are 121.5 MHz, 243.0 MHz, and the newer 406 MHz. ELTs operating on 121.5 MHz and 243.0 MHz are analog devices. The newer 406 MHz ELT is a digital transmitter that can be encoded with the owner's contact information or aircraft data. The latest 406M Hz ELT models can also be encoded with the aircraft's position data which can help search and rescue (SAR) forces locate the aircraft much more quickly after a crash. The 406 MHz ELTs also transmits a stronger signal when activated than the older 121.5 MHz ELTs." },
   { s:"B", fig:null, q:"When must the battery in an emergency locator transmitter (ELT) be replaced (or recharged if the battery is rechargeable)?",
-    o:["After one-half of the battery's useful life.","During each annual and 100-hour inspection.","Every 24 calendar months."], a:0 },
+    o:["After one-half of the battery's useful life.","During each annual and 100-hour inspection.","Every 24 calendar months."], a:0, ex:"The ELT battery must be replaced or recharged after one-half of the useful life of the battery has expired." },
   { s:"B", fig:null, q:"When may an emergency locator transmitter (ELT) be tested?",
-    o:["Any time.","At 15 and 45 minutes past the hour.","During the first 5 minutes after the hour."], a:2 },
+    o:["Any time.","At 15 and 45 minutes past the hour.","During the first 5 minutes after the hour."], a:2, ex:"ELTs should be tested in accordance with the manufacturer's instructions, preferably in a shielded or screened room. When this cannot be done, aircraft operational testing is authorized as follows: Analog 121.5/243 MHz ELTs should only be tested during the first 5 minutes after any hour. If operational tests must be made outside of this period, they should be coordinated with the nearest FAA control tower. Tests should be no longer than three audible sweeps. If the antenna is removable, a dummy load should be substituted during test procedures. Digital 406 MHz ELTs should only be tested in accordance with the unit's manufacturer's instructions. Airborne tests are not authorized." },
   { s:"B", fig:null, q:"Which procedure is recommended to ensure that the emergency locator transmitter (ELT) has not been activated?",
-    o:["Turn off the aircraft ELT after landing.","Ask the airport tower if they are receiving an ELT signal.","Monitor 121.5 before engine shutdown."], a:2 },
+    o:["Turn off the aircraft ELT after landing.","Ask the airport tower if they are receiving an ELT signal.","Monitor 121.5 before engine shutdown."], a:2, ex:"By monitoring 121.5, you can hear the ELT signal if it is activated." },
 
   // ===================== SECTION C — Sources of Flight Information =====================
   { s:"C", fig:null, q:"When planning for a cross-country, you can find airport information for your destination, such as communication frequencies and runway lengths, in flight information sources, such as:",
     o:["Advisory circulars and NOTAMs.",
        "Electronic flight bags and the Notices section of the Chart Supplement.",
-       "Electronic flight bags and the Airport/Facility Directory in the Chart Supplement."], a:2 },
+       "Electronic flight bags and the Airport/Facility Directory in the Chart Supplement."], a:2, ex:"The Airport/Facility Directory (A/FD) in the Chart Supplement contains a descriptive listing of all airports that are open to the public. Electronic flight bags also contain airport information and might also provide access to A/FD pages. The Notices of the Chart Supplement describes unique restrictions or operating procedures and summarizes special air traffic rules established in FAR Part 93. Notices to Air Missions (NOTAMs) provide time-critical flight planning information regarding a facility, service, procedure, or hazard. The FAA issues advisory circulars (ACs) to provide nonregulatory guidance and information in a variety of subject areas." },
   { s:"C", fig:"52", q:"When approaching Lincoln Municipal from the west at noon for the purpose of landing, initial communication should be with",
-    o:["Lincoln Approach Control on 124.0 MHz.","Minneapolis Center on 128.75 MHz.","Lincoln Tower on 118.5 MHz."], a:0 },
+    o:["Lincoln Approach Control on 124.0 MHz.","Minneapolis Center on 128.75 MHz.","Lincoln Tower on 118.5 MHz."], a:0, ex:"C, A/FD Legend Lincoln Municipal Airport is in Class C airspace. The approach frequency is under Communications in the Airport/Facility Directory (A/FD) excerpt from the Chart Supplement. When west of the airport (180°-359°), use the approach frequency of 124.0. When east of the airport (360°-179°), use the approach frequency of 124.8. Lincoln Class C airspace is in effect from 1130Z to 0600Z (5:30 a.m. to 12:00 a.m. local time)." },
   { s:"C", fig:"52", q:"Where is Loup City Municipal located in relation to the city?",
-    o:["Northeast approximately 3 miles.","Northwest approximately 1 mile.","East approximately 3 miles."], a:1 },
+    o:["Northeast approximately 3 miles.","Northwest approximately 1 mile.","East approximately 3 miles."], a:1, ex:"C, A/FD Legend Each Airport/Facility Directory (A/FD) listing in the Chart Supplement begins with airport identification and location information, including the distance and direction from the associated city. The entry 1 NW indicates that the airport is 1 mile northwest of the city." },
   { s:"C", fig:"52", q:"The landing distance available on Rwy 17 at Lincoln Airport is",
-    o:["5,400 feet.","5,800 feet.","8,286 feet."], a:0 },
+    o:["5,400 feet.","5,800 feet.","8,286 feet."], a:0, ex:"C, A/FD Legend The landing distance available (LDA) appears under Runway Declared Distance Information section. For Rwy 17, the LDA is 5,400 feet." },
   { s:"C", fig:"52", q:"The landing distance available on Rwy 32 at Lincoln Airport is",
-    o:["7,816 feet.","8,286 feet.","8,649 feet."], a:0 },
+    o:["7,816 feet.","8,286 feet.","8,649 feet."], a:0, ex:"C, A/FD Legend The landing distance available (LDA) appears under Runway Declared Distance Information section. For Rwy 32, the LDA Is 7,816 feet." },
   { s:"C", fig:null, q:"You can obtain FAA advisory circulars by",
-    o:["distribution from the nearest FAA district office.","searching for them at FAA.gov.","subscribing to the Federal Register."], a:1 },
+    o:["distribution from the nearest FAA district office.","searching for them at FAA.gov.","subscribing to the Federal Register."], a:1, ex:"Search for the current advisory circulars (ACs) by name, number, or subject at faa.gov. The Federal Register includes changes to regulations, but not the content of ACs." },
   { s:"C", fig:null, q:"FAA advisory circulars containing subject matter related to Airmen are issued under which subject number?",
-    o:["60.","70.","90."], a:0 },
+    o:["60.","70.","90."], a:0, ex:"Advisory circulars relating to Airmen are issued under subject number 60." },
   { s:"C", fig:null, q:"FAA advisory circulars containing subject matter related to Air Traffic Control and General Operations are issued under which subject number?",
-    o:["60.","70.","90."], a:2 },
+    o:["60.","70.","90."], a:2, ex:"Advisory circulars relating to Air Traffic Control C and General Operations are issued under subject NOITCES number 90." },
   { s:"C", fig:null, q:"Which is true about NOTAMs?",
     o:["An example of a NOTAM(D) is a permanent change in flight data on an aeronautical chart.",
        "An example of a NOTAM(D) is a temporary runway closure.",
-       "An example of an FDC NOTAM is an alert about snow and ice on runways and taxiways."], a:1 }
+       "An example of an FDC NOTAM is an alert about snow and ice on runways and taxiways."], a:1, ex:"Notices to Air Missions (NOTAMs) provide time-critical flight planning information regarding a facility, service, procedure, or hazard that is temporary or not known far enough in advance to be included in the most recent aeronautical charts or Chart Supplements. NOTAM(D)s are disseminated for all navigational facilities that are part of the U.S. airspace system, and all public use airports, seaplane bases, and heliports listed in the Chart Supplements. FDC NOTAMs are issued by the National Flight Data Center and contain regulatory information. For example, FDC NOTAMs may advise of changes in flight data which affect instrument approach procedures (IAP), aeronautical charts, and flight restrictions prior to normal publication." }
 ];
 
 let answered = 0, correct = 0;
@@ -367,7 +376,8 @@ function buildQuiz() {
       <div class="q-number">Q${idx+1} &nbsp;·&nbsp; Section ${q.s}${figTag}</div>
       <div class="q-text">${q.q}</div>
       ${figHtml}
-      <div class="choices">${choicesHtml}</div>`;
+      <div class="choices">${choicesHtml}</div>
+      <div class="explanation" id="ex-${idx}"><strong>Explanation:</strong> ${q.ex || ''}</div>`;
     container.appendChild(card);
   });
 
@@ -381,6 +391,7 @@ function answer(qIdx, chosen) {
   answered++;
 
   const card = document.getElementById('q-'+qIdx);
+  const ex   = document.getElementById('ex-'+qIdx);
 
   q.o.forEach((_, ci) => {
     const btn = document.getElementById(`btn-${qIdx}-${ci}`);
@@ -388,6 +399,8 @@ function answer(qIdx, chosen) {
     if (ci === q.a) btn.classList.add('correct');
     else if (ci === chosen && chosen !== q.a) btn.classList.add('wrong');
   });
+
+  if (ex) ex.classList.add('visible');
 
   if (chosen === q.a) {
     correct++;
