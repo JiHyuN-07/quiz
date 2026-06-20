@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สรุป Ch5-A: ATC Services</title>
+<style>
+  :root{
+    --bg:#f4f7fb; --card:#ffffff; --card2:#eef3f9; --accent:#1769c0; --accent2:#d97706;
+    --red:#dc2626; --green:#16a34a; --text:#1f2a37; --muted:#5c6b7a; --line:#d7e0ea;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; font-family:"Segoe UI","Sarabun",Tahoma,sans-serif; background:var(--bg);
+    color:var(--text); line-height:1.7; font-size:16px;
+  }
+  header{
+    background:linear-gradient(135deg,#2c7fd0,#1769c0); padding:34px 24px; border-bottom:3px solid var(--accent2);
+    color:#fff;
+  }
+  header h1{margin:0; font-size:28px; letter-spacing:.5px; color:#fff;}
+  header .sub{color:#ffe9c9; font-size:15px; margin-top:6px;}
+  header .meta{color:#d6e6f7; font-size:13px; margin-top:10px;}
+  .wrap{max-width:980px; margin:0 auto; padding:24px;}
+  nav.toc{
+    background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 22px; margin-bottom:26px;
+  }
+  nav.toc h2{margin:0 0 10px; font-size:16px; color:var(--accent);}
+  nav.toc ol{margin:0; padding-left:20px; columns:2; column-gap:30px;}
+  nav.toc a{color:var(--text); text-decoration:none; font-size:14px;}
+  nav.toc a:hover{color:var(--accent2); text-decoration:underline;}
+  section{
+    background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px 24px; margin-bottom:22px;
+    scroll-margin-top:14px; box-shadow:0 1px 3px rgba(20,40,70,.06);
+  }
+  h2.sec{
+    margin:0 0 16px; font-size:21px; color:var(--accent); border-left:4px solid var(--accent);
+    padding-left:12px; scroll-margin-top:14px;
+  }
+  h3{font-size:17px; color:var(--accent2); margin:18px 0 8px;}
+  p{margin:8px 0;}
+  ul{margin:8px 0; padding-left:22px;}
+  li{margin:5px 0;}
+  .term{color:var(--accent); font-weight:700;}
+  .en{color:var(--muted); font-style:italic;}
+  .key{
+    background:var(--card2); border-left:3px solid var(--accent2); padding:10px 14px; border-radius:6px;
+    margin:12px 0; font-size:14.5px;
+  }
+  .warn{border-left-color:var(--red);}
+  .num{color:var(--accent2); font-weight:700;}
+  table{width:100%; border-collapse:collapse; margin:12px 0; font-size:14px;}
+  th,td{border:1px solid var(--line); padding:7px 10px; text-align:left; vertical-align:top;}
+  th{background:var(--card2); color:var(--accent);}
+  td.code{font-family:"Consolas",monospace; color:#b45309; letter-spacing:1px;}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:0;}
+  .freq{
+    display:inline-block; background:#fdecd2; color:#b45309; font-family:"Consolas",monospace;
+    padding:1px 7px; border-radius:4px; font-size:13.5px;
+  }
+  .squawk{
+    display:inline-block; background:#fde0e0; color:var(--red); font-family:"Consolas",monospace;
+    padding:1px 7px; border-radius:4px; font-weight:700;
+  }
+  details{background:var(--card2); border:1px solid var(--line); border-radius:8px; padding:10px 14px; margin:10px 0;}
+  summary{cursor:pointer; font-weight:600; color:var(--accent);}
+  details[open] summary{margin-bottom:8px;}
+  .ans{color:var(--green); font-weight:700;}
+  .dot{display:inline-block; width:42px; height:13px; border-radius:3px; vertical-align:middle; margin-right:6px;}
+  .callout-quote{font-style:italic; color:#b45309; background:#fdecd2; padding:8px 12px; border-radius:6px; display:inline-block;}
+  .qa{border-top:1px solid var(--line); padding-top:16px; margin-top:16px;}
+  .qa:first-of-type{border-top:none; padding-top:0; margin-top:0;}
+  .qq{font-weight:700; margin:0 0 10px; color:var(--text);}
+  .qq .n{color:var(--accent2); margin-right:4px;}
+  .qc{background:var(--card2); border-radius:6px; padding:10px 14px; margin:0 0 10px; font-size:14.5px; line-height:1.9;}
+  .qa details{margin:0; background:#effaf1; border-color:#c7e8cd;}
+  .qa summary{color:var(--green); font-weight:700; list-style:none;}
+  .qa summary::-webkit-details-marker{display:none;}
+  .qa summary::before{content:"▼ "; font-size:11px;}
+  .qa details[open] summary::before{content:"▲ ";}
+  .note{background:#eef6fd; border:1px solid #cfe3f6; border-radius:6px; padding:8px 12px; margin:10px 0; font-size:13.5px; color:var(--muted);}
+
+  footer{text-align:center; color:var(--muted); font-size:13px; padding:20px;}
+  @media(max-width:640px){nav.toc ol{columns:1;} .grid3{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Chapter 5 — Section A: ATC Services</h1>
+  <div class="sub">บริการควบคุมจราจรทางอากาศ (Jeppesen Private Pilot)</div>
+  <div class="meta">สรุปเข้มข้น • หน้า 5-2 ถึง 5-21</div>
+</header>
+
+<div class="wrap">
+
+<nav class="toc">
+  <h2>สารบัญ</h2>
+  <ol>
+    <li><a href="#adsb">ADS-B System</a></li>
+    <li><a href="#radar">Radar (Primary &amp; Secondary)</a></li>
+    <li><a href="#xpdr">Transponders (Modes &amp; Codes)</a></li>
+    <li><a href="#fss">Flight Service</a></li>
+    <li><a href="#sar">Search and Rescue (SAR)</a></li>
+    <li><a href="#tower">Control Tower Services</a></li>
+    <li><a href="#tracon">TRACON &amp; ARTCC Services</a></li>
+    <li><a href="#resp">ATC Services &amp; Pilot Responsibilities</a></li>
+    <li><a href="#clock">การอ่าน Traffic Advisory (นาฬิกา)</a></li>
+    <li><a href="#summary">Summary Checklist</a></li>
+    <li><a href="#quiz">ข้อสอบท้ายบท + เฉลย</a></li>
+  </ol>
+</nav>
+
+<!-- ADS-B -->
+<section id="adsb">
+  <h2 class="sec">1. ADS-B System</h2>
+  <p><span class="term">Automatic Dependent Surveillance-Broadcast (ADS-B)</span> = ระบบที่รวม <b>GPS + เครื่องส่ง/รับบนเครื่องบิน + ground stations</b> เพื่อให้นักบินและ ATC ทราบ<b>ตำแหน่งและความเร็ว</b>ของเครื่องบินอย่างแม่นยำ (ส่วนหนึ่งของ FAA NextGen)</p>
+  <table>
+    <tr><th>รูปแบบ</th><th>หน้าที่</th></tr>
+    <tr><td><b>ADS-B Out</b></td><td>ส่งสัญญาณ <b>line of sight</b> จากเครื่องบิน → ATC ground receivers และเครื่องบินอื่น</td></tr>
+    <tr><td><b>ADS-B In</b></td><td>ต้องมีจึงจะ<b>รับ</b>สัญญาณและแสดง traffic ในเครื่องได้</td></tr>
+  </table>
+  <h3>บริการของ ADS-B</h3>
+  <ul>
+    <li>ให้ข้อมูล real-time แม่นยำ บอก ATC <b>ทันที</b>เมื่อเครื่องเบี่ยงจาก flight path; ระยะ effective <span class="num">100 nm</span></li>
+    <li>ADS-B In แสดง traffic บน <span class="term">CDTI</span> (cockpit display of traffic information) — จอเฉพาะ หรือรวมใน GPS moving map / MFD</li>
+    <li><span class="term">TIS-B</span> (traffic information service-broadcast) — แสดงเครื่องที่มี transponder แต่<b>ไม่มี</b> ADS-B</li>
+    <li>ใช้ดู <b>surface movement</b> เพิ่ม situational awareness ขณะ taxi ลดความเสี่ยง runway incursion</li>
+    <li><span class="term">FIS-B</span> (flight information service-broadcast) — ส่งข้อมูล<b>อากาศ</b> (text+graphic), ตำแหน่ง <b>TFR</b>, สถานะ <b>SUA</b></li>
+  </ul>
+  <h3>ADS-B Data Links</h3>
+  <table>
+    <tr><th>Data Link</th><th>ระดับสูง</th><th>TIS-B</th><th>FIS-B</th></tr>
+    <tr><td><b>1090ES</b><br>(1090 MHz extended squitter)</td><td>ทุกระดับ; <b>บังคับที่ ≥18,000 ft MSL</b></td><td>✅</td><td>❌</td></tr>
+    <tr><td><b>978 UAT</b><br>(978 MHz universal access transceiver)</td><td>เฉพาะ <b>&lt;18,000 ft MSL</b></td><td>✅</td><td>✅</td></tr>
+  </table>
+  <div class="key">💡 ต้องการบิน<b>ทุกระดับ + รับ FIS-B</b>: ส่ง (Out) บน 1090ES และรับ (In) ทั้ง 1090ES และ 978 UAT</div>
+</section>
+
+<!-- Radar -->
+<section id="radar">
+  <h2 class="sec">2. Radar</h2>
+  <p>ATC ใช้ radar คู่กับ ADS-B — เครื่องส่ง/รับวิทยุภาคพื้นที่ทำงาน sync กัน ใช้เสาอากาศหมุน เมื่อคลื่นกระทบเครื่องบินจะสะท้อนกลับมาที่เสา</p>
+  <table>
+    <tr><th>ชนิด</th><th>หลักการ</th></tr>
+    <tr><td><b>Primary Radar</b></td><td>วัด<b>เวลา</b>ที่ echo สะท้อนกลับ + ทิศทางของสัญญาณ → บอก<b>ระยะ</b>และ <b>azimuth</b> (ทิศ) ของเครื่องเทียบกับเสา</td></tr>
+    <tr><td><b>Secondary Surveillance Radar</b><br>(ATCRBS = air traffic control radar beacon system)</td><td>ATC กำหนด <b>discrete code</b> ที่นักบินใส่ใน transponder; interrogator ส่งสัญญาณ → transponder ตอบ<b>อัตโนมัติ</b>ด้วยสัญญาณเฉพาะ (แรงกว่า primary มาก) → แสดง ID + altitude + ground speed; เสา secondary ติดบน primary แสดงรวมจอเดียว</td></tr>
+  </table>
+  <h3>ข้อจำกัดของ Radar (3 อย่าง — จุดสอบ)</h3>
+  <table>
+    <tr><th>ข้อจำกัด</th><th>รายละเอียด</th></tr>
+    <tr><td><b>Bending</b><br>(anomalous propagation)</td><td>คลื่นถูกบิดจากปรากฏการณ์ เช่น <b>temperature inversion</b> — โค้งลงพื้น = เกิด <b>ground clutter</b>; โค้งขึ้น = ลดระยะตรวจจับ</td></tr>
+    <tr><td><b>Reflected</b></td><td>คลื่นสะท้อนจากวัตถุหนาแน่น (เมฆหนา, ฝน, สิ่งกีดขวาง, ภูเขา) → บังเครื่องที่ระยะเดียวกัน และ<b>ลด/ลบ</b> target ที่ไกลกว่า</td></tr>
+    <tr><td><b>Screened</b></td><td>ภูมิประเทศสูงบัง → เครื่องระดับต่ำที่ถูกภูเขาบัง หรืออยู่ใต้คลื่นเพราะความโค้งโลก จะ<b>ไม่ปรากฏ</b></td></tr>
+  </table>
+  <details>
+    <summary>กล่องเสริม: B-2 Bomber (เครื่องบินล่องหน)</summary>
+    <p>B-2 ออกแบบให้มี radar return น้อยมาก — ผิวเคลือบ radar-absorbing + เรขาคณิตตัวเครื่องสะท้อนคลื่นออกห่างจากเครื่องส่ง + ช่องรับอากาศบังใบพัด ทำให้ <b>radar cross-section เพียง ~0.1 ตร.ม.</b></p>
+  </details>
+</section>
+
+<!-- Transponder -->
+<section id="xpdr">
+  <h2 class="sec">3. Transponders</h2>
+  <p>ทั้ง ADS-B และ radar ใช้ <span class="term">transponder</span> ของเครื่องเพื่อให้ข้อมูลแม่นยำ (altitude, speed)</p>
+  <h3>Transponder Modes</h3>
+  <table>
+    <tr><th>Mode</th><th>ทำอะไร</th></tr>
+    <tr><td><b>Mode A</b></td><td>ส่งรหัส 4 หลักเพื่อระบุตัวตน (identification)</td></tr>
+    <tr><td><b>Mode C</b></td><td>ส่ง <b>altitude</b> ให้ ATC</td></tr>
+    <tr><td><b>Mode S</b></td><td>two-way data link, <b>บังคับสำหรับ ADS-B</b>; 1090ES Mode S ส่ง GPS data (ตำแหน่ง/ทิศ/ความเร็ว/vertical trend) ≥1 ครั้ง/วินาที; จำเป็นต่อ <b>TCAS</b></td></tr>
+  </table>
+  <div class="key"><b>Mode C / ADS-B Out บังคับใช้ที่:</b> Class A, B, C · ภายใน 30 ไมล์จาก primary airport ของ Class B · เหนือ Class B และ C · เหนือ <b>10,000 ft MSL</b> (ADS-B Out บังคับในพื้นที่เดียวกันตั้งแต่ปี 2020)</div>
+  <h3>ปุ่มเลือกการทำงาน (Function Keys)</h3>
+  <table>
+    <tr><th>ปุ่ม</th><th>ความหมาย</th></tr>
+    <tr><td><b>STBY</b></td><td>ไม่ตอบ interrogation</td></tr>
+    <tr><td><b>ON</b></td><td>ตอบ interrogation แต่<b>ไม่มี</b> altitude</td></tr>
+    <tr><td><b>ALT</b></td><td>ตอบ interrogation <b>พร้อม</b> altitude</td></tr>
+    <tr><td><b>OFF</b></td><td>ปิดเครื่อง</td></tr>
+    <tr><td><b>GND</b></td><td>ตอบเฉพาะ Mode S interrogation (ไม่ตอบ Mode A/C)</td></tr>
+  </table>
+  <h3>Transponder Codes</h3>
+  <table>
+    <tr><th>Code</th><th>ความหมาย</th></tr>
+    <tr><td class="code">1200</td><td>VFR ปกติ (ปุ่ม VFR หรือค่า default)</td></tr>
+    <tr><td>discrete</td><td>ATC กำหนด (Class A/B/C หรือเมื่อขอ traffic advisory)</td></tr>
+    <tr><td><span class="squawk">7500</span></td><td>Hijacking (ถูกจี้เครื่องบิน)</td></tr>
+    <tr><td><span class="squawk">7600</span></td><td>Communication failure (วิทยุเสีย)</td></tr>
+    <tr><td><span class="squawk">7700</span></td><td>Emergency (ไฟไหม้ / เครื่องยนต์ขัดข้อง ฯลฯ)</td></tr>
+  </table>
+  <ul>
+    <li>ตั้งได้ <span class="num">4,096</span> codes (ใช้เลข 0–7)</li>
+    <li>💡 <b>ทิป:</b> 7500 "taken alive" · 7600 "radio's nix" · 7700 "going to heaven"</li>
+  </ul>
+  <div class="key warn"><b>ระวัง alarm:</b> อย่าตั้งเลข <b>7</b> ในหน้าต่างแรกโดยไม่ตั้งใจ — เช่น เปลี่ยน 2700 → 7200 ให้ทำ <b>2700 → 2200 → 7200</b> (อย่าผ่าน 7700)</div>
+  <h3>Squawk Phraseology</h3>
+  <table>
+    <tr><th>คำสั่ง ATC</th><th>ทำอะไร</th></tr>
+    <tr><td>"Squawk (number)"</td><td>ตั้ง code ที่กำหนด</td></tr>
+    <tr><td>"Ident"</td><td>กดปุ่ม IDENT</td></tr>
+    <tr><td>"Squawk VFR"</td><td>ตั้ง 1200</td></tr>
+    <tr><td>"Squawk standby"</td><td>สลับไป STBY</td></tr>
+    <tr><td>"Stop altitude squawk"</td><td>ปิดการรายงาน altitude (มักเกิดเมื่อ altitude คลาดเกิน 300 ft)</td></tr>
+    <tr><td>"Stop squawk"</td><td>สลับไป OFF</td></tr>
+    <tr><td>"Squawk MAYDAY"</td><td>ตั้ง 7700</td></tr>
+  </table>
+  <ul>
+    <li><b>IDENT</b> = ทำให้ return "blossom" (เด่นขึ้น) บนจอ ATC 2–3 วินาที ให้ controller ระบุตัวง่าย</li>
+    <li>ถ้าต้องสลับไป STBY/OFF → <b>รอจนถึง parking</b></li>
+  </ul>
+  <div class="key"><b>Transponder Inspection:</b> FARs กำหนดให้ทดสอบ/ตรวจสอบ<b>ทุก 24 calendar months</b> สำหรับบินใน controlled airspace; ทำโดย certificated repair station และบันทึกใน aircraft logbook</div>
+</section>
+
+<!-- Flight Service -->
+<section id="fss">
+  <h2 class="sec">4. Flight Service</h2>
+  <p>ใช้ <span class="term">Flight Service</span> ได้ทุกเฟส ตั้งแต่ preflight planning จนลงจอด</p>
+  <h3>Preflight (วางแผน)</h3>
+  <ul>
+    <li><b>1-800-WX-BRIEF</b> หรือ <b>1800wxbrief.com</b>: weather briefing, NOTAMs, flight plan aids (หา departure time / altitude / route ที่ดีที่สุด)</li>
+    <li><b>File flight plan</b> (online/phone): ให้ข้อมูล destination, route, time enroute, จำนวนคนบนเครื่อง — VFR <b>ไม่บังคับ</b>แต่แนะนำ เพื่อรับ <b>search and rescue protection</b></li>
+    <li><span class="term">ACAS</span> (adverse condition alerting service): แจ้ง text/email หากมีสภาพไม่ดีเกิดขึ้นหลัง file</li>
+  </ul>
+  <h3>Departure → Enroute → Arrival</h3>
+  <ul>
+    <li><b>Activate:</b> <span class="freq">122.2 MHz</span> หรือ local FSS frequency หรือ <b>EasyActivate</b> (email ลิงก์ 30 นาทีก่อน ETD)</li>
+    <li><b>Enroute:</b> briefer ให้อากาศอัปเดต/ช่วยเหลือถ้าหลงหรือฉุกเฉิน; นักบินควรให้ <b>PIREPs</b> + รายงาน ADS-B/TIS-B/FIS-B malfunction</li>
+    <li><b>Close:</b> โทร หรือ <b>EasyClose</b> (email ลิงก์ 30 นาทีก่อน ETA อิงเวลาออกจริง)</li>
+  </ul>
+</section>
+
+<!-- SAR -->
+<section id="sar">
+  <h2 class="sec">5. Search and Rescue (SAR)</h2>
+  <ul>
+    <li>แจ้ง Flight Service ถ้า destination เปลี่ยน หรือจะช้ากว่าแผน <b>≥ 15 นาที</b></li>
+    <li>ถ้า<b>ไม่ close ภายใน 30 นาที</b>หลัง ETA → Flight Service เริ่มค้นหาทางโทรศัพท์ (destination, สนามตามเส้นทาง, home base, contacts ใน flight plan)</li>
+    <li>ถ้าโทรไม่สำเร็จ → <b>alert ระบบ SAR</b> (U.S. Coast Guard, Civil Air Patrol, law enforcement) เพื่อค้นหาและช่วยเหลือ</li>
+  </ul>
+  <div class="key">📡 <b>Surveillance-enhanced SAR:</b> ถ้าเครื่อง equipped จะส่ง position reports ระหว่างบิน — ระบบ alert Flight Service ทันทีถ้าเครื่องหยุดเคลื่อนหรือหยุดส่ง ทำให้ค้นหาในพื้นที่ถูกต้องได้เร็ว</div>
+  <details>
+    <summary>กรณีศึกษา: CFIT — Hawker Jet ชน Otay Mountain (1991)</summary>
+    <p>คืนเดือนมืดท้องฟ้าโล่ง เครื่อง Hawker (HS-125) ออกจาก Brown Field แบบ VFR เลือกบินใต้ Class B ของ San Diego เพื่อรอ IFR clearance — 2 นาทีหลัง takeoff ก่อนได้ clearance เครื่องชนภูเขาที่ 3,300 ft MSL ห่างจากยอดเขาแค่ 72 ฟุต เสียชีวิตทั้ง 10 คน <b>บทเรียน:</b> ใช้บริการ ATC ให้เต็มที่โดยเฉพาะพื้นที่ไม่คุ้น แต่อย่าประมาท — ศึกษาภูมิประเทศ + ใช้ chart/moving map/terrain awareness ป้องกัน <b>Controlled Flight Into Terrain (CFIT)</b></p>
+  </details>
+</section>
+
+<!-- Control Tower -->
+<section id="tower">
+  <h2 class="sec">6. Control Tower Services</h2>
+  <p>หอบังคับการบินให้บริการในเขต terminal — ครอบคลุมตั้งแต่ก่อนบินจนลงจอด</p>
+  <h3>ATIS (Automatic Terminal Information Service)</h3>
+  <ul>
+    <li>ฟังก่อนบินจากสนามที่มี tower เพื่อรับ airport advisory information</li>
+    <li>อัปเดตเมื่อ: airport conditions เปลี่ยน, มี official weather เข้ามา, และปกติ<b>ทุกต้นชั่วโมง</b></li>
+    <li>label ด้วยตัวอักษร phonetic ต่อเนื่อง (Information Alpha, Bravo, ...); precorded, ออกอากาศต่อเนื่องบนความถี่เฉพาะ; สนามใหญ่อาจแยก ATIS สำหรับ departure/arrival</li>
+  </ul>
+  <div class="key">📻 ถ้า <b>sky condition + visibility หายไป</b>จาก ATIS = visibility <b>≥ 5 ไมล์</b> และ ceiling <b>≥ 5,000 ฟุต</b></div>
+  <h3>ลำดับบริการ (Class D)</h3>
+  <ol>
+    <li><b>Clearance Delivery</b> (สนาม busy): ออก IFR clearances และอาจให้ VFR departure instructions + transponder code</li>
+    <li><b>Ground Control</b>: clearance taxi ใน <b>movement areas</b> (runways + taxiways ที่ไม่ใช่ ramp/parking)</li>
+    <li><b>Tower</b>: takeoff clearance; ให้ traffic advisories (เท่าที่ workload เอื้อ) + safety alerts</li>
+    <li>ขาเข้า: ฟัง ATIS → tower สั่งเข้า traffic pattern + clear to land → Ground control นำ taxi ไป parking</li>
+  </ol>
+  <div class="key">💡 <span class="term">Progressive Taxi</span> = ขอ controller บอกเส้นทาง taxi เป็นขั้นๆ (เมื่อไม่คุ้นสนาม)</div>
+</section>
+
+<!-- TRACON ARTCC -->
+<section id="tracon">
+  <h2 class="sec">7. TRACON &amp; ARTCC Services</h2>
+  <p>เครือข่าย facilities ทั่วสหรัฐฯ ใช้ ADS-B + radar ให้บริการทั้ง IFR และ VFR</p>
+  <table>
+    <tr><th>Facility</th><th>บทบาท</th></tr>
+    <tr><td><b>TRACON</b><br>(Terminal Radar Approach Control)</td><td>บริการในเขต terminal ของสนาม Class B/C/TRSA; รวมกับ tower หรือแยกก็ได้ — รับบริการต้องมี <b>transponder code + departure frequency</b> จาก clearance delivery ก่อน taxi; <b>บังคับใช้</b>บริการใน Class B/C</td></tr>
+    <tr><td><b>ARTCC</b><br>(Air Route Traffic Control Center)</td><td>เขต enroute — ให้ <b>flight following</b>; หน้าที่หลักจัดการ IFR แต่ช่วย VFR ตาม workload; พื้นที่กว้างจึงช่วยได้เมื่อหลงทาง</td></tr>
+  </table>
+  <ul>
+    <li>สนาม<b>นอก</b> Class B/C: ขอ <span class="term">flight following</span> ได้แบบ optional (บริการเตือน traffic) — ขอความถี่จาก tower / Flight Service / airport info</li>
+    <li>หลัง takeoff: tower → <b>departure controller</b> (traffic advisories, safety alerts, vectoring, separation)</li>
+    <li>ขาเข้าสนามที่มี TRACON: ติดต่อ <b>approach control</b> — บริการเหมือน departure + <b>sequencing</b> → hand off ไป tower → clear to land</li>
+    <li><b>ASDE-X</b> (airport surface detection equipment–model X): รวมข้อมูล radar/ADS-B/transponder เพื่อดู surface movement</li>
+  </ul>
+  <div class="key"><b>Separation ที่ ATC ให้:</b> Class B = แยกจากทั้ง IFR และ VFR · Class C = แยก IFR ออกจาก VFR</div>
+</section>
+
+<!-- Responsibilities -->
+<section id="resp">
+  <h2 class="sec">8. ATC Services &amp; Pilot Responsibilities</h2>
+  <p>การให้บริการขึ้นกับ<b>ประเภท facility + workload</b>; controller รับผิดชอบเครื่อง <b>IFR ก่อน</b> — ปริมาณจราจร/ความแออัดของความถี่อาจทำให้ให้บริการ VFR ไม่ได้</p>
+  <table>
+    <tr><th>บริการ</th><th>คืออะไร</th><th>ความรับผิดชอบของนักบิน</th></tr>
+    <tr><td><b>Traffic Advisory</b></td><td>เตือนถึง traffic ที่เกี่ยวข้อง (เช่น "traffic 12 o'clock, 4 miles")</td><td>นักบิน<b>ยังรับผิดชอบ collision avoidance</b> — ตอบ "looking for traffic" / "negative contact" / "traffic in sight"</td></tr>
+    <tr><td><b>Safety Alert</b></td><td>บริการ <b>mandatory</b> ให้ทุกเครื่อง — เตือนเมื่อใกล้ terrain/obstruction/aircraft อันตราย</td><td>ขึ้นกับความสามารถ controller ที่จะเห็นสถานการณ์</td></tr>
+    <tr><td><b>Vectors</b></td><td>นำทางแบบ <b>advisory</b> เท่านั้น (controller vector หรือนักบินขอเองได้)</td><td>flight safety ยังเป็นของนักบิน — แจ้งถ้า vector จะพาเข้า IFR conditions</td></tr>
+    <tr><td><b>Sequencing</b></td><td>จัดลำดับเครื่องขาเข้าเข้าสู่ pattern อย่างเป็นระเบียบ</td><td>ตามเครื่องอื่นได้ แต่<b>ไม่</b>อนุญาตให้ทำตามคำสั่งที่ออกให้เครื่องนั้น; ต้องเลี่ยง <b>wake turbulence</b> เอง</td></tr>
+    <tr><td><b>Separation</b></td><td>Class B = แยก IFR+VFR; Class C = แยกจาก IFR</td><td>ต้องขอ clearance เข้า Class B; clearance <b>ไม่ปลด</b>ความรับผิดชอบ see-and-avoid, wake turbulence, terrain clearance, รักษา VFR weather</td></tr>
+  </table>
+</section>
+
+<!-- Clock -->
+<section id="clock">
+  <h2 class="sec">9. การอ่าน Traffic Advisory (ระบบนาฬิกา)</h2>
+  <ul>
+    <li>ATC อ้างอิงตำแหน่ง traffic เหมือน<b>หน้าปัดนาฬิกา</b> โดย <b>12 นาฬิกา = หัวเครื่อง</b></li>
+    <li>เช่น "traffic at 11 o'clock, 2 miles, southbound" = อยู่ <b>30° ไปทางซ้าย</b>ของหัวเครื่อง → มองระหว่างหัวเครื่องกับปีกซ้าย (ช่วง 12 ถึง 9 นาฬิกา)</li>
+  </ul>
+  <div class="key warn">⚠️ <b>Wind correction angle ไม่แสดงบนจอ ATC</b> — ตำแหน่ง traffic จริงที่เห็นอาจคลาดจากที่ ATC บอกเล็กน้อย (เพราะหัวเครื่องชี้คนละทางกับ track เนื่องจากแก้ลม)</div>
+</section>
+
+<!-- Summary -->
+<section id="summary">
+  <h2 class="sec">10. Summary Checklist (สรุปจุดสอบ)</h2>
+  <ul>
+    <li>ADS-B รวม GPS + เครื่องส่ง/รับ + ground stations; <b>Out</b> ส่ง line-of-sight, <b>In</b> รับ traffic แสดงบน CDTI</li>
+    <li><b>TIS-B</b> = แสดงเครื่องที่มี transponder แต่ไม่มี ADS-B; <b>FIS-B</b> = อากาศ + TFR + SUA</li>
+    <li>Data link: <b>1090ES</b> ทุกระดับ/บังคับ ≥18,000 ft (ไม่มี FIS-B); <b>978 UAT</b> &lt;18,000 ft (มี FIS-B)</li>
+    <li>Primary radar = วัดเวลา echo + ทิศ; <b>ATCRBS</b> (secondary) = discrete code แสดง ID/altitude/ground speed</li>
+    <li>ข้อจำกัด radar 3 อย่าง: <b>bending, reflecting, screening</b></li>
+    <li>Transponder ตั้งได้ 4,096 codes; <b>IDENT</b> = ทำ return blossom; <b>Mode C</b> = altitude; <b>Mode S</b> = data link + บังคับ ADS-B</li>
+    <li>Codes: VFR <span class="squawk">1200</span> · hijack <span class="squawk">7500</span> · comm fail <span class="squawk">7600</span> · emergency <span class="squawk">7700</span></li>
+    <li><b>squawk</b> = คำที่ controller ใช้สั่ง code/function; discrete code ใน Class B/C หรือเมื่อขอ traffic advisory</li>
+    <li>Transponder inspection ทุก <b>24 calendar months</b> (controlled airspace)</li>
+    <li>Flight Service: <b>1-800-WX-BRIEF</b> / 1800wxbrief.com — weather, NOTAMs, file plan; VFR flight plan = SAR protection</li>
+    <li>ไม่ close ภายใน <b>30 นาที</b>หลัง ETA → phone search → ถ้าไม่สำเร็จ alert <b>SAR</b></li>
+    <li><b>ATIS</b> อัปเดตเมื่อ conditions เปลี่ยน/มี official weather/ต้นชั่วโมง; sky+vis หาย = vis ≥5 ไมล์, ceiling ≥5,000 ft</li>
+    <li><b>Clearance delivery</b> ออก IFR clearance + อาจให้ VFR departure code; <b>ground control</b> ให้ taxi ใน movement areas</li>
+    <li><b>TRACON</b> = บริการ terminal (Class B/C/TRSA); <b>ARTCC</b> = flight following ขณะ enroute</li>
+    <li>Traffic advisory: นักบินยังรับผิดชอบ collision avoidance; Separation: Class B (ทุกเครื่อง), Class C (จาก IFR)</li>
+    <li>ATC อ้างอิง traffic แบบนาฬิกา (12 = หัวเครื่อง); wind correction angle ไม่แสดงบนจอ</li>
+  </ul>
+</section>
+
+<!-- Quiz -->
+<section id="quiz">
+  <h2 class="sec">11. ข้อสอบท้ายบท + เฉลย</h2>
+  <p class="en">คำถามภาษาอังกฤษจากท้ายบท Ch5-A จริง • อ่านคำถาม/ช้อยส์ก่อน แล้วกด "ดูเฉลย" • เฉลยอ้างอิง Appendix A</p>
+
+  <div class="qa">
+    <p class="qq"><span class="n">1.</span>Select the true statement regarding ADS-B system components.</p>
+    <p class="qc">A. ADS-B In transmits line-of-sight signals from aircraft to ATC ground receivers and to aircraft receivers.<br>
+       B. ADS-B Out transmits line-of-sight signals from aircraft to ATC ground receivers and to aircraft receivers.<br>
+       C. ADS-B In receives signals from aircraft and displays their lateral position, altitude, and velocity to controllers.</p>
+    <details><summary>ดูเฉลย</summary><p class="ans">B</p></details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">2.</span>Select the true statement regarding ADS-B services.</p>
+    <p class="qc">A. Regulations require the CDTI to be a dedicated display.<br>
+       B. An effective range of 250 nautical miles enhances traffic conflict detection and resolution.<br>
+       C. ADS-B provides data to ATC that immediately indicates when an aircraft deviates from its assigned flight path.</p>
+    <details><summary>ดูเฉลย</summary><p class="ans">C</p></details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">3.</span>Describe three limitations of radar.</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">The limitations of radar include: bending of radar waves (anomalous propagation), which results in ground clutter; reflection of waves by dense objects, such as heavy clouds, precipitation, ground obstacles, or mountains, which can weaken or eliminate the display of targets at a greater range; and screening by high terrain, which obstructs relatively low-altitude aircraft.</p>
+    </details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">4.</span>Which is true about transponder modes?</p>
+    <p class="qc">A. Mode S provides two-way data link capability and enables ADS-B.<br>
+       B. Mode A provides 4,096 available codes and transmits your airplane's altitude.<br>
+       C. Mode C transmits your airplane's altitude and provides two-way data link capability.</p>
+    <details><summary>ดูเฉลย</summary><p class="ans">A</p></details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">5.</span>List the standard transponder codes to use for VFR flight, hijacking, communication failure, and emergencies.</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">VFR — 1200; hijacking — 7500; two-way communication failure — 7600; emergency — 7700</p>
+    </details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">6.</span>True/False. After landing and when clear of the active runway, you should set the transponder to STBY or OFF.</p>
+    <details><summary>ดูเฉลย</summary><p class="ans">False</p></details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">7.</span>When should you press IDENT on the transponder and what is the purpose of this function?</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">ATC asks you to "ident" to cause the transponder return to blossom on the ATC display for a few seconds, enabling the controller to easily identify you.</p>
+    </details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">8.</span>Which services does Flight Service provide?</p>
+    <p class="qc">A. Weather briefings, NOTAMs, and flight plan filing at 1-800-FLT-SERV or 1800fltserv.com<br>
+       B. Weather briefings, NOTAMs, and flight plan filing at 1-800-WX-BRIEF or 1800wxbrief.com<br>
+       C. Updated weather, flight plan filing, and traffic advisories on 122.2 MHz or the local FSS frequency</p>
+    <details><summary>ดูเฉลย</summary><p class="ans">B</p></details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">9.</span>Which is true regarding search and rescue services (SAR)?</p>
+    <p class="qc">A. Flight Service alerts the SAR system if a phone search to locate your airplane is unsuccessful.<br>
+       B. If you have not closed your flight plan within 15 minutes after your ETA, Flight Service begins a phone search.<br>
+       C. If you have not closed your flight plan within 30 minutes after your ETA, Flight Service immediately alerts the SAR system.</p>
+    <details><summary>ดูเฉลย</summary><p class="ans">A</p></details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">10.</span>Which is a true regarding the services that a control tower provides?</p>
+    <p class="qc">A. Clearance delivery provides taxi clearances with step-by-step routing to the runway.<br>
+       B. In Class D airspace, tower controllers provide you with separation from other VFR aircraft.<br>
+       C. The ATIS broadcasts of airport advisory information are updated when airport conditions change, when any official weather is received, and at the top of each hour.</p>
+    <details><summary>ดูเฉลย</summary><p class="ans">C</p></details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">11.</span>What does it mean if the sky condition and visibility are absent from the ATIS broadcast?</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">If the sky condition and visibility are absent from the ATIS broadcast, it means that the visibility is 5 miles or more and the cloud ceiling is 5,000 feet or higher.</p>
+    </details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">12.</span>Which is a true regarding the services TRACONs and ARTCCs provide?</p>
+    <p class="qc">A. TRACON and ARTCC controllers provide separation between all aircraft.<br>
+       B. TRACON controllers provide traffic advisories, safety alerts, vectoring, and separation between all aircraft in Class B airspace.<br>
+       C. You must obtain a transponder code and departure frequency for flight following when operating at any tower-controlled airport.</p>
+    <details><summary>ดูเฉลย</summary><p class="ans">B</p></details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">13.</span>Which is true regarding ATC services?</p>
+    <p class="qc">A. ATC assumes responsibility for collision avoidance when issuing a traffic advisory.<br>
+       B. ATC issues a safety alert if your airplane is in unsafe proximity to terrain, obstructions, or other aircraft.<br>
+       C. A clearance to operate in Class B airspace relieves you of the responsibility to maintain VFR weather conditions.</p>
+    <details><summary>ดูเฉลย</summary><p class="ans">B</p></details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">14.</span>You are on a heading of 360°. ATC issues this traffic advisory, "Traffic 10 o'clock, 2 miles, southbound." Where should you look?</p>
+    <p class="qc">A. Northwest — between directly ahead and 90° to the left<br>
+       B. Northwest — between directly ahead and 90° to the right<br>
+       C. Northeast — between directly ahead and 90° to the right</p>
+    <details><summary>ดูเฉลย</summary><p class="ans">A</p></details>
+  </div>
+</section>
+
+<footer>
+  สรุปจาก Jeppesen Chapter 5, Section A — ATC Services (หน้า 5-2 ถึง 5-21)<br>
+  สำหรับใช้ทบทวน Ground School • คลิกหัวข้อในสารบัญเพื่อกระโดดไปยังส่วนนั้น
+</footer>
+
+</div>
+</body>
+</html>

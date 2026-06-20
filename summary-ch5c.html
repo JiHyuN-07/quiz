@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สรุป Ch5-C: Sources of Flight Information</title>
+<style>
+  :root{
+    --bg:#f4f7fb; --card:#ffffff; --card2:#eef3f9; --accent:#1769c0; --accent2:#d97706;
+    --red:#dc2626; --green:#16a34a; --text:#1f2a37; --muted:#5c6b7a; --line:#d7e0ea;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; font-family:"Segoe UI","Sarabun",Tahoma,sans-serif; background:var(--bg);
+    color:var(--text); line-height:1.7; font-size:16px;
+  }
+  header{
+    background:linear-gradient(135deg,#2c7fd0,#1769c0); padding:34px 24px; border-bottom:3px solid var(--accent2);
+    color:#fff;
+  }
+  header h1{margin:0; font-size:28px; letter-spacing:.5px; color:#fff;}
+  header .sub{color:#ffe9c9; font-size:15px; margin-top:6px;}
+  header .meta{color:#d6e6f7; font-size:13px; margin-top:10px;}
+  .wrap{max-width:980px; margin:0 auto; padding:24px;}
+  nav.toc{
+    background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 22px; margin-bottom:26px;
+  }
+  nav.toc h2{margin:0 0 10px; font-size:16px; color:var(--accent);}
+  nav.toc ol{margin:0; padding-left:20px; columns:2; column-gap:30px;}
+  nav.toc a{color:var(--text); text-decoration:none; font-size:14px;}
+  nav.toc a:hover{color:var(--accent2); text-decoration:underline;}
+  section{
+    background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px 24px; margin-bottom:22px;
+    scroll-margin-top:14px; box-shadow:0 1px 3px rgba(20,40,70,.06);
+  }
+  h2.sec{
+    margin:0 0 16px; font-size:21px; color:var(--accent); border-left:4px solid var(--accent);
+    padding-left:12px; scroll-margin-top:14px;
+  }
+  h3{font-size:17px; color:var(--accent2); margin:18px 0 8px;}
+  p{margin:8px 0;}
+  ul{margin:8px 0; padding-left:22px;}
+  li{margin:5px 0;}
+  .term{color:var(--accent); font-weight:700;}
+  .en{color:var(--muted); font-style:italic;}
+  .key{
+    background:var(--card2); border-left:3px solid var(--accent2); padding:10px 14px; border-radius:6px;
+    margin:12px 0; font-size:14.5px;
+  }
+  .warn{border-left-color:var(--red);}
+  .num{color:var(--accent2); font-weight:700;}
+  table{width:100%; border-collapse:collapse; margin:12px 0; font-size:14px;}
+  th,td{border:1px solid var(--line); padding:7px 10px; text-align:left; vertical-align:top;}
+  th{background:var(--card2); color:var(--accent);}
+  td.code{font-family:"Consolas",monospace; color:#b45309; letter-spacing:1px;}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:0;}
+  .freq{
+    display:inline-block; background:#fdecd2; color:#b45309; font-family:"Consolas",monospace;
+    padding:1px 7px; border-radius:4px; font-size:13.5px;
+  }
+  .squawk{
+    display:inline-block; background:#fde0e0; color:var(--red); font-family:"Consolas",monospace;
+    padding:1px 7px; border-radius:4px; font-weight:700;
+  }
+  details{background:var(--card2); border:1px solid var(--line); border-radius:8px; padding:10px 14px; margin:10px 0;}
+  summary{cursor:pointer; font-weight:600; color:var(--accent);}
+  details[open] summary{margin-bottom:8px;}
+  .ans{color:var(--green); font-weight:700;}
+  .dot{display:inline-block; width:42px; height:13px; border-radius:3px; vertical-align:middle; margin-right:6px;}
+  .callout-quote{font-style:italic; color:#b45309; background:#fdecd2; padding:8px 12px; border-radius:6px; display:inline-block;}
+  .qa{border-top:1px solid var(--line); padding-top:16px; margin-top:16px;}
+  .qa:first-of-type{border-top:none; padding-top:0; margin-top:0;}
+  .qq{font-weight:700; margin:0 0 10px; color:var(--text);}
+  .qq .n{color:var(--accent2); margin-right:4px;}
+  .qc{background:var(--card2); border-radius:6px; padding:10px 14px; margin:0 0 10px; font-size:14.5px; line-height:1.9;}
+  .qa details{margin:0; background:#effaf1; border-color:#c7e8cd;}
+  .qa summary{color:var(--green); font-weight:700; list-style:none;}
+  .qa summary::-webkit-details-marker{display:none;}
+  .qa summary::before{content:"▼ "; font-size:11px;}
+  .qa details[open] summary::before{content:"▲ ";}
+  .note{background:#eef6fd; border:1px solid #cfe3f6; border-radius:6px; padding:8px 12px; margin:10px 0; font-size:13.5px; color:var(--muted);}
+
+  footer{text-align:center; color:var(--muted); font-size:13px; padding:20px;}
+  @media(max-width:640px){nav.toc ol{columns:1;} .grid3{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Chapter 5 — Section C: Sources of Flight Information</h1>
+  <div class="sub">แหล่งข้อมูลการบิน (Jeppesen Private Pilot)</div>
+  <div class="meta">สรุปเข้มข้น • หน้า 5-42 ถึง 5-56</div>
+</header>
+
+<div class="wrap">
+
+<nav class="toc">
+  <h2>สารบัญ</h2>
+  <ol>
+    <li><a href="#intro">ภาพรวม &amp; การค้นหาข้อมูล (faa.gov)</a></li>
+    <li><a href="#charts">Aeronautical Charts (Sectional/TAC)</a></li>
+    <li><a href="#cs">Chart Supplements</a></li>
+    <li><a href="#afd">Airport/Facility Directory (A/FD)</a></li>
+    <li><a href="#notices">Notices / Associated Data / Airport Diagrams</a></li>
+    <li><a href="#efb">Electronic Flight Bag (EFB)</a></li>
+    <li><a href="#notam">Notices to Airmen (NOTAMs)</a></li>
+    <li><a href="#far">Federal Aviation Regulations (FARs)</a></li>
+    <li><a href="#aim">Aeronautical Information Manual (AIM)</a></li>
+    <li><a href="#ac">Advisory Circulars (ACs)</a></li>
+    <li><a href="#cycles">ตารางรอบอัปเดต (จุดสอบ)</a></li>
+    <li><a href="#summary">Summary Checklist</a></li>
+    <li><a href="#quiz">ข้อสอบท้ายบท + เฉลย</a></li>
+  </ol>
+</nav>
+
+<!-- Intro -->
+<section id="intro">
+  <h2 class="sec">1. ภาพรวม &amp; การค้นหาข้อมูล</h2>
+  <p>เมื่อบินไปสนามที่ไม่คุ้นเคย คำถามมากมายเกิดขึ้น — navaid ปิดซ่อมหรือไม่? มี parachute operations ใกล้เส้นทางไหม? runway ปิดหรือเปล่า? ขั้นตอนเข้า traffic pattern ของสนาม uncontrolled เป็นอย่างไร? เติมน้ำมันได้ไหม? คำตอบทั้งหมดอยู่ใน <span class="term">Sources of Flight Information</span></p>
+  <h3>faa.gov — ศูนย์รวมหลัก</h3>
+  <ul>
+    <li>ค้นหาข้อมูลการบินส่วนใหญ่ที่ต้องใช้บินอย่างปลอดภัยใน <span class="term">National Airspace System (NAS)</span> ได้ที่ faa.gov</li>
+    <li><b>ดาวน์โหลดฟรี</b> หรือสั่งซื้อฉบับพิมพ์จาก <span class="term">approved providers</span></li>
+    <li>หาซื้อได้ที่ร้าน pilot supply</li>
+    <li>สำนักพิมพ์เอกชนหลายรายมีข้อมูลทั้งแบบ print + electronic <b>เทียบเท่า</b> แหล่ง FAA</li>
+  </ul>
+</section>
+
+<!-- Charts -->
+<section id="charts">
+  <h2 class="sec">2. Aeronautical Charts</h2>
+  <ul>
+    <li><span class="term">Sectional charts</span> และ <span class="term">Terminal Area Charts (TACs)</span> = แหล่งอ้างอิงหลักสำหรับการนำทาง <b>VFR</b></li>
+    <li>แสดง: ข้อมูลภูมิประเทศ (topographic), จุดสังเกตสายตา (visual landmarks), ข้อมูลสนามบิน</li>
+    <li>อัปเดต <b>ทุก 6 เดือน</b></li>
+    <li>ดาวน์โหลดจาก faa.gov หรือซื้อฉบับพิมพ์; มีในผลิตภัณฑ์ flight planning เชิงพาณิชย์หลายเจ้า</li>
+  </ul>
+</section>
+
+<!-- Chart Supplements -->
+<section id="cs">
+  <h2 class="sec">3. Chart Supplements</h2>
+  <ul>
+    <li>รวบรวมข้อมูลที่ <b>แสดงเป็นกราฟิกบนแผนที่ได้ไม่สะดวก</b></li>
+    <li>ครอบคลุม: public + joint-use airports, seaplane bases, heliports รวมถึง navaids และ airspace</li>
+    <li>มี <span class="num">9 เล่ม</span> — <b>7 เล่ม</b> ครอบคลุม conterminous U.S. + Puerto Rico + U.S. Virgin Islands และอีก <b>2 เล่ม</b> ครอบคลุม Alaska และ Pacific (รวม Hawaii)</li>
+    <li>อัปเดต <b>ทุก 56 วัน</b></li>
+  </ul>
+  <div class="key"><b>การเข้าถึงที่ faa.gov:</b> ดาวน์โหลด<b>ทั้งเล่ม</b> หรือ<b>ค้นหาเมือง/สนามเฉพาะ</b> ก็ได้ — เมื่อค้นหา สามารถโหลดเฉพาะหน้า A/FD ที่มีสนามที่ต้องการ และโหลดส่วนอื่นแยกต่างหาก</div>
+  <h3>5 ส่วนหลักในแต่ละเล่ม</h3>
+  <ol>
+    <li><b>Airport/Facility Directory Legend</b> — คำอธิบายสัญลักษณ์/รหัส</li>
+    <li><b>Airport/Facility Directory (A/FD)</b> — รายการสนามบิน</li>
+    <li><b>Notices</b> — ประกาศ</li>
+    <li><b>Associated Data</b> — ข้อมูลที่เกี่ยวข้อง</li>
+    <li><b>Airport Diagrams</b> — ผังสนามบิน</li>
+  </ol>
+</section>
+
+<!-- A/FD -->
+<section id="afd">
+  <h2 class="sec">4. Airport/Facility Directory (A/FD)</h2>
+  <p><span class="term">A/FD</span> = รายการบรรยายของ <b>สนามบิน, heliports, seaplane bases ทุกแห่งที่เปิดสาธารณะ</b> — ใช้ <span class="term">A/FD Legend</span> ช่วยตีความข้อมูลในแต่ละ listing</p>
+  <h3>ข้อมูลในแต่ละ listing (เรียงลำดับ)</h3>
+  <table>
+    <tr><th>ส่วน</th><th>มีอะไรบ้าง</th></tr>
+    <tr><td><b>Identification &amp; Location</b></td><td>การแปลงเวลา <b>UTC ↔ local</b>, airport elevation, ชื่อ sectional chart</td></tr>
+    <tr><td><b>Runway Data</b></td><td>ความยาว/กว้าง/พื้นผิว (composition), ประเภทไฟ runway, visual glideslope indicator (ถ้ามี), <b>LAHSO</b> (ระยะลงจอดถึง hold-short point), <b>declared distances</b> (สำหรับ airline/operator ที่มีข้อกำหนดเฉพาะ)</td></tr>
+    <tr><td><b>Airport Services</b></td><td>maintenance, <b>fuel</b>, oxygen — ดูความหมายของ code numbers ใน A/FD legend</td></tr>
+    <tr><td><b>Airport Remarks</b></td><td>วัน/เวลาที่สนาม <b>attended</b> (มีบริการขั้นต่ำ เช่น น้ำมัน) + ข้อมูลความปลอดภัยที่ permanent หรือนานเกิน <b>30 วัน</b></td></tr>
+    <tr><td><b>Weather Data Sources</b></td><td>เบอร์โทร + ความถี่ ขอข้อมูลอากาศของสนาม</td></tr>
+    <tr><td><b>Communications</b></td><td>ความถี่ ATIS, UNICOM, Flight Service, tower, ground control, approach, departure</td></tr>
+    <tr><td><b>Airspace</b></td><td>ประเภท airspace รอบสนาม; ถ้าเป็น part-time Class C/D/E จะระบุ effective times</td></tr>
+    <tr><td><b>Navaid</b></td><td>ความถี่ VOR test facility (VOT) ถ้ามี, navaid NOTAM file identifier, รวม identifier/ความถี่/ตำแหน่ง/ข้อจำกัด ของ navaid ที่เกี่ยวข้อง</td></tr>
+  </table>
+</section>
+
+<!-- Notices -->
+<section id="notices">
+  <h2 class="sec">5. Notices / Associated Data / Airport Diagrams</h2>
+  <h3>Notices — มี 3 ชนิด</h3>
+  <table>
+    <tr><th>ชนิด</th><th>เนื้อหา</th></tr>
+    <tr><td><b>Aeronautical Chart Bulletins</b></td><td>การเปลี่ยนแปลง<b>สำคัญ</b>ของ airspace/airports/navaids ที่เกิดขึ้น<b>หลัง</b>วันพิมพ์ล่าสุดของ sectional/TAC แต่ละฉบับ</td></tr>
+    <tr><td><b>Special Notices</b></td><td>ข้อจำกัด/ขั้นตอนปฏิบัติ<b>เฉพาะ</b>ของบางสนาม/airspace (เช่น aerobatic flight, UAV operations, noise abatement)</td></tr>
+    <tr><td><b>Regulatory Notices</b></td><td>สรุป special air traffic rules + airport traffic patterns ที่กำหนดใน <b>FAR Part 93</b></td></tr>
+  </table>
+  <h3>Associated Data</h3>
+  <ul>
+    <li>เบอร์โทร + ความถี่ของ ATC facilities และ Flight Service</li>
+    <li>VOR receiver checkpoints และ VOR test facilities (VOT)</li>
+    <li>parachute jumping areas</li>
+  </ul>
+  <h3>Airport Diagrams</h3>
+  <ul>
+    <li>ผังสนาม towered ส่วนใหญ่ + nontowered บางแห่งที่คัดเลือก</li>
+    <li>ข้อมูล <b>runway incursion hot spots</b></li>
+    <li>ละเอียดกว่า airport sketches เล็กๆ ใน A/FD listing</li>
+  </ul>
+  <details>
+    <summary>กล่องเสริม: Airport Qualification Charts</summary>
+    <p>FARs กำหนดให้นักบิน air carrier ต้องมี <b>special qualifications</b> เพื่อขึ้น/ลงบางสนามที่มีข้อพิจารณาพิเศษ (ภูมิประเทศโดยรอบ, สิ่งกีดขวาง, approach/departure ซับซ้อน) — ภายใน <b>12 เดือนปฏิทินก่อน</b>ปฏิบัติการ PIC ต้องเคย takeoff + landing ที่สนามนั้น หรือใช้ approved visual training aids เช่น <b>Airport Qualification Charts</b> ซึ่งมีรูปสนาม, คำบรรยาย terrain/obstacles, สภาพอากาศทั่วไป และข้อมูลเฉพาะอื่นๆ</p>
+  </details>
+</section>
+
+<!-- EFB -->
+<section id="efb">
+  <h2 class="sec">6. Electronic Flight Bag (EFB)</h2>
+  <ul>
+    <li>ใช้ได้ทั้งตอน <b>วางแผนการบิน</b> และ<b>ทุกเฟสของการบิน</b></li>
+    <li>แสดงข้อมูลหลากหลาย: airport information, airport diagrams, moving map, weather displays, flight plans, routes, checklists, aircraft performance charts, logbooks</li>
+  </ul>
+  <div class="key">💡 ต้อง<b>เข้าใจฟีเจอร์ของ EFB อย่างถ่องแท้</b> จึงจะดึงข้อมูลมาใช้ได้อย่างมีประสิทธิภาพ</div>
+</section>
+
+<!-- NOTAM -->
+<section id="notam">
+  <h2 class="sec">7. Notices to Airmen (NOTAMs)</h2>
+  <p>บ่อยครั้งที่ข้อมูลเปลี่ยนแปลงเร็วเกินกว่าจะใส่ลงใน chart หรือ Chart Supplement ฉบับล่าสุดได้ทัน — <span class="term">NOTAMs</span> จึงให้ข้อมูลวางแผนการบินแบบ <b>time-critical</b> เกี่ยวกับ facility/service/procedure/hazard</p>
+  <div class="key"><b>ตัวอย่าง NOTAM:</b> TFRs (temporary flight restrictions), ปิด primary runway, สิ่งกีดขวางใหม่, เปลี่ยนความถี่สื่อสาร, เปลี่ยนสถานะ navaid/airspace, สถานะ radar service และข้อมูลอื่นที่จำเป็นต่อการตัดสินใจ</div>
+  <h3>2 ชนิดหลักที่ต้องเข้าใจ</h3>
+  <table>
+    <tr><th>ชนิด</th><th>รายละเอียด</th></tr>
+    <tr><td><b>NOTAM(D)</b><br>(distant NOTAM)</td><td>เผยแพร่สำหรับ <b>navigational facilities ทุกแห่ง</b>ใน NAS และ <b>public use airports/seaplane bases/heliports ทุกแห่ง</b>ที่อยู่ใน Chart Supplements</td></tr>
+    <tr><td><b>FDC NOTAM</b></td><td>ออกโดย <span class="term">National Flight Data Center</span> — มีข้อมูล <b>regulatory</b> เช่น TFRs หรือการแก้ไข (amendments) aeronautical charts</td></tr>
+  </table>
+  <div class="key"><b>Center Area NOTAM</b> = FDC NOTAM ที่ออกสำหรับเงื่อนไขซึ่ง<b>ไม่จำกัดแค่สนามเดียว</b> จึง filed ไว้ใต้ <b>ARTCC</b> ที่ควบคุม airspace นั้น (เช่น TFRs, airway changes, laser light activity)</div>
+  <h3>NTAP &amp; แหล่งรับ NOTAM</h3>
+  <ul>
+    <li><span class="term">Notices to Airmen Publication (NTAP)</span> — ออก <b>ทุก 28 วัน</b>, รวม NOTAM(D) + FDC NOTAM ที่เป็น<b>ลักษณะถาวร</b> เป็น<b>ขั้นกลาง (interim)</b> ระหว่างรอบพิมพ์ของ Chart Supplements และ aeronautical charts</li>
+    <li>รับ NOTAM ได้จาก: ดาวน์โหลด/สั่ง NTAP ที่ faa.gov, online weather briefing, ขอตอน phone briefing, FAA tool ค้นหา online, หรือดูผ่าน EFB</li>
+  </ul>
+</section>
+
+<!-- FAR -->
+<section id="far">
+  <h2 class="sec">8. Federal Aviation Regulations (FARs)</h2>
+  <ul>
+    <li><span class="term">Code of Federal Regulations (CFR)</span> = ตัวบทอย่างเป็นทางการของ public regulations จากหน่วยงานรัฐบาลกลาง แบ่งเป็น <b>titles</b> ตามหัวข้อ</li>
+    <li><span class="term">FARs</span> อยู่ใต้ <b>title 14 "Aeronautics and Space"</b></li>
+    <li>FARs แบ่งเป็น <b>parts</b> → แต่ละ part แบ่งเป็น <b>sections</b> (เจาะจง 1 ข้อบังคับ)</li>
+    <li>การอ้างอิง: <span class="code">14 CFR section 91.3</span> = <span class="code">FAR 91.3</span> (รูปแบบเดียวกัน)</li>
+  </ul>
+  <div class="key">🎓 <b>Private Pilot ควรเน้น:</b> FAR Part <b>61</b> (การออกใบอนุญาตนักบิน/ครูการบิน) · FAR Part <b>91</b> (กฎการบินทั่วไป) · <b>NTSB 830</b> (การรายงานอุบัติเหตุ/อุบัติการณ์)</div>
+  <h3>Federal Register</h3>
+  <ul>
+    <li>มี <span class="term">Notices of Proposed Rulemaking (NPRM)</span> แจ้งให้นักบินทราบถึง<b>การเปลี่ยนแปลงข้อบังคับที่กำลังพิจารณา</b></li>
+    <li>การออก NPRM เปิดให้ผู้สนใจมีเวลา<b>แสดงความเห็น</b>และเสนอแนวคิดที่อาจมีผลต่อ final rule</li>
+    <li>อ่าน preamble ของ final rule มักช่วยให้เข้าใจ<b>เจตนา</b>เบื้องหลังข้อบังคับ</li>
+  </ul>
+</section>
+
+<!-- AIM -->
+<section id="aim">
+  <h2 class="sec">9. Aeronautical Information Manual (AIM)</h2>
+  <ul>
+    <li>มี<b>ข้อมูลการบินพื้นฐาน</b>และ <b>ATC procedures</b> สำหรับการบิน VFR และ IFR ใน NAS</li>
+    <li>รวมเรื่องที่นักบินสนใจเป็นพิเศษ เช่น medical facts และข้อมูลความปลอดภัยอื่นๆ</li>
+    <li>ปรับปรุง<b>หลายครั้งต่อปี</b>; คำอธิบายการเปลี่ยนแปลงอยู่หน้าแรกและทำเครื่องหมายในเนื้อหา</li>
+    <li>FARs + AIM มักพิมพ์รวมเป็นเล่มเดียวกันชื่อ <span class="term">FAR/AIM</span></li>
+  </ul>
+  <h3>10 บทของ AIM</h3>
+  <table>
+    <tr><th>บท</th><th>หัวข้อ</th><th>บท</th><th>หัวข้อ</th></tr>
+    <tr><td>1</td><td>Navigation Aids</td><td>6</td><td>Emergency Procedures</td></tr>
+    <tr><td>2</td><td>Aeronautical Lighting &amp; Other Airport Visual Aids</td><td>7</td><td>Safety of Flight</td></tr>
+    <tr><td>3</td><td>Airspace</td><td>8</td><td>Medical Facts for Pilots</td></tr>
+    <tr><td>4</td><td>Air Traffic Control</td><td>9</td><td>Aeronautical Charts &amp; Related Publications</td></tr>
+    <tr><td>5</td><td>Air Traffic Procedures</td><td>10</td><td>Helicopter Operations</td></tr>
+  </table>
+  <details>
+    <summary>กล่องเสริม: FAA Safety Briefing</summary>
+    <p>นิตยสาร<b>ราย 2 เดือน</b>สำหรับ GA ที่ไม่เชิงพาณิชย์ เน้นเรื่อง safety + regulatory, อธิบายทรัพยากรของ FAA และส่งเสริมการฝึกต่อเนื่อง — ครอบคลุม preflight inspections, ATC services, special use airspace, cockpit technology, medical certification นอกจากนี้ <b>GA Safety Enhancement Topic Fact Sheets</b> เจาะหัวข้อ เช่น mountain flying, personal minimums, maneuvering flight (ดาวน์โหลดที่ faa.gov)</p>
+  </details>
+</section>
+
+<!-- AC -->
+<section id="ac">
+  <h2 class="sec">10. Advisory Circulars (ACs)</h2>
+  <ul>
+    <li>FAA ออก ACs เพื่อให้<b>คำแนะนำที่ไม่ใช่ข้อบังคับ (nonregulatory)</b> ในหลายหัวข้อ</li>
+    <li>อธิบาย<b>วิธีปฏิบัติให้สอดคล้องกับ FARs</b></li>
+    <li>เนื้อหา AC <b>ไม่ผูกพันทางกฎหมาย</b> เว้นแต่ถูก incorporate เข้าไปในข้อบังคับโดยการอ้างอิง (by reference)</li>
+    <li>ดาวน์โหลดได้จาก faa.gov</li>
+  </ul>
+</section>
+
+<!-- Update cycles -->
+<section id="cycles">
+  <h2 class="sec">11. ตารางรอบอัปเดต (จุดสอบสำคัญ)</h2>
+  <table>
+    <tr><th>สิ่งพิมพ์</th><th>รอบอัปเดต</th></tr>
+    <tr><td>Sectional charts / Terminal Area Charts (TAC)</td><td><b>ทุก 6 เดือน</b></td></tr>
+    <tr><td>Chart Supplements (9 เล่ม)</td><td><b>ทุก 56 วัน</b></td></tr>
+    <tr><td>Notices to Airmen Publication (NTAP)</td><td><b>ทุก 28 วัน</b></td></tr>
+    <tr><td>Aeronautical Information Manual (AIM)</td><td>หลายครั้งต่อปี</td></tr>
+    <tr><td>FAA Safety Briefing (นิตยสาร)</td><td>ราย 2 เดือน</td></tr>
+  </table>
+</section>
+
+<!-- Summary -->
+<section id="summary">
+  <h2 class="sec">12. Summary Checklist (สรุปจุดสอบ)</h2>
+  <ul>
+    <li>faa.gov = แหล่งหลัก ดาวน์โหลดฟรี/สั่งพิมพ์; สำนักพิมพ์เอกชนมีข้อมูลเทียบเท่า</li>
+    <li>Sectional + TAC = อ้างอิงหลัก VFR, อัปเดต <b>ทุก 6 เดือน</b></li>
+    <li>Chart Supplements = ข้อมูลที่ลงกราฟิกบนแผนที่ไม่สะดวก, <b>9 เล่ม</b>, อัปเดต <b>ทุก 56 วัน</b>, ค้นหาเมือง/สนามได้</li>
+    <li>A/FD = รายการสนาม/heliport/seaplane base ที่เปิดสาธารณะ — มี identification &amp; location, runway data, services (maintenance/fuel/oxygen), weather data sources, ความถี่สื่อสาร/navaid, airspace</li>
+    <li>Notices: Aeronautical Chart Bulletins (เปลี่ยนแปลงสำคัญหลังพิมพ์ chart) / Special Notices (aerobatic, UAV, noise abatement) / Regulatory Notices (FAR Part 93)</li>
+    <li>Associated Data = ความถี่ ATC/Flight Service, VOR checkpoints &amp; VOT, parachute jumping areas</li>
+    <li>Airport Diagrams = ผังสนาม + runway incursion hot spots</li>
+    <li>EFB = แสดงข้อมูลการบินหลากหลายทุกเฟส</li>
+    <li>NOTAMs = ข้อมูล time-critical; <b>NOTAM(D)</b> สำหรับ navaid + public use airports; <b>FDC NOTAM</b> = regulatory (TFR/แก้ไข chart)</li>
+    <li>NTAP = ออก <b>ทุก 28 วัน</b>, รวม NOTAM ถาวร เป็นขั้นกลางระหว่างรอบพิมพ์</li>
+    <li>FARs = อยู่ใต้ <b>title 14</b> ของ CFR; private pilot เน้น Part 61, Part 91, NTSB 830</li>
+    <li>Federal Register มี NPRM (แจ้งการเปลี่ยน regulation ที่กำลังพิจารณา)</li>
+    <li>AIM = ข้อมูลการบินพื้นฐาน + ATC procedures (VFR/IFR)</li>
+    <li>ACs = คำแนะนำ nonregulatory + วิธีปฏิบัติตาม FARs (ไม่ผูกพันเว้นแต่ถูกอ้างอิงในข้อบังคับ)</li>
+  </ul>
+</section>
+
+<!-- Quiz -->
+<section id="quiz">
+  <h2 class="sec">13. ข้อสอบท้ายบท + เฉลย</h2>
+  <p class="en">คำถามภาษาอังกฤษจากท้ายบท Ch5-C จริง • อ่านคำถาม/ช้อยส์ก่อน แล้วกด "ดูเฉลย" • เฉลยอ้างอิง Appendix A</p>
+
+  <div class="qa">
+    <p class="qq"><span class="n">1.</span>Select the true statement regarding Chart Supplements.</p>
+    <p class="qc">A. The seven volumes of Chart Supplements are updated every year.<br>
+       B. At faa.gov, you can search for a specific city or airport to obtain Chart Supplement information.<br>
+       C. Each Chart Supplement contains an Airport/Facility Directory, airport diagrams, and sectional charts that cover a specific region.</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">B</p>
+    </details>
+  </div>
+
+  <div class="note">📋 ข้อ 2–6 อ้างอิงจาก <b>Airport/Facility Directory listing</b> (สนาม Lee Bird Field) ที่แสดงเป็นภาพในตำรา</div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">2.</span>What is the distance and direction of Lee Bird Field from the city? What is the airport elevation?</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">3 nautical miles east; 2,777 feet MSL</p>
+    </details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">3.</span>How many feet long and wide is the longest runway at Lee Bird Field?</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">Runway 12L/30R is 8,001 feet long and 150 feet wide.</p>
+    </details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">4.</span>You are landing at Lee Bird Field at 10:00 p.m. local time. Will you be able to obtain fuel? What information in this listing did you use to determine this?</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">Yes, you will be able to obtain fuel. To convert local time to UTC, add 6 hours to obtain 1600Z as your estimated time of arrival. (The identification and location information at the top of the chart indicates that to convert local to UTC, you must subtract 6 hours; UTC −6.) The Services section shows that 100LL is available and the Airport Remarks indicate that the airport is attended from 1200 to 0500Z.</p>
+    </details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">5.</span>What are the frequencies for ASOS, UNICOM, and the navaid, LBF VORTAC?</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">ASOS — <span class="freq">118.425</span>&nbsp;&nbsp; UNICOM — <span class="freq">123.0</span>&nbsp;&nbsp; LBF VORTAC — <span class="freq">117.4</span></p>
+    </details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">6.</span>In what section of a Chart Supplement can you find information about runway incursion hot spots?</p>
+    <p class="qc">A. Special Notices<br>
+       B. Associated Data<br>
+       C. Airport Diagrams</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">C</p>
+    </details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">7.</span>Explain the differences between NOTAM(D)s and FDC NOTAMs.</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">NOTAM(D) (distant NOTAM) information is disseminated for all navigational facilities that are part of the U.S. airspace system, and all public use airports, seaplane bases, and heliports listed in the Chart Supplements. FDC NOTAMs, issued by the National Flight Data Center, contain regulatory information, such as TFRs or amendments to aeronautical charts.</p>
+    </details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">8.</span>Select the true statement about the Federal Aviation Regulations (FARs).</p>
+    <p class="qc">A. FAR 2-3-9 is a standard way to list a specific regulation.<br>
+       B. FAR Part 91 covers the certification of pilots and flight instructors.<br>
+       C. The FARs are under subject title 14, Aeronautics and Space in the Code of Federal Regulations (CFR).</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">C</p>
+    </details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">9.</span>True/False. Advisory circulars provide regulatory guidance for VFR and IFR operations in the National Airspace System.</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">False</p>
+    </details>
+  </div>
+</section>
+
+<footer>
+  สรุปจาก Jeppesen Chapter 5, Section C — Sources of Flight Information (หน้า 5-42 ถึง 5-56)<br>
+  สำหรับใช้ทบทวน Ground School • คลิกหัวข้อในสารบัญเพื่อกระโดดไปยังส่วนนั้น
+</footer>
+
+</div>
+</body>
+</html>
