@@ -456,7 +456,14 @@ function normalize(s) {
   return s.trim().replace(/['']/g,"'").replace(/\s+/g,' ');
 }
 
+let answersShown = false;
+
+function setShowButtons(text) {
+  ['btnShow','btnShow2'].forEach(id => { const b = document.getElementById(id); if (b) b.textContent = text; });
+}
+
 function checkAll() {
+  if (answersShown) hideAnswers();   // ปิดเฉลยก่อน เพื่อตรวจคำตอบจริงของผู้ใช้
   const inputs = document.querySelectorAll('input[data-answer]');
   let correct = 0, total = inputs.length;
   inputs.forEach(inp => {
@@ -483,27 +490,55 @@ function checkAll() {
   scoreBar.className = 'score-bar ' + (pct >= 70 ? 'score-pass' : 'score-fail');
 }
 
+// 👁 ดูเฉลย = ปุ่มสลับ (กดซ้ำเพื่อปิด โดยไม่ลบคำตอบที่พิมพ์ไว้)
 function showAll() {
+  if (answersShown) hideAnswers(); else revealAnswers();
+}
+
+function revealAnswers() {
   const inputs = document.querySelectorAll('input[data-answer]');
   inputs.forEach(inp => {
+    inp.dataset.userValue = inp.value;          // จำคำตอบที่ผู้ใช้พิมพ์ไว้
     inp.classList.remove('correct','incorrect');
-    if (normalize(inp.value) === normalize(inp.dataset.answer)) {
-      inp.classList.add('correct');
+    if (inp.value.trim() !== '' && normalize(inp.value) === normalize(inp.dataset.answer)) {
+      inp.classList.add('correct');             // ตอบถูกเอง
     } else {
-      inp.value = inp.dataset.answer;
+      inp.value = inp.dataset.answer;           // โชว์เฉลย
       inp.classList.add('show-answer');
     }
   });
-  document.getElementById('scoreBar').textContent = 'แสดงเฉลยทั้งหมดแล้ว (สีเหลือง = เพิ่งเฉลย, สีเขียว = ตอบถูกเอง)';
-  document.getElementById('scoreBar').className = 'score-bar';
+  answersShown = true;
+  setShowButtons('🙈 ซ่อนเฉลย');
+  const sb = document.getElementById('scoreBar');
+  sb.textContent = 'กำลังแสดงเฉลย — กด "ซ่อนเฉลย" เพื่อปิดแล้วทำต่อ (คำตอบที่พิมพ์ไว้ไม่หาย)';
+  sb.className = 'score-bar';
+}
+
+function hideAnswers() {
+  const inputs = document.querySelectorAll('input[data-answer]');
+  inputs.forEach(inp => {
+    if (inp.dataset.userValue !== undefined) {
+      inp.value = inp.dataset.userValue;        // คืนคำตอบเดิมของผู้ใช้
+      delete inp.dataset.userValue;
+    }
+    inp.classList.remove('correct','incorrect','show-answer');
+  });
+  answersShown = false;
+  setShowButtons('👁 ดูเฉลย');
+  const sb = document.getElementById('scoreBar');
+  sb.textContent = '';
+  sb.className = 'score-bar';
 }
 
 function resetAll() {
   const inputs = document.querySelectorAll('input[data-answer]');
   inputs.forEach(inp => {
     inp.value = '';
+    delete inp.dataset.userValue;
     inp.classList.remove('correct','incorrect','show-answer');
   });
+  answersShown = false;
+  setShowButtons('👁 ดูเฉลย');
   document.getElementById('scoreBar').textContent = '';
   document.getElementById('scoreBar').className = 'score-bar';
 }
