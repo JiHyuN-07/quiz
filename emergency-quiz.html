@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEST CT-4 E EMERGENCY PROCEDURE & LIMITATION</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    background: #f0f0f0;
+    padding: 20px;
+  }
+  .page {
+    background: white;
+    max-width: 1100px;
+    margin: 0 auto 30px auto;
+    padding: 30px 40px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  h1 {
+    font-size: 15px;
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 10px;
+    text-decoration: underline;
+    letter-spacing: 1px;
+  }
+  .name-row {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 8px;
+  }
+  .name-row span { font-weight: bold; }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 40px;
+  }
+  .section {
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-weight: bold;
+    margin-bottom: 4px;
+    font-size: 13px;
+  }
+  .note-text {
+    font-style: italic;
+    color: #444;
+    margin: 2px 0 2px 10px;
+    font-size: 12px;
+  }
+  .item {
+    display: flex;
+    align-items: baseline;
+    margin: 3px 0;
+    gap: 6px;
+  }
+  .item-num {
+    min-width: 18px;
+    font-size: 12px;
+    color: #555;
+  }
+  .blank {
+    border: none;
+    border-bottom: 1.5px solid #555;
+    outline: none;
+    font-size: 12px;
+    padding: 1px 4px;
+    background: transparent;
+    min-width: 80px;
+    flex: 1;
+    font-family: Arial, sans-serif;
+    transition: background 0.3s;
+  }
+  .blank.label-blank { flex: 0 0 150px; min-width: 150px; }
+  .blank.correct { background: #c8f7c5; border-bottom-color: #27ae60; color: #1a7a4a; }
+  .blank.incorrect { background: #ffd5d5; border-bottom-color: #e74c3c; color: #c0392b; }
+  .blank.show-answer { background: #fff3cd; border-bottom-color: #f39c12; }
+
+  .inline-blank {
+    border: none;
+    border-bottom: 1.5px solid #555;
+    outline: none;
+    font-size: 12px;
+    padding: 1px 4px;
+    background: transparent;
+    min-width: 60px;
+    font-family: Arial, sans-serif;
+    transition: background 0.3s;
+  }
+  .inline-blank.correct { background: #c8f7c5; border-bottom-color: #27ae60; color: #1a7a4a; }
+  .inline-blank.incorrect { background: #ffd5d5; border-bottom-color: #e74c3c; color: #c0392b; }
+  .inline-blank.show-answer { background: #fff3cd; border-bottom-color: #f39c12; }
+
+  .vacate { font-weight: bold; margin: 4px 0 4px 18px; font-size: 12px; }
+  .indent { margin-left: 18px; }
+
+  .btn-bar {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  button {
+    padding: 10px 28px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: opacity 0.2s;
+  }
+  button:hover { opacity: 0.85; }
+  #btnCheck, #btnCheck2 { background: #27ae60; color: white; }
+  #btnReset, #btnReset2 { background: #e74c3c; color: white; }
+  #btnShow, #btnShow2  { background: #f39c12; color: white; }
+
+  .score-bar {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    color: #2c3e50;
+    min-height: 24px;
+  }
+  .score-pass { color: #27ae60; }
+  .score-fail { color: #e74c3c; }
+
+  .lim-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 4px;
+  }
+  .lim-table td {
+    padding: 2px 4px;
+    font-size: 12px;
+    vertical-align: middle;
+  }
+  .lim-table td:first-child { padding-left: 0; }
+  .lim-right { text-align: right; width: 90px; }
+  .lim-unit { width: 60px; }
+
+  hr.section-div {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 10px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="btn-bar">
+  <button id="btnCheck" onclick="checkAll()">✓ ตรวจคำตอบ</button>
+  <button id="btnShow"  onclick="showAll()">👁 ดูเฉลย</button>
+  <button id="btnReset" onclick="resetAll()">↺ เริ่มใหม่</button>
+</div>
+<div class="score-bar" id="scoreBar"></div>
+
+<!-- ==================== PAGE 1 ==================== -->
+<div class="page">
+  <h1>TEST CT-4 E EMERGENCY PROCEDURE</h1>
+  <div class="name-row"><span>NAME</span> &nbsp;&nbsp;&nbsp; <span>CLASS</span> &nbsp;&nbsp;&nbsp; <span>DATE</span></div>
+
+  <div class="two-col">
+  <!-- LEFT COLUMN -->
+  <div>
+
+    <!-- Critical Action -->
+    <div class="section">
+      <div class="section-title">Critical Action</div>
+      <div class="item"><span class="item-num">1.</span><input class="blank" data-answer="Maintain aircraft control"></div>
+      <div class="item"><span class="item-num">2.</span><input class="blank" data-answer="Analyze the situation and take proper action"></div>
+      <div class="item"><span class="item-num">3.</span><input class="blank" data-answer="Land as soon as possible or practicable"></div>
+    </div>
+
+    <!-- Engine Failure During Take Off Roll -->
+    <div class="section">
+      <div class="section-title">Engine Failure During Take Off Roll</div>
+      <div class="item"><span class="item-num">1.</span><input class="blank label-blank" data-answer="Mixture Lever"><input class="blank" data-answer="Idle Cut Off"></div>
+      <div class="item"><span class="item-num">2.</span><input class="blank label-blank" data-answer="Throttle"><input class="blank" data-answer="Closed"></div>
+      <div class="item"><span class="item-num">3.</span><input class="blank label-blank" data-answer="Fuel Boost Pump"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">4.</span><input class="blank label-blank" data-answer="Ignition Switch"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">5.</span><input class="blank label-blank" data-answer="Fuel Cock"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">6.</span><input class="blank label-blank" data-answer="Master Switch"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">7.</span><input class="blank label-blank" data-answer="Brakes"><input class="blank" data-answer="Apply"></div>
+      <div class="vacate">Vacate Aircraft</div>
+    </div>
+
+    <!-- Engine Failure Immediately After Take Off -->
+    <div class="section">
+      <div class="section-title">Engine Failure Immediately After Take Off</div>
+      <div class="item">Establish Attitude For <input class="inline-blank" data-answer="85" style="width:50px"> KTS</div>
+      <div class="item">Plan Approach</div>
+      <div class="note-text">(Height will determine choice of landing area)</div>
+      <div class="item"><span class="item-num">1.</span><input class="blank label-blank" data-answer="Flaps"><input class="blank" data-answer="As Required"></div>
+      <div class="item"><span class="item-num">2.</span><input class="blank label-blank" data-answer="Radio Call"><input class="blank" data-answer="Transmit"></div>
+      <div class="item"><span class="item-num">3.</span><input class="blank label-blank" data-answer="Throttle"><input class="blank" data-answer="Closed"></div>
+      <div class="item"><span class="item-num">4.</span><input class="blank label-blank" data-answer="Mixture Lever"><input class="blank" data-answer="Idle Cut Off"></div>
+      <div class="item"><span class="item-num">5.</span><input class="blank label-blank" data-answer="Fuel Boost Pump"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">6.</span><input class="blank label-blank" data-answer="Ignition Switch"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">7.</span><input class="blank label-blank" data-answer="Fuel Cock"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">8.</span><input class="blank label-blank" data-answer="Master Switch"><input class="blank" data-answer="Off (After flaps)"></div>
+      <div class="vacate">Vacate Aircraft</div>
+    </div>
+
+    <!-- Engine/Fuselage Fire On Ground -->
+    <div class="section">
+      <div class="section-title">Engine/Fuselage Fire On Ground</div>
+      <div class="item"><span class="item-num">1.</span><input class="blank label-blank" data-answer="Radio Call"><input class="blank" data-answer="Transmit"></div>
+      <div class="item"><span class="item-num">2.</span><input class="blank label-blank" data-answer="Throttle"><input class="blank" data-answer="Closed"></div>
+      <div class="item"><span class="item-num">3.</span><input class="blank label-blank" data-answer="Mixture Lever"><input class="blank" data-answer="Idle Cut Off"></div>
+      <div class="item"><span class="item-num">4.</span><input class="blank label-blank" data-answer="Ignition Switch"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">5.</span><input class="blank label-blank" data-answer="Master Switch"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">6.</span><input class="blank label-blank" data-answer="Fuel Cock"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">7.</span><input class="blank label-blank" data-answer="Brakes"><input class="blank" data-answer="Release"></div>
+      <div class="vacate">Vacate Aircraft</div>
+    </div>
+
+    <!-- Engine Fire In Flight -->
+    <div class="section">
+      <div class="section-title">Engine Fire In Flight</div>
+      <div class="item"><span class="item-num">1.</span><input class="blank label-blank" data-answer="Throttle"><input class="blank" data-answer="Closed"></div>
+      <div class="item"><span class="item-num">2.</span><input class="blank label-blank" data-answer="Airspeed"><input class="blank" data-answer="Glide"></div>
+      <div class="item"><span class="item-num">3.</span><input class="blank label-blank" data-answer="Propeller Lever"><input class="blank" data-answer="AFT"></div>
+      <div class="item"><span class="item-num">4.</span><input class="blank label-blank" data-answer="Mixture Lever"><input class="blank" data-answer="Idle Cut Off"></div>
+      <div class="item"><span class="item-num">5.</span><input class="blank label-blank" data-answer="Fuel Boost Pump"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">6.</span><input class="blank label-blank" data-answer="Fuel Cock"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">7.</span><input class="blank label-blank" data-answer="Ignition Switch"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">8.</span><input class="blank label-blank" data-answer="Cockpit Air"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">9.</span><input class="blank label-blank" data-answer="Decision"><input class="blank" data-answer="Bale-Out/Landing"></div>
+      <div class="item"><span class="item-num">10.</span><input class="blank label-blank" data-answer="Radio Call"><input class="blank" data-answer="Transmit"></div>
+      <div class="note-text">(If fire persists, try sideslipping)</div>
+    </div>
+
+  </div><!-- end left -->
+
+  <!-- RIGHT COLUMN -->
+  <div>
+
+    <!-- Fuselage Fire In Air -->
+    <div class="section">
+      <div class="section-title">Fuselage Fire In Air</div>
+      <div class="item"><span class="item-num">1.</span><input class="blank label-blank" data-answer="Cockpit Air"><input class="blank" data-answer="Full Open"></div>
+      <div class="item"><span class="item-num">2.</span><input class="blank label-blank" data-answer="Non-Essential Electrics"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">3.</span><input class="blank label-blank" data-answer="Fire Extinguisher"><input class="blank" data-answer="Use"></div>
+      <div class="note-text">(The fire extinguisher may cause irritation to eyes and lungs)</div>
+      <div class="item indent">Land</div>
+      <div class="note-text">(If fire persists, consider jettison of canopy or bale-out)</div>
+    </div>
+
+    <!-- Electric Trim Runaway -->
+    <div class="section">
+      <div class="section-title">Electric Trim Runaway</div>
+      <div class="item"><span class="item-num">1.</span><input class="blank label-blank" data-answer="Trim Interrupt Switch"><input class="blank" data-answer="Forward"></div>
+      <div class="note-text">(After a nose down trim runaway, <input class="inline-blank" data-answer="reduce control loading by maintaining speed below 100 KTS with half flaps" style="width:280px"> )</div>
+      <div class="note-text">(After a nose up trim runaway, <input class="inline-blank" data-answer="select flaps up and keep speed above 70 KTS" style="width:280px"> )</div>
+    </div>
+
+    <!-- Alternator Failure -->
+    <div class="section">
+      <div class="section-title">Alternator Failure</div>
+      <div class="note-text">(Alternator failure will be indicated by the alternator current on the voltmeter reading zero)</div>
+      <div class="item"><span class="item-num">1.</span><input class="blank label-blank" data-answer="Alternator Switch"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">2.</span><input class="blank label-blank" data-answer="Non-Essential Electrics"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">3.</span><input class="blank label-blank" data-answer="Circuit Breakers"><input class="blank" data-answer="In"></div>
+      <div class="note-text">(Check "Alternator" and "Alternator Field" circuit breakers.</div>
+      <div class="note-text">If set, <input class="inline-blank" data-answer="land as soon as practicable" style="width:200px"></div>
+      <div class="note-text">If either circuit breaker has open circuited, reset <input class="inline-blank" data-answer="ONCE" style="width:60px"> only and <input class="inline-blank" data-answer="reselect alternator on" style="width:160px">.</div>
+      <div class="note-text">If alternator operation is regained, <input class="inline-blank" data-answer="continue flight" style="width:140px"></div>
+      <div class="note-text">If alternator operation is not regained, <input class="inline-blank" data-answer="reselect alternator off and land as soon as practicable" style="width:280px"> )</div>
+    </div>
+
+    <!-- Engine Failure In Flight FLWOP -->
+    <div class="section">
+      <div class="section-title">Engine Failure In Flight – FLWOP</div>
+      <div class="item indent">Convert Excess Speed To Height</div>
+      <div class="item indent">Maintain Glide Speed</div>
+      <div class="item"><span class="item-num">1.</span><input class="blank label-blank" data-answer="Throttle"><input class="blank" data-answer="Closed"></div>
+      <div class="note-text">Trouble Checks (Check <input class="inline-blank" data-answer="fuel contents, fuel cock, ignition, mixture" style="width:260px"> )</div>
+      <div class="note-text">If Unsuccessful With Engine Restart</div>
+      <div class="item"><span class="item-num">2.</span><input class="blank label-blank" data-answer="Mixture Lever"><input class="blank" data-answer="Idle Cut Off"></div>
+      <div class="item"><span class="item-num">3.</span><input class="blank label-blank" data-answer="Fuel Boost Pump"><input class="blank" data-answer="Off"></div>
+    </div>
+
+    <!-- Engine Failure In Flight -->
+    <div class="section">
+      <div class="section-title">Engine Failure In Flight</div>
+      <div class="item indent">Plan Approach</div>
+      <div class="item"><span class="item-num">1.</span><input class="blank label-blank" data-answer="Decision"><input class="blank" data-answer="Force Land"></div>
+      <div class="item"><span class="item-num">2.</span><input class="blank label-blank" data-answer="Radio Call"><input class="blank" data-answer="Transmit"></div>
+      <div class="item"><span class="item-num">3.</span><input class="blank label-blank" data-answer="Fuel Cock"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">4.</span><input class="blank label-blank" data-answer="Ignition Switch"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">5.</span><input class="blank label-blank" data-answer="Security Harness"><input class="blank" data-answer="Check"></div>
+      <div class="item"><span class="item-num">6.</span><input class="blank label-blank" data-answer="Flaps"><input class="blank" data-answer="As Required"></div>
+      <div class="item"><span class="item-num">7.</span><input class="blank label-blank" data-answer="Master Switch"><input class="blank" data-answer="Off (Once flaps selected)"></div>
+      <div class="item"><span class="item-num">8.</span><input class="blank label-blank" data-answer="Vacate"><input class="blank" data-answer="After Landing"></div>
+    </div>
+
+    <!-- Decision To Bale-Out -->
+    <div class="section">
+      <div class="section-title">Engine Failure In Flight – Decision To Bale-Out</div>
+      <div class="item">Minimum height from which bale-out should be attempted is <input class="inline-blank" data-answer="1500" style="width:50px"> Ft. AGL with canopy already jettison by <input class="inline-blank" data-answer="1500" style="width:50px"> Ft. AGL</div>
+    </div>
+
+  </div><!-- end right -->
+  </div><!-- end two-col -->
+</div><!-- end page 1 -->
+
+<!-- ==================== PAGE 2 ==================== -->
+<div class="page">
+  <div class="two-col">
+  <!-- LEFT -->
+  <div>
+
+    <!-- Canopy Jettison Procedure -->
+    <div class="section">
+      <div class="section-title">Canopy Jettison Procedure</div>
+      <div class="note-text">(If possible, achieve 85 KTS, wings level and 50% flaps)</div>
+      <div class="item"><span class="item-num">1.</span><input class="blank label-blank" data-answer="Radio Call"><input class="blank" data-answer="Transmit"></div>
+      <div class="item"><span class="item-num">2.</span><input class="blank label-blank" data-answer="Security"><input class="blank" data-answer="Check"></div>
+      <div class="item"><span class="item-num">3.</span><input class="blank label-blank" data-answer="Canopy Plunger"><input class="blank" data-answer="Strike"></div>
+      <div class="item"><span class="item-num">4.</span><input class="blank label-blank" data-answer="Canopy"><input class="blank" data-answer="Open"></div>
+      <div class="section-title" style="margin-top:6px">NOTE</div>
+      <div class="note-text">Do not strike canopy plunger if aircraft is in a <input class="inline-blank" data-answer="spin" style="width:70px">.</div>
+      <div class="note-text">Open canopy in normal manner.</div>
+      <div class="note-text">Before opening canopy, <input class="inline-blank" data-answer="lean forward" style="width:120px"> and <input class="inline-blank" data-answer="keep head down" style="width:120px">.</div>
+      <div class="note-text">Ensure knuckles <input class="inline-blank" data-answer="facing forward" style="width:120px"> when opening canopy.</div>
+      <div class="note-text">Operate canopy handle in rapid positive movement.</div>
+    </div>
+
+    <!-- Engine Air Start -->
+    <div class="section">
+      <div class="section-title">Engine Air Start</div>
+      <div class="note-text">(If propeller stops as a result of aerobatics maneuvers)</div>
+      <div class="item"><span class="item-num">1.</span><input class="blank label-blank" data-answer="Airspeed"><input class="blank" data-answer="85 KTS"></div>
+      <div class="item"><span class="item-num">2.</span><input class="blank label-blank" data-answer="Throttle"><input class="blank" data-answer="1/2&quot; Open"></div>
+      <div class="item"><span class="item-num">3.</span><input class="blank label-blank" data-answer="Propeller Lever"><input class="blank" data-answer="Full Forward"></div>
+      <div class="item"><span class="item-num">4.</span><input class="blank label-blank" data-answer="Mixture Lever"><input class="blank" data-answer="Full Rich"></div>
+      <div class="item"><span class="item-num">5.</span><input class="blank label-blank" data-answer="Master Switch"><input class="blank" data-answer="On"></div>
+      <div class="item"><span class="item-num">6.</span><input class="blank label-blank" data-answer="Fuel Boost Pump"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">7.</span><input class="blank label-blank" data-answer="Fuel Cock"><input class="blank" data-answer="On"></div>
+      <div class="item"><span class="item-num">8.</span><input class="blank label-blank" data-answer="Ignition Switch"><input class="blank" data-answer="Start, release when engine fires"></div>
+    </div>
+
+    <!-- Engine Start Air Load -->
+    <div class="section">
+      <div class="section-title">Engine Start – Air Load</div>
+      <div class="item"><span class="item-num">1.</span><input class="blank label-blank" data-answer="Flaps"><input class="blank" data-answer="Up"></div>
+      <div class="item"><span class="item-num">2.</span><input class="blank label-blank" data-answer="Ignition Switch"><input class="blank" data-answer="Both"></div>
+      <div class="item"><span class="item-num">3.</span><input class="blank label-blank" data-answer="Airspeed"><input class="blank" data-answer="140-160 KTS"></div>
+      <div class="note-text">(When propeller begins to rotate, <input class="inline-blank" data-answer="raise above horizon" style="width:160px"> to prevent overspeed)</div>
+    </div>
+
+    <!-- Total Electrics Failure -->
+    <div class="section">
+      <div class="section-title">Total Electrics Failure</div>
+      <div class="note-text">(A total electrics failure will be evidenced by immediate "Off Scale" deflections of the oil and cylinder head temperatures, fuel quantity and trim indicators, zero reading on the voltmeter and loss of radios)</div>
+      <div class="item"><span class="item-num">1.</span><input class="blank label-blank" data-answer="Master Switch"><input class="blank" data-answer="Off"></div>
+      <div class="item"><span class="item-num">2.</span><input class="blank label-blank" data-answer="Alternator Switch"><input class="blank" data-answer="Off"></div>
+    </div>
+
+  </div><!-- end left -->
+
+  <!-- RIGHT: LIMITATION -->
+  <div>
+    <div class="section">
+      <div class="section-title" style="font-size:14px; text-decoration:underline; letter-spacing:1px">TEST CT-4 E LIMITATION</div>
+      <br>
+      <div style="font-size:12px; margin-bottom:6px">The canopy should not be opened with engine</div>
+      <table class="lim-table">
+        <tr>
+          <td>Running above</td>
+          <td class="lim-right"><input class="inline-blank" data-answer="1500" style="width:70px; text-align:right"></td>
+          <td class="lim-unit">RPM</td>
+        </tr>
+        <tr>
+          <td>Or winds in excess of</td>
+          <td class="lim-right"><input class="inline-blank" data-answer="30" style="width:70px; text-align:right"></td>
+          <td class="lim-unit">knots</td>
+        </tr>
+        <tr>
+          <td colspan="3">For crosswind take off The maximum crosswind component is <input class="inline-blank" data-answer="20" style="width:50px"> knots</td>
+        </tr>
+        <tr>
+          <td colspan="3">The aircraft has been demonstrated as safe to taxi in wind up <input class="inline-blank" data-answer="40" style="width:50px"> knots</td>
+        </tr>
+      </table>
+
+      <hr class="section-div">
+      <div class="section-title">AIRSPEED LIMITATIONS</div>
+      <table class="lim-table">
+        <tr><td>Maneuvering speed V<sub>A</sub></td><td class="lim-right"><input class="inline-blank" data-answer="148" style="width:70px; text-align:right"></td><td>KIAS</td></tr>
+        <tr><td>Maximum Flap extended speed V<sub>FE</sub></td><td></td><td></td></tr>
+        <tr><td style="padding-left:20px"><input class="inline-blank" data-answer="101" style="width:50px"> KIAS (Flap half extended limit)</td><td></td><td></td></tr>
+        <tr><td style="padding-left:20px"><input class="inline-blank" data-answer="91" style="width:50px"> KIAS (Flap fully extended limit)</td><td></td><td></td></tr>
+        <tr><td>Never Exceed speed V<sub>NE</sub></td><td class="lim-right"><input class="inline-blank" data-answer="209" style="width:70px; text-align:right"></td><td>KIAS</td></tr>
+        <tr><td>Maximum Structural Cruising speed V<sub>NO</sub></td><td class="lim-right"><input class="inline-blank" data-answer="149" style="width:70px; text-align:right"></td><td>KIAS</td></tr>
+      </table>
+
+      <hr class="section-div">
+      <div class="section-title">POWER PLANT INSTRUMENT MARKING</div>
+      <table class="lim-table">
+        <tr><td>Tachometer</td><td>Red line</td><td><input class="inline-blank" data-answer="2700" style="width:55px"></td><td>RPM</td></tr>
+        <tr><td></td><td>Green Arc</td><td><input class="inline-blank" data-answer="1800" style="width:50px"> to <input class="inline-blank" data-answer="2700" style="width:50px"></td><td>RPM</td></tr>
+        <tr><td>Oil temperature</td><td>Red line</td><td><input class="inline-blank" data-answer="118" style="width:55px"></td><td>ºC</td></tr>
+        <tr><td></td><td>Green Arc</td><td><input class="inline-blank" data-answer="74" style="width:40px"> to <input class="inline-blank" data-answer="93" style="width:40px"></td><td>ºC</td></tr>
+        <tr><td></td><td>Yellow Arc</td><td><input class="inline-blank" data-answer="93" style="width:40px"> to <input class="inline-blank" data-answer="118" style="width:40px"></td><td>ºC</td></tr>
+        <tr><td>Cylinder Head temp</td><td>Red line</td><td><input class="inline-blank" data-answer="260" style="width:55px"></td><td>ºC</td></tr>
+        <tr><td></td><td>Green Arc</td><td><input class="inline-blank" data-answer="65" style="width:40px"> to <input class="inline-blank" data-answer="224" style="width:40px"></td><td>ºC</td></tr>
+        <tr><td></td><td>Yellow Arc</td><td><input class="inline-blank" data-answer="224" style="width:40px"> to <input class="inline-blank" data-answer="260" style="width:40px"></td><td>ºC</td></tr>
+        <tr><td>Fuel flow</td><td>Red line</td><td><input class="inline-blank" data-answer="104" style="width:55px"></td><td>Lbs/hr</td></tr>
+        <tr><td></td><td>Green Arc</td><td><input class="inline-blank" data-answer="35" style="width:40px"> to <input class="inline-blank" data-answer="104" style="width:40px"></td><td>Lbs/hr</td></tr>
+        <tr><td></td><td>Yellow Arc</td><td><input class="inline-blank" data-answer="0" style="width:40px"> to <input class="inline-blank" data-answer="35" style="width:40px"></td><td>Lbs/hr</td></tr>
+        <tr><td>Oil pressure</td><td>Red line</td><td><input class="inline-blank" data-answer="25" style="width:40px"> and <input class="inline-blank" data-answer="115" style="width:40px"></td><td>PSI</td></tr>
+        <tr><td></td><td>Green Arc</td><td><input class="inline-blank" data-answer="55" style="width:40px"> to <input class="inline-blank" data-answer="95" style="width:40px"></td><td>PSI</td></tr>
+        <tr><td></td><td>Yellow Arc</td><td><input class="inline-blank" data-answer="95" style="width:40px"> to <input class="inline-blank" data-answer="115" style="width:40px"></td><td>PSI</td></tr>
+        <tr><td></td><td>And</td><td><input class="inline-blank" data-answer="25" style="width:40px"> to <input class="inline-blank" data-answer="55" style="width:40px"></td><td>PSI</td></tr>
+      </table>
+
+      <hr class="section-div">
+      <div class="section-title">FLIGHT LOAD FACTOR LIMITS</div>
+      <table class="lim-table">
+        <tr><td>Flaps Up</td><td><input class="inline-blank" data-answer="+6" style="width:40px"> G to <input class="inline-blank" data-answer="-3" style="width:40px"> G</td></tr>
+        <tr><td>Flaps Down</td><td><input class="inline-blank" data-answer="+2" style="width:40px"> G to <input class="inline-blank" data-answer="0" style="width:40px"> G</td></tr>
+      </table>
+
+      <hr class="section-div">
+      <div class="section-title">ENGINE</div>
+      <table class="lim-table">
+        <tr><td>Engine model</td><td><input class="inline-blank" data-answer="AEIO-540-L1B5" style="width:160px"></td></tr>
+        <tr><td>BHP. Rated max continuous</td><td><input class="inline-blank" data-answer="300" style="width:45px"> BHP. <input class="inline-blank" data-answer="2700" style="width:55px"> RPM</td></tr>
+        <tr><td>BHP. Rated max take off</td><td><input class="inline-blank" data-answer="300" style="width:45px"> BHP. <input class="inline-blank" data-answer="2700" style="width:55px"> RPM</td></tr>
+        <tr><td>Normal cruise power</td><td><input class="inline-blank" data-answer='21" 2400' style="width:100px"> RPM</td></tr>
+        <tr><td>The recommended Idling less than</td><td><input class="inline-blank" data-answer="900" style="width:55px"> RPM</td></tr>
+        <tr><td>T/O fuelflow</td><td>Min <input class="inline-blank" data-answer="90" style="width:45px"> Lbs/hr</td></tr>
+        <tr><td></td><td>Max <input class="inline-blank" data-answer="103" style="width:45px"> Lbs/hr</td></tr>
+      </table>
+    </div>
+  </div><!-- end right -->
+  </div><!-- end two-col -->
+</div><!-- end page 2 -->
+
+<div class="btn-bar">
+  <button id="btnCheck2" onclick="checkAll()">✓ ตรวจคำตอบ</button>
+  <button id="btnShow2"  onclick="showAll()">👁 ดูเฉลย</button>
+  <button id="btnReset2" onclick="resetAll()">↺ เริ่มใหม่</button>
+</div>
+
+<script>
+function normalize(s) {
+  return s.trim().replace(/['']/g,"'").replace(/\s+/g,' ');
+}
+
+function checkAll() {
+  const inputs = document.querySelectorAll('input[data-answer]');
+  let correct = 0, total = inputs.length;
+  inputs.forEach(inp => {
+    const ans = normalize(inp.dataset.answer);
+    const val = normalize(inp.value);
+    inp.classList.remove('correct','incorrect','show-answer');
+    if (val === '') return;
+    if (val === ans) {
+      inp.classList.add('correct');
+      correct++;
+    } else {
+      inp.classList.add('incorrect');
+    }
+  });
+  const filled = Array.from(inputs).filter(i => i.value.trim() !== '').length;
+  const scoreBar = document.getElementById('scoreBar');
+  if (filled === 0) {
+    scoreBar.textContent = 'กรุณากรอกคำตอบก่อน';
+    scoreBar.className = 'score-bar';
+    return;
+  }
+  const pct = Math.round(correct / total * 100);
+  scoreBar.textContent = `คะแนน: ${correct} / ${total} (${pct}%) ${pct >= 70 ? '✓ ผ่าน' : '✗ ยังไม่ผ่าน'}`;
+  scoreBar.className = 'score-bar ' + (pct >= 70 ? 'score-pass' : 'score-fail');
+}
+
+function showAll() {
+  const inputs = document.querySelectorAll('input[data-answer]');
+  inputs.forEach(inp => {
+    inp.classList.remove('correct','incorrect');
+    if (normalize(inp.value) === normalize(inp.dataset.answer)) {
+      inp.classList.add('correct');
+    } else {
+      inp.value = inp.dataset.answer;
+      inp.classList.add('show-answer');
+    }
+  });
+  document.getElementById('scoreBar').textContent = 'แสดงเฉลยทั้งหมดแล้ว (สีเหลือง = เพิ่งเฉลย, สีเขียว = ตอบถูกเอง)';
+  document.getElementById('scoreBar').className = 'score-bar';
+}
+
+function resetAll() {
+  const inputs = document.querySelectorAll('input[data-answer]');
+  inputs.forEach(inp => {
+    inp.value = '';
+    inp.classList.remove('correct','incorrect','show-answer');
+  });
+  document.getElementById('scoreBar').textContent = '';
+  document.getElementById('scoreBar').className = 'score-bar';
+}
+
+// กด Enter ในช่องคำตอบใดก็ได้ = ตรวจคำตอบทันที
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && e.target.matches && e.target.matches('input[data-answer]')) {
+    e.preventDefault();
+    checkAll();
+  }
+});
+</script>
+</body>
+</html>
