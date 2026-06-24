@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สรุปเวชศาสตร์การบิน — Ground School 101</title>
+<style>
+:root{
+  --bg:#f4f6fb; --panel:#ffffff; --ink:#1c2433;
+  --muted:#5d6b82; --line:#e2e8f3; --brand:#1f4e9b; --brand2:#2e6fd6;
+  --accent:#0d8a6a; --warn:#b8530a; --danger:#c0392b; --chip:#eef3fb;
+  --key-bg:#eaf4ff; --key-line:#2e6fd6; --tip-bg:#eafaf3; --tip-line:#0d8a6a;
+  --warn-bg:#fff4e8; --warn-line:#b8530a; --quiz-bg:#f6f1fb; --quiz-line:#7a3fb0;
+  --mark:#ffe27a; --shadow:0 1px 3px rgba(20,30,60,.08),0 6px 24px rgba(20,30,60,.06);
+  --fs:17px;
+}
+html[data-theme="dark"]{
+  --bg:#0f1622; --panel:#161f2e; --ink:#e6ecf6; --muted:#9fb0c8; --line:#28344a;
+  --brand:#8ab4ff; --brand2:#5b9bff; --accent:#37d39e; --warn:#ffb163; --danger:#ff7a6b;
+  --chip:#1d293c; --key-bg:#11243f; --key-line:#5b9bff; --tip-bg:#0f2a23; --tip-line:#37d39e;
+  --warn-bg:#2c2113; --warn-line:#ffb163; --quiz-bg:#231a33; --quiz-line:#b98be6;
+  --mark:#7a6320; --shadow:0 1px 3px rgba(0,0,0,.4),0 8px 28px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:'Sarabun','Leelawadee UI','Segoe UI','Tahoma',sans-serif;
+  line-height:1.7; -webkit-font-smoothing:antialiased;
+}
+/* progress bar */
+#progress{position:fixed;top:0;left:0;height:4px;width:0;background:linear-gradient(90deg,var(--brand2),var(--accent));z-index:60;transition:width .1s}
+/* top bar */
+header.top{position:fixed;top:0;left:0;right:0;height:60px;background:var(--panel);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:12px;padding:0 16px;z-index:50;box-shadow:var(--shadow)}
+header.top h1{font-size:1.05rem;margin:0;white-space:nowrap;color:var(--brand);font-weight:700}
+header.top .sub{color:var(--muted);font-size:.78rem;font-weight:400}
+#search{flex:1;max-width:420px;margin-left:auto;display:flex;align-items:center;background:var(--chip);
+  border:1px solid var(--line);border-radius:10px;padding:6px 10px;gap:8px}
+#search input{border:0;background:transparent;color:var(--ink);outline:none;width:100%;font-size:.92rem;font-family:inherit}
+#search .ic{opacity:.6}
+.btn{border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:9px;padding:7px 10px;
+  cursor:pointer;font-size:.85rem;font-family:inherit;white-space:nowrap}
+.btn:hover{border-color:var(--brand2)}
+.fsctrl{display:flex;gap:4px}
+.menu-toggle{display:none}
+/* layout */
+.wrap{display:flex;padding-top:60px}
+nav.side{position:sticky;top:60px;align-self:flex-start;height:calc(100vh - 60px);width:300px;min-width:300px;
+  overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 10px 60px}
+nav.side .navgroup{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
+  margin:14px 10px 6px;font-weight:700}
+nav.side a{display:block;color:var(--ink);text-decoration:none;padding:7px 12px;border-radius:8px;font-size:.9rem;
+  border-left:3px solid transparent}
+nav.side a:hover{background:var(--chip)}
+nav.side a.active{background:var(--key-bg);border-left-color:var(--brand2);color:var(--brand);font-weight:600}
+nav.side a .num{color:var(--muted);font-size:.8rem;margin-right:6px}
+main{flex:1;min-width:0;padding:26px clamp(16px,4vw,56px) 120px;max-width:1000px;margin:0 auto}
+/* hero */
+.hero{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border-radius:18px;padding:30px 28px;margin-bottom:26px;box-shadow:var(--shadow)}
+.hero h2{margin:.1em 0 .3em;font-size:1.6rem}
+.hero p{margin:.2em 0;opacity:.95}
+.hero .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.hero .meta span{background:rgba(255,255,255,.18);padding:5px 11px;border-radius:20px;font-size:.8rem}
+/* sections */
+section{background:var(--panel);border:1px solid var(--line);border-radius:16px;margin:0 0 22px;
+  box-shadow:var(--shadow);overflow:hidden;scroll-margin-top:74px}
+section>.sec-head{display:flex;align-items:center;gap:12px;padding:18px 22px;cursor:pointer;user-select:none}
+section>.sec-head .idx{flex:0 0 auto;width:34px;height:34px;border-radius:9px;background:var(--brand);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem}
+section>.sec-head h3{margin:0;font-size:1.2rem;color:var(--ink);flex:1}
+section>.sec-head .en{display:block;font-size:.8rem;color:var(--muted);font-weight:400}
+section>.sec-head .caret{transition:transform .2s;color:var(--muted)}
+section.collapsed>.sec-head .caret{transform:rotate(-90deg)}
+section>.sec-body{padding:0 22px 22px;border-top:1px solid var(--line)}
+section.collapsed>.sec-body{display:none}
+h4{color:var(--brand);margin:1.4em 0 .5em;font-size:1.04rem;border-left:4px solid var(--brand2);padding-left:10px}
+p{margin:.5em 0}
+ul,ol{margin:.4em 0 .8em;padding-left:1.4em}
+li{margin:.25em 0}
+b,strong{color:var(--ink)}
+.en-term{color:var(--brand2);font-weight:600}
+code{background:var(--chip);padding:1px 6px;border-radius:6px;font-size:.92em;font-family:'Consolas','Courier New',monospace}
+/* callout boxes */
+.box{border-radius:12px;padding:14px 16px;margin:14px 0;border:1px solid var(--line)}
+.box .box-t{font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.key{background:var(--key-bg);border-left:5px solid var(--key-line)}
+.key .box-t{color:var(--brand)}
+.tip{background:var(--tip-bg);border-left:5px solid var(--tip-line)}
+.tip .box-t{color:var(--accent)}
+.warn{background:var(--warn-bg);border-left:5px solid var(--warn-line)}
+.warn .box-t{color:var(--warn)}
+.box ul{margin:.3em 0}
+/* tables */
+.tbl{overflow-x:auto;margin:14px 0}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--chip);color:var(--brand);font-weight:700}
+tr:nth-child(even) td{background:rgba(127,127,127,.04)}
+/* quiz */
+.quiz{background:var(--quiz-bg);border:1px solid var(--quiz-line);border-radius:12px;padding:6px 16px 14px;margin:18px 0}
+.quiz>.qz-t{font-weight:700;color:var(--quiz-line);display:flex;align-items:center;gap:8px;margin:10px 2px}
+.qa{border-top:1px dashed var(--quiz-line);padding:10px 0}
+.qa:first-of-type{border-top:0}
+.qa .q{font-weight:600;cursor:pointer;display:flex;gap:8px}
+.qa .q::before{content:"Q";flex:0 0 auto;width:22px;height:22px;border-radius:6px;background:var(--quiz-line);color:#fff;
+  font-size:.78rem;display:flex;align-items:center;justify-content:center;font-weight:700}
+.qa .a{display:none;margin:8px 0 2px 30px;padding:10px 12px;background:var(--panel);border-radius:8px;border:1px solid var(--line)}
+.qa.open .a{display:block}
+.qa .a::before{content:"เฉลย: ";font-weight:700;color:var(--accent)}
+/* glossary */
+.gloss dt{font-weight:700;color:var(--brand);margin-top:12px}
+.gloss dd{margin:2px 0 0;color:var(--ink)}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 2px}
+.hidden{display:none !important}
+footer{color:var(--muted);font-size:.82rem;text-align:center;padding:30px 10px;border-top:1px solid var(--line);margin-top:20px}
+.backtop{position:fixed;right:18px;bottom:18px;z-index:40;background:var(--brand);color:#fff;border:0;border-radius:50%;
+  width:46px;height:46px;font-size:1.1rem;cursor:pointer;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .2s}
+.backtop.show{opacity:1;pointer-events:auto}
+.formula{background:var(--chip);border:1px dashed var(--brand2);border-radius:8px;padding:6px 12px;display:inline-block;margin:4px 0;font-family:'Consolas',monospace}
+@media(max-width:880px){
+  nav.side{position:fixed;left:0;top:60px;z-index:45;transform:translateX(-100%);transition:transform .25s;box-shadow:var(--shadow)}
+  nav.side.open{transform:translateX(0)}
+  .menu-toggle{display:inline-flex}
+  header.top h1 .sub{display:none}
+  #search{max-width:none}
+}
+@media print{
+  header.top,nav.side,.backtop,#progress,.menu-toggle,#search,.fsctrl,#themeBtn,.toolbtns{display:none!important}
+  .wrap{padding-top:0}
+  section,.box,.quiz{break-inside:avoid;box-shadow:none}
+  section.collapsed>.sec-body{display:block!important}
+  .qa .a{display:block!important}
+  main{max-width:none}
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<header class="top">
+  <button class="btn menu-toggle" id="menuBtn" aria-label="เมนู">☰</button>
+  <h1>✈️ เวชศาสตร์การบิน <span class="sub">Aviation Medicine · Ground School 101</span></h1>
+  <div id="search">
+    <span class="ic">🔍</span>
+    <input type="text" id="searchInput" placeholder="ค้นหา… (เช่น hypoxia, valsalva, การหายใจ)" autocomplete="off">
+  </div>
+  <div class="toolbtns" style="display:flex;gap:6px">
+    <div class="fsctrl">
+      <button class="btn" id="fsDown" title="ลดขนาดอักษร">A−</button>
+      <button class="btn" id="fsUp" title="เพิ่มขนาดอักษร">A+</button>
+    </div>
+    <button class="btn" id="themeBtn" title="สลับโหมดมืด/สว่าง">🌙</button>
+  </div>
+</header>
+
+<div class="wrap">
+<nav class="side" id="side">
+  <div class="navgroup">บรรยากาศ & แก๊ส</div>
+  <a href="#s1"><span class="num">1</span>บรรยากาศและโครงสร้าง</a>
+  <a href="#s2"><span class="num">2</span>กฎของแก๊ส (Gas Laws)</a>
+  <a href="#s3"><span class="num">3</span>Trapped Gas & DCS</a>
+  <div class="navgroup">ออกซิเจน & การหายใจ</div>
+  <a href="#s4"><span class="num">4</span>ระบบหายใจ–ไหลเวียนเลือด</a>
+  <a href="#s5"><span class="num">5</span>Hypoxia (ภาวะพร่อง O₂)</a>
+  <a href="#s6"><span class="num">6</span>Hyperventilation</a>
+  <a href="#s7"><span class="num">7</span>อุปกรณ์ออกซิเจน</a>
+  <div class="navgroup">การรับรู้ & การมองเห็น</div>
+  <a href="#s8"><span class="num">8</span>Spatial Disorientation</a>
+  <a href="#s9"><span class="num">9</span>การมองเห็นในการบิน</a>
+  <a href="#s10"><span class="num">10</span>Motion Sickness</a>
+  <div class="navgroup">แรง G & สิ่งแวดล้อม</div>
+  <a href="#s11"><span class="num">11</span>Acceleration & G-LOC</a>
+  <a href="#s12"><span class="num">12</span>เสียง (Noise)</a>
+  <a href="#s13"><span class="num">13</span>การสั่นสะเทือน (Vibration)</a>
+  <div class="navgroup">Human Factors</div>
+  <a href="#s14"><span class="num">14</span>Stress & Fatigue</a>
+  <a href="#s15"><span class="num">15</span>Self-Imposed Stress</a>
+  <a href="#s16"><span class="num">16</span>การฝึกห้องปรับบรรยากาศ</a>
+  <div class="navgroup">อ้างอิง</div>
+  <a href="#glossary"><span class="num">📖</span>อภิธานศัพท์ (Glossary)</a>
+</nav>
+
+<main>
+  <div class="hero">
+    <h2>สรุปเวชศาสตร์การบิน เพื่อเตรียมสอบ</h2>
+    <p>รวบรวมจากเอกสารบรรยาย Ground School 101 ทั้ง 20 ไฟล์ — เรียบเรียงเป็น 16 หัวข้อ พร้อมกล่องสรุปจุดสำคัญ ตาราง และแบบทดสอบท้ายบท</p>
+    <p style="font-size:.9rem;opacity:.9">เคล็ดลับ: กดหัวข้อเพื่อย่อ/ขยาย • ใช้ช่องค้นหาด้านบน • กดที่คำถามเพื่อดูเฉลย • ปุ่ม 🌙 สลับโหมดมืด • Ctrl/Cmd+P เพื่อพิมพ์/บันทึก PDF</p>
+    <div class="meta">
+      <span>📄 20 ไฟล์ต้นฉบับ</span><span>📚 16 หัวข้อ</span><span>🇹🇭 ไทย + ศัพท์อังกฤษ</span>
+      <span>🎯 มีแบบทดสอบทุกบท</span>
+    </div>
+    <div class="toolbtns" style="margin-top:14px;display:flex;gap:8px">
+      <button class="btn" id="expandAll" style="background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.3)">เปิดทุกหัวข้อ</button>
+      <button class="btn" id="collapseAll" style="background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.3)">ย่อทุกหัวข้อ</button>
+    </div>
+  </div>
+
+  <!-- ============ 1 ATMOSPHERE ============ -->
+  <section id="s1">
+    <div class="sec-head"><div class="idx">1</div><h3>บรรยากาศและโครงสร้าง<span class="en">Atmosphere & Structure</span></h3><span class="caret">▾</span></div>
+    <div class="sec-body">
+      <h4>องค์ประกอบของอากาศ (Gases in the atmosphere)</h4>
+      <ul>
+        <li>สัดส่วนแก๊สในบรรยากาศ <b>คงที่ทุกระดับความสูง</b>: <span class="en-term">N₂ 78%</span>, <span class="en-term">O₂ 21%</span>, CO₂/อื่นๆ (Argon, ไอน้ำ, ฝุ่น) ~1%</li>
+        <li>สิ่งที่<b>เปลี่ยนไปเมื่อสูงขึ้น</b> คือ <b>ความกดดันย่อย (partial pressure)</b> ของแก๊สแต่ละชนิดจะ<b>ลดลง</b> → เป็นต้นเหตุของ hypoxia</li>
+      </ul>
+
+      <h4>มาตรฐานบรรยากาศสากล (ICAO International Standard Atmosphere)</h4>
+      <div class="tbl"><table>
+        <tr><th>พารามิเตอร์</th><th>ค่ามาตรฐานที่ระดับน้ำทะเล</th></tr>
+        <tr><td>ความกดอากาศ (Pressure)</td><td>760 mmHg (29.92 inHg)</td></tr>
+        <tr><td>อุณหภูมิ (Temperature)</td><td>15 °C (59 °F)</td></tr>
+        <tr><td>Adiabatic lapse rate</td><td>1.98 °C ต่อ 305 m (1,000 ft) ≈ 2 °C/1,000 ft</td></tr>
+        <tr><td>ความสูง Tropopause</td><td>11,000 m (36,000 ft)</td></tr>
+      </table></div>
+
+      <h4>การแบ่งชั้นเชิงกายภาพ (Physical divisions)</h4>
+      <div class="tbl"><table>
+        <tr><th>ชั้น</th><th>ความสูง</th><th>ลักษณะเด่น</th></tr>
+        <tr><td><b>Troposphere</b></td><td>0–12 km</td><td>มนุษย์อาศัยอยู่ • อุณหภูมิลดลงตามความสูง (lapse rate) จนถึง ~−55 °C • มีไอน้ำ/กระแสลม/ฤดูกาล</td></tr>
+        <tr><td><b>Stratosphere</b></td><td>12–50 km</td><td>มี <b>Ozone layer</b> ดูดซับ UV/คลื่นสั้น • isothermal แล้วอุณหภูมิเพิ่ม (~+0.5 °C/km)</td></tr>
+        <tr><td><b>Mesosphere</b></td><td>50–80 km</td><td>อุณหภูมิลดเร็ว (−3 ถึง −113 °C) • อุกกาบาตเผาไหม้</td></tr>
+        <tr><td><b>Thermosphere</b></td><td>80–700 km</td><td>อุณหภูมิสูงมาก (กลางวันถึง 1500 °C) • มี <b>Ionosphere</b> สะท้อนคลื่นวิทยุ</td></tr>
+      </table></div>
+
+      <h4>การแบ่งชั้นเชิงสรีรวิทยา (Physiological divisions)</h4>
+      <div class="tbl"><table>
+        <tr><th>โซน</th><th>ความสูง</th><th>ปัญหา / การแก้ไข</th></tr>
+        <tr><td><b>Physiologic zone</b></td><td>0–10,000 ft (760–523 mmHg)</td><td>ร่างกายปกติทนได้ • ปัญหา trapped gas (หู/ไซนัส) ตอนเปลี่ยนความดัน</td></tr>
+        <tr><td><b>Physiologically deficient zone</b></td><td>10,000–50,000 ft (523–87 mmHg)</td><td>เริ่มขาด O₂ → ต้องใช้ O₂ เสริม และ PBA (positive pressure breathing)</td></tr>
+        <tr><td><b>Space equivalent zone</b></td><td>>50,000 ft (<87 mmHg)</td><td>ต้องใช้ห้องอัดความดัน หรือชุดอัดความดัน + O₂ 100%</td></tr>
+      </table></div>
+
+      <div class="box key"><div class="box-t">🔑 จุดที่ต้องจำ</div>
+        <ul>
+          <li>สัดส่วนแก๊สคงที่ — แต่ <b>partial pressure ลดลง</b>เมื่อสูงขึ้น</li>
+          <li>ISA: <b>760 mmHg, 15 °C, lapse 2 °C/1,000 ft, tropopause 36,000 ft</b></li>
+          <li>Physiologic zone สิ้นสุดที่ <b>10,000 ft</b> (เริ่มต้องระวัง hypoxia)</li>
+        </ul>
+      </div>
+
+      <div class="quiz"><div class="qz-t">📝 แบบทดสอบ</div>
+        <div class="qa"><div class="q">สัดส่วน O₂ และ N₂ ในบรรยากาศคือเท่าใด และอะไรเปลี่ยนเมื่อสูงขึ้น?</div><div class="a">O₂ 21%, N₂ 78% — สัดส่วนคงที่ทุกระดับ แต่ partial pressure ลดลงเมื่อสูงขึ้น</div></div>
+        <div class="qa"><div class="q">ค่ามาตรฐาน ICAO ที่ระดับน้ำทะเล (ความกด/อุณหภูมิ/lapse rate/tropopause)?</div><div class="a">760 mmHg, 15 °C, 1.98 °C ต่อ 1,000 ft, tropopause ที่ 11,000 m (36,000 ft)</div></div>
+        <div class="qa"><div class="q">Ozone layer อยู่ชั้นใด ทำหน้าที่อะไร?</div><div class="a">Stratosphere — ดูดซับรังสี UV/คลื่นสั้น</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2 GAS LAWS ============ -->
+  <section id="s2">
+    <div class="sec-head"><div class="idx">2</div><h3>กฎของแก๊ส<span class="en">The Gas Laws</span></h3><span class="caret">▾</span></div>
+    <div class="sec-body">
+      <h4>Boyle's Law — แก๊สขยายตัวที่ความสูง</h4>
+      <p><span class="formula">P₁V₁ = P₂V₂</span> เมื่ออุณหภูมิคงที่ ปริมาตรแปรผกผันกับความดัน (V ∝ 1/P)</p>
+      <p>เมื่อบินสูงขึ้น ความดันลด → แก๊สในโพรงร่างกาย<b>ขยายตัว</b> → เป็นที่มาของ <b>Trapped Gas disorders</b> (หู ไซนัส ฟัน ทางเดินอาหาร)</p>
+      <div class="tbl"><table>
+        <tr><th>ความสูง</th><th>แก๊สขยายตัว</th></tr>
+        <tr><td>18,000 ft</td><td>2 เท่า (ความดันเหลือครึ่งเดียว ~380 mmHg)</td></tr>
+        <tr><td>26,000 ft</td><td>2.5 เท่า</td></tr>
+        <tr><td>34,000 ft</td><td>4 เท่า</td></tr>
+        <tr><td>43,000 ft</td><td>8 เท่า</td></tr>
+      </table></div>
+
+      <h4>Dalton's Law — ความดันรวม = ผลรวมความดันย่อย</h4>
+      <p><span class="formula">P_total = P₁ + P₂ + … + Pₙ</span> ความดันย่อยของแก๊สแปรผันตรงกับความเข้มข้น</p>
+      <p>เมื่อความกดอากาศลด → pO₂ ลด → <b>Hypoxia</b></p>
+      <div class="tbl"><table>
+        <tr><th>ความสูง</th><th>ความกดรวม</th><th>pO₂ (21%)</th></tr>
+        <tr><td>Sea level</td><td>760 mmHg</td><td>160 mmHg</td></tr>
+        <tr><td>10,000 ft</td><td>523 mmHg</td><td>110 mmHg</td></tr>
+        <tr><td>18,000 ft</td><td>380 mmHg</td><td>80 mmHg</td></tr>
+        <tr><td>25,000 ft</td><td>282 mmHg</td><td>59 mmHg</td></tr>
+      </table></div>
+
+      <h4>Henry's Law — แก๊สละลายในของเหลว</h4>
+      <p>ปริมาณแก๊สที่ละลายในของเหลวแปรผันตรงกับความดันของแก๊สเหนือผิวของเหลว (เหมือนน้ำอัดลม: เปิดฝา = ลดความดัน = แก๊สผุดเป็นฟอง)</p>
+      <p>ขึ้นที่สูง/เร็วเกินไป → ความดันลด → <b>N₂ แยกตัวออกจากเลือด</b>เป็นฟองอากาศ → <b>Decompression Sickness (DCS)</b></p>
+
+      <h4>Charles's Law — ผลของอุณหภูมิ</h4>
+      <p>ถ้าความดันคงที่: V แปรผันตามอุณหภูมิ (<span class="formula">V₁/T₁ = V₂/T₂</span>) • ถ้าปริมาตรคงที่: P แปรผันตามอุณหภูมิ → ใช้อธิบาย<b>ค่าความดันที่อ่านได้จากถังออกซิเจน</b>เปลี่ยนตามอุณหภูมิ</p>
+
+      <h4>Law of Gaseous Diffusion — การแพร่ของแก๊ส</h4>
+      <p>แก๊สเคลื่อนจากบริเวณความดัน<b>สูง → ต่ำ</b> เพื่อสมดุล • ใช้อธิบายการแลกเปลี่ยน O₂/CO₂ ผ่านเยื่อ alveolar-capillary</p>
+
+      <div class="box key"><div class="box-t">🔑 จุดที่ต้องจำ (จับคู่กฎ↔โรค)</div>
+        <ul>
+          <li><b>Boyle</b> → Trapped gas (หู/ไซนัส/ฟัน/ท้อง) — ขยายตัว 2 เท่าที่ 18,000 ft</li>
+          <li><b>Dalton</b> → Hypoxia (pO₂ ลด)</li>
+          <li><b>Henry</b> → Decompression Sickness (N₂ เป็นฟอง)</li>
+          <li><b>Charles</b> → ความดันถัง O₂ เปลี่ยนตามอุณหภูมิ</li>
+        </ul>
+      </div>
+
+      <div class="quiz"><div class="qz-t">📝 แบบทดสอบ</div>
+        <div class="qa"><div class="q">ที่ 18,000 ft แก๊สในร่างกายขยายตัวกี่เท่า เพราะกฎใด?</div><div class="a">2 เท่า — Boyle's Law (P₁V₁=P₂V₂); ความดันเหลือ 380 mmHg = ครึ่งหนึ่ง</div></div>
+        <div class="qa"><div class="q">กฎใดอธิบายการเกิด Decompression Sickness?</div><div class="a">Henry's Law — N₂ ที่ละลายในเลือดแยกตัวเป็นฟองเมื่อความดันลด</div></div>
+        <div class="qa"><div class="q">pO₂ ที่ระดับน้ำทะเลและที่ 18,000 ft?</div><div class="a">160 mmHg ที่ระดับน้ำทะเล และ ~80 mmHg ที่ 18,000 ft</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3 TRAPPED GAS & DCS ============ -->
+  <section id="s3">
+    <div class="sec-head"><div class="idx">3</div><h3>Trapped Gas & Decompression Sickness<span class="en">โรคจากแก๊สขัง และ โรคจากการลดความกดดัน</span></h3><span class="caret">▾</span></div>
+    <div class="sec-body">
+      <p><b>Trapped gas</b> = แก๊สที่ขังในโพรงร่างกาย เมื่อความดันลดจะ<b>ขยายตัว</b> (Boyle) • <b>Evolved/Dissolved gas</b> = แก๊สที่ละลายในเลือดแยกตัวเป็นฟอง (Henry → DCS)</p>
+
+      <h4>1) ทางเดินอาหาร (Gastrointestinal tract)</h4>
+      <ul>
+        <li><b>ป้องกัน:</b> เลี่ยงอาหารสร้างแก๊ส (ถั่ว), เคี้ยวให้ละเอียด, ไม่ดื่มน้ำมากก่อนบิน, ขับถ่ายให้เรียบร้อย, เลี่ยงหมากฝรั่งตอนไต่ระดับ</li>
+        <li><b>รักษา:</b> เรอ (upper GI), ผายลม (lower GI), บินระดับ, ลดระดับถ้าปวดมาก</li>
+      </ul>
+
+      <h4>2) ฟัน (Barodentalgia)</h4>
+      <ul><li>ปวดฟัน<b>ซี่เดียว</b> ขณะไต่/ลดระดับ • บรรเทาโดยทำตรงข้ามกับทิศที่ปวด • Rx: ต้องพบทันตแพทย์</li></ul>
+
+      <h4>3) หูชั้นกลาง (Ear block / Acute Barotitis Media)</h4>
+      <ul>
+        <li><b>ไต่ระดับ (Climb):</b> แก๊สขยายตัว → ระบายออกเองได้ง่าย (ผ่าน Eustachian tube)</li>
+        <li><b>ลดระดับ (Descent):</b> แก๊สหดตัว เกิดความดันลบ → <b>เป็นปัญหา</b> (พบบ่อยที่สุด)</li>
+        <li><b>อาการ:</b> ปวดหู, หูอื้อ/การได้ยินลดลง, tinnitus, vertigo</li>
+        <li><b>แก้/ป้องกัน:</b> <b>Valsalva maneuver</b> (หายใจเข้าลึก บีบจมูก เป่าลมเบาๆ), เคี้ยว/ขยับขากรรไกร/กลืน/หาว, <b>อย่าบินขณะเป็นหวัด</b></li>
+      </ul>
+
+      <h4>4) ไซนัส (Barosinusitis)</h4>
+      <ul>
+        <li>ไซนัส: Frontal, Maxillary, Ethmoidal, Sphenoidal</li>
+        <li><b>อาการ:</b> แน่น/ปวดรอบตา, ปวดแปลบ, น้ำมูกปนเลือดเล็กน้อย</li>
+        <li><b>ป้องกัน:</b> ไม่บินขณะเป็นหวัด, รักษา URI/ไซนัสอักเสบ, Valsalva, ยาพ่นจมูก (iliadin)</li>
+      </ul>
+
+      <h4>Decompression Sickness (DCS)</h4>
+      <ul>
+        <li><b>กลไก:</b> N₂ ที่ละลายในเลือด/น้ำในข้อ แยกตัวเป็นฟองเมื่อความดันลด</li>
+        <li><b>ปัจจัยเสี่ยง:</b> ความสูง >18,000 ft, ไต่เร็ว, rapid decompression, <b>ดำน้ำ scuba</b>, อายุมาก, มีโรคประจำตัว</li>
+        <li><b>ชนิด:</b> <b>Bends</b> (ปวดข้อ), <b>Chokes</b> (ระบบหายใจ)</li>
+        <li><b>ป้องกัน:</b> <b>Denitrogenation</b> (หายใจ O₂ 100% นาน 30 นาทีก่อนบิน), ห้องอัดความดัน, <b>ห้ามดำน้ำ scuba ภายใน 24 ชม.ก่อนบิน</b></li>
+        <li><b>รักษา:</b> O₂ 100%, ลดการเคลื่อนไหว, ลดระดับความสูง, recompression (ห้องอัดความดัน)</li>
+      </ul>
+
+      <div class="box warn"><div class="box-t">⚠️ ข้อควรระวัง</div>
+        <ul>
+          <li>Ear block พบบ่อยที่สุด<b>ขณะลดระดับ</b> — กฎทอง: <b>อย่าบินเมื่อเป็นหวัด</b></li>
+          <li>Barodentalgia ปวด<b>ซี่เดียว</b>เสมอ (ต่างจากปวดฟันทั่วไป)</li>
+        </ul>
+      </div>
+
+      <div class="quiz"><div class="qz-t">📝 แบบทดสอบ</div>
+        <div class="qa"><div class="q">Ear block เกิดปัญหามากตอนไต่หรือลดระดับ? วิธีแก้คือ?</div><div class="a">ลดระดับ (descent) — แก๊สหดตัวเกิดความดันลบ • แก้ด้วย Valsalva maneuver</div></div>
+        <div class="qa"><div class="q">วิธีป้องกัน DCS ก่อนบินคืออะไร?</div><div class="a">Denitrogenation — หายใจ O₂ 100% นาน 30 นาทีก่อนบิน + เลี่ยงดำน้ำ 24 ชม.ก่อนบิน</div></div>
+        <div class="qa"><div class="q">DCS ชนิด Bends และ Chokes ต่างกันอย่างไร?</div><div class="a">Bends = ปวดข้อ/กล้ามเนื้อ • Chokes = อาการระบบหายใจ (แน่นอก/ไอ)</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4 RESPIRATION & CIRCULATION ============ -->
+  <section id="s4">
+    <div class="sec-head"><div class="idx">4</div><h3>ระบบหายใจและไหลเวียนเลือด<span class="en">Respiration & Circulation</span></h3><span class="caret">▾</span></div>
+    <div class="sec-body">
+      <h4>ทำไมต้องมีออกซิเจน?</h4>
+      <p>Metabolism: <span class="formula">อาหาร + O₂ → CO₂ + H₂O + พลังงาน (Energy)</span></p>
+
+      <h4>ทางเดินหายใจ (Respiratory tract)</h4>
+      <ul>
+        <li>Oro-nasal cavity → Trachea → Bronchus → Bronchiole → <b>Alveoli</b> (ถุงลม = จุดแลกเปลี่ยนแก๊ส)</li>
+        <li>หน้าที่ทางเดินหายใจส่วนต้น: <b>Filtration</b> (กรอง), <b>Warming</b> (อุ่น), <b>Humidification</b> (เพิ่มความชื้น)</li>
+      </ul>
+
+      <h4>การควบคุมการหายใจ (Control of respiration)</h4>
+      <ul>
+        <li>ศูนย์ควบคุม: <b>Respiratory centre (medulla)</b> • ควบคุมได้ทั้งแบบ Voluntary และ Automatic (กลั้นหายใจจนตายไม่ได้ เพราะสมองสั่งหายใจอัตโนมัติ)</li>
+        <li><b>Chemoreceptors:</b>
+          <ul>
+            <li><b>Central</b> (medulla): ไวต่อ pCO₂ ที่สูงขึ้น / pH ที่ลดลง (เป็นกรด) — <code>CO₂ + H₂O ⇌ H₂CO₃ ⇌ H⁺ + HCO₃⁻</code></li>
+            <li><b>Peripheral</b> (aortic & carotid bodies): ไวต่อ pO₂ ที่ตกลง<b>ต่ำกว่า 55 mmHg</b> (เหนือ ~10,000 ft)</li>
+          </ul>
+        </li>
+        <li><b>Stretch receptors</b> (ในปอด): วัดการยืด/หดเพื่อหยุด-เริ่มหายใจ</li>
+      </ul>
+      <p><b>ตัวกระตุ้นหลักของการหายใจปกติคือ CO₂ ที่สูงขึ้น</b> (ไม่ใช่ O₂ ที่ต่ำ)</p>
+
+      <h4>ความดันย่อยของแก๊ส (Partial pressures, ระดับน้ำทะเล)</h4>
+      <div class="tbl"><table>
+        <tr><th>แก๊ส</th><th>อากาศบรรยากาศ</th><th>อากาศในถุงลม (Alveolar)</th></tr>
+        <tr><td>O₂</td><td>160</td><td>103</td></tr>
+        <tr><td>CO₂</td><td>~0.3 (≈0)</td><td>40</td></tr>
+        <tr><td>N₂</td><td>593</td><td>570</td></tr>
+        <tr><td>H₂O</td><td>—</td><td>47</td></tr>
+      </table><p style="font-size:.85rem;color:var(--muted)">หน่วย mmHg • ในถุงลมมีไอน้ำ 47 และ CO₂ 40 จึงทำให้ pO₂ ลดจาก 160 → 103</p></div>
+
+      <h4>การแลกเปลี่ยนแก๊ส & การขนส่ง</h4>
+      <ul>
+        <li>Alveolar exchange: เลือดดำ pO₂ ~42 → เลือดแดง pO₂ ~95–103; pCO₂ 46 → 40</li>
+        <li><b>O₂</b> ขนส่งโดยจับกับ <b>Hemoglobin (Hb)</b> ในเม็ดเลือดแดง (ภาวะซีดจึงเลี้ยง O₂ ได้น้อย)</li>
+        <li><b>CO₂</b> ขนส่งในรูปสารละลาย (H⁺ และ HCO₃⁻ / กรดคาร์บอนิก)</li>
+        <li>O₂-Hb dissociation curve: ยิ่งสูง pO₂ ในถุงลมยิ่งต่ำ → % Hb saturation ลดลง</li>
+      </ul>
+
+      <div class="box key"><div class="box-t">🔑 จุดที่ต้องจำ</div>
+        <ul>
+          <li>ตัวกระตุ้นการหายใจหลัก = <b>CO₂ สูง</b> (ผ่าน central chemoreceptor)</li>
+          <li>Peripheral receptor จับ <b>pO₂ < 55 mmHg</b> (≈ เหนือ 10,000 ft)</li>
+          <li>O₂ ขนโดย Hb • CO₂ ขนเป็น bicarbonate</li>
+          <li>Alveolar pO₂ = 103 (ไม่ใช่ 160 เพราะมีไอน้ำ+CO₂)</li>
+        </ul>
+      </div>
+
+      <div class="quiz"><div class="qz-t">📝 แบบทดสอบ</div>
+        <div class="qa"><div class="q">อะไรคือตัวกระตุ้นหลักของการหายใจ?</div><div class="a">ระดับ CO₂ ที่สูงขึ้น (และ pH ที่ลดลง) ตรวจจับโดย central chemoreceptor ที่ medulla</div></div>
+        <div class="qa"><div class="q">O₂ และ CO₂ ถูกขนส่งในเลือดในรูปแบบใด?</div><div class="a">O₂ จับกับ Hemoglobin ในเม็ดเลือดแดง • CO₂ เป็น bicarbonate (HCO₃⁻)/กรดคาร์บอนิก</div></div>
+        <div class="qa"><div class="q">peripheral chemoreceptor จับ pO₂ ที่ระดับใด?</div><div class="a">เมื่อ pO₂ ตกต่ำกว่า 55 mmHg (ราวเหนือ 10,000 ft)</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5 HYPOXIA ============ -->
+  <section id="s5">
+    <div class="sec-head"><div class="idx">5</div><h3>Hypoxia (ภาวะพร่องออกซิเจน)<span class="en">Hypoxia</span></h3><span class="caret">▾</span></div>
+    <div class="sec-body">
+      <p><b>นิยาม:</b> ภาวะที่เนื้อเยื่อได้รับ O₂ ไม่พอจนทำให้การทำงานบกพร่อง</p>
+
+      <h4>ชนิดของ Hypoxia (4 ชนิด ตามเส้นทาง O₂)</h4>
+      <div class="tbl"><table>
+        <tr><th>ชนิด</th><th>ปัญหาอยู่ที่</th><th>สาเหตุ</th></tr>
+        <tr><td><b>Hypoxic</b></td><td>บรรยากาศ/ปอด</td><td>ขึ้นที่สูง (altitude), hypoventilation, โรคปอด, จมน้ำ</td></tr>
+        <tr><td><b>Hypaemic / Anemic</b></td><td>ตัวนำพา (เลือด/Hb)</td><td>โลหิตจาง, ตกเลือด, <b>คาร์บอนมอนอกไซด์ (CO)</b>, Hb ผิดปกติ</td></tr>
+        <tr><td><b>Stagnant</b></td><td>การไหลเวียน</td><td><b>G-LOC</b> (เลือดคั่งขา), เย็นจัด, ช็อก, โรคหลอดเลือดแดง, หัวใจล้มเหลว</td></tr>
+        <tr><td><b>Histotoxic</b></td><td>เซลล์ใช้ O₂ ไม่ได้</td><td>แอลกอฮอล์, ไอพิษ (toxic fumes), ไซยาไนด์</td></tr>
+      </table></div>
+
+      <h4>ความต้องการ O₂ ตามความสูง</h4>
+      <div class="tbl"><table>
+        <tr><th>ความสูง</th><th>ความต้องการ</th></tr>
+        <tr><td>0 – 10,000 ft</td><td>อากาศปกติ (Air)</td></tr>
+        <tr><td>10,000 – 33,700 ft</td><td>เพิ่ม % O₂ (air-mix)</td></tr>
+        <tr><td>33,700 – 40,000 ft</td><td>O₂ 100%</td></tr>
+        <tr><td>> 40,000 ft</td><td>O₂ 100% ภายใต้ความดัน (Pressure breathing / PBA)</td></tr>
+      </table></div>
+
+      <h4>Time of Useful Consciousness (TUC)</h4>
+      <div class="tbl"><table>
+        <tr><th>ความสูง</th><th>TUC</th></tr>
+        <tr><td>FL180 (18,000 ft)</td><td>20–30 นาที</td></tr>
+        <tr><td>FL220</td><td>10 นาที</td></tr>
+        <tr><td>FL250</td><td>3–5 นาที</td></tr>
+        <tr><td>FL300</td><td>1–2 นาที</td></tr>
+        <tr><td>FL350</td><td>30–60 วินาที</td></tr>
+        <tr><td>FL400</td><td>15–30 วินาที</td></tr>
+        <tr><td>FL430</td><td>9–12 วินาที</td></tr>
+      </table></div>
+
+      <h4>อาการและอาการแสดง (Signs & Symptoms)</h4>
+      <ul>
+        <li><b>ด้านสมรรถนะ/จิต:</b> บุคลิกเปลี่ยน, สูญเสียวิจารณญาณ (loss of judgement), ขาดการวิจารณ์ตนเอง (loss of self-criticism), <b>euphoria</b> (เคลิ้มสุข), ความจำระยะสั้นเสีย, การคิดประสานงานเสีย</li>
+        <li><b>ด้านร่างกาย:</b> กล้ามเนื้อทำงานไม่ประสาน, การรับสัมผัส/การมองเห็นเสีย, ตัวร้อนวูบ (hot flushes), <b>เขียวคล้ำ (cyanosis)</b>, hyperventilation</li>
+        <li><b>ระยะท้าย:</b> กึ่งหมดสติ → หมดสติ → เสียชีวิต</li>
+      </ul>
+
+      <h4>ปัจจัยที่มีผลต่อความทนทาน (Tolerance)</h4>
+      <p>Altitude, อัตราการไต่ (rate of ascent), เวลา (time), การออกแรง (exercise), ความเย็น, เจ็บป่วย, อ่อนเพลีย/เมาค้าง, ยา/แอลกอฮอล์, <b>การสูบบุหรี่</b>, ความฟิต, ความเครียด/workload</p>
+
+      <h4>การแก้ไข (Corrective actions)</h4>
+      <ol>
+        <li>เลือก O₂ 100%</li>
+        <li>เลือก Emergency pressure</li>
+        <li>ตรวจการต่อสาย (check connections)</li>
+        <li>หายใจอัตราและความลึกปกติ</li>
+        <li>ประกาศเหตุฉุกเฉิน (declare emergency)</li>
+        <li>ลดระดับและลงจอดโดยเร็ว (descend & land ASAP)</li>
+      </ol>
+
+      <div class="box warn"><div class="box-t">⚠️ อันตราย</div>
+        <p>อาการนำที่อันตรายคือ <b>euphoria + สูญเสียการวิจารณ์ตนเอง</b> — นักบินมักไม่รู้ตัวว่ากำลังขาด O₂ จึงต้องเชื่อ "ความสูง + เวลา" และใส่ O₂ ทันที</p>
+      </div>
+      <div class="box tip"><div class="box-t">💡 เชื่อมโยง</div>
+        <p>สัญญาณ <b>เริ่มต้นที่สุด</b>ของ hypoxia ในการบินกลางคืน = <b>การมองเห็นกลางคืนลดลง</b> (ดูบทที่ 9)</p>
+      </div>
+
+      <div class="quiz"><div class="qz-t">📝 แบบทดสอบ</div>
+        <div class="qa"><div class="q">Hypoxia 4 ชนิด พร้อมตัวอย่างสาเหตุ?</div><div class="a">Hypoxic (ที่สูง), Hypaemic (CO/ซีด), Stagnant (G-LOC/ช็อก), Histotoxic (แอลกอฮอล์/ไซยาไนด์)</div></div>
+        <div class="qa"><div class="q">TUC ที่ FL250 และ FL350 เป็นเท่าใด?</div><div class="a">FL250 ≈ 3–5 นาที • FL350 ≈ 30–60 วินาที</div></div>
+        <div class="qa"><div class="q">CO ทำให้เกิด hypoxia ชนิดใด?</div><div class="a">Hypaemic (Anemic) hypoxia — CO จับ Hb แทน O₂</div></div>
+        <div class="qa"><div class="q">เหนือ 40,000 ft ต้องใช้ออกซิเจนแบบใด?</div><div class="a">O₂ 100% ภายใต้ความดัน (Positive Pressure Breathing)</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 6 HYPERVENTILATION ============ -->
+  <section id="s6">
+    <div class="sec-head"><div class="idx">6</div><h3>Hyperventilation<span class="en">การหายใจเกิน</span></h3><span class="caret">▾</span></div>
+    <div class="sec-body">
+      <p><b>นิยาม:</b> หายใจ<b>เร็วและลึกเกินความจำเป็น</b> → ขับ CO₂ ออกมากเกิน → ระดับ CO₂ ในเลือด/เนื้อเยื่อลดลง → เลือดเป็นด่าง (respiratory alkalosis)</p>
+
+      <h4>สาเหตุ (Causes)</h4>
+      <ul><li>Hypoxia, การสั่นสะเทือน (vibration), ความปวด/ความเครียด, motion sickness, แรง G & AGSM, การหายใจภายใต้ความดัน (pressure breathing)</li></ul>
+
+      <h4>อาการ (Symptoms)</h4>
+      <ul>
+        <li>มึนงง/หน้ามืด (light-headedness, dizziness), รู้สึกไม่จริง (unreality), วิตกกังวล</li>
+        <li>การรับสัมผัส/การมองเห็นเปลี่ยน, <b>ชาปลายมือ-ปลายเท้า-ริมฝีปาก</b> (tingling)</li>
+        <li>กล้ามเนื้อกระตุก/เกร็ง (tetany/spasm) → กึ่งหมดสติ → หมดสติ</li>
+        <li>พบใน<b>ผู้หญิงมากกว่าผู้ชาย</b></li>
+      </ul>
+
+      <h4>การแก้ไข (Corrective actions)</h4>
+      <ol>
+        <li><b>ใส่ O₂ ก่อน</b> — เพราะอาจเป็น hypoxia (อาการคล้ายกันมาก!)</li>
+        <li>พยายามควบคุมอัตรา/ความลึกการหายใจให้ช้าลง</li>
+        <li>ถ้าไม่น่าจะเป็น hypoxia → หายใจซ้ำในถุงกระดาษ (rebreathe from paper bag) เพื่อเพิ่ม CO₂</li>
+        <li><b>ห้ามกลั้นหายใจ</b></li>
+      </ol>
+
+      <div class="box warn"><div class="box-t">⚠️ จุดสอบบ่อย: Hypoxia vs Hyperventilation</div>
+        <p>อาการคล้ายกันมาก → <b>ให้คิดถึง hypoxia ก่อนเสมอ และใส่ O₂ 100% ก่อน</b> ค่อยพิจารณา hyperventilation ทีหลัง</p>
+      </div>
+
+      <div class="quiz"><div class="qz-t">📝 แบบทดสอบ</div>
+        <div class="qa"><div class="q">Hyperventilation ทำให้ระดับ CO₂ เปลี่ยนอย่างไร และเลือดเป็นกรดหรือด่าง?</div><div class="a">CO₂ ลดลง → เลือดเป็นด่าง (respiratory alkalosis)</div></div>
+        <div class="qa"><div class="q">อาการเด่นที่ปลายมือปลายเท้าคืออะไร?</div><div class="a">ชา (tingling) ที่ปลายมือ ปลายเท้า และริมฝีปาก รวมถึงกล้ามเนื้อเกร็ง (tetany)</div></div>
+        <div class="qa"><div class="q">ขั้นตอนแก้ไขข้อแรกคืออะไร เพราะอะไร?</div><div class="a">ใส่ O₂ 100% ก่อน เพราะอาการแยกจาก hypoxia ได้ยาก — ต้องตัด hypoxia ออกก่อน</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 7 OXYGEN EQUIPMENT ============ -->
+  <section id="s7">
+    <div class="sec-head"><div class="idx">7</div><h3>อุปกรณ์ออกซิเจน<span class="en">Oxygen Equipment</span></h3><span class="caret">▾</span></div>
+    <div class="sec-body">
+      <h4>คุณสมบัติและรูปแบบของออกซิเจน</h4>
+      <ul>
+        <li><b>Aviation O₂:</b> บริสุทธิ์สูงมาก <b>ไม่มีความชื้น</b> (ต่างจาก Industrial = บริสุทธิ์ต่ำ/มีความชื้น, Medical = บริสุทธิ์สูง)</li>
+        <li>สถานะ: <b>Gas, Liquid</b> (เปลี่ยนเป็นของเหลวสีฟ้าที่ −182.5 °C), <b>Solid/Chemical</b>, <b>OBOGS</b> (สร้าง O₂ บนเครื่อง)</li>
+      </ul>
+
+      <h4>ข้อบ่งชี้ในการใช้ออกซิเจน</h4>
+      <div class="tbl"><table>
+        <tr><th>Normal Oxygen</th><th>100% Oxygen</th></tr>
+        <tr><td>บินกลางคืน ≥ 5,000 ft<br>บินกลางวัน ≥ 10,000 ft</td><td>Denitrogenation • มีแก๊สพิษในห้อง • หน้ากากรั่ว • บาดเจ็บ/เจ็บป่วย</td></tr>
+      </table></div>
+
+      <h4>การเก็บบรรจุ (Gas storage)</h4>
+      <div class="tbl"><table>
+        <tr><th>ชนิด</th><th>ความดัน</th><th>สี/หมายเหตุ</th></tr>
+        <tr><td>Low Pressure</td><td>400–450 PSI (ต่ำสุด 100)</td><td>ถังสีเหลือง</td></tr>
+        <tr><td>High Pressure</td><td>1,800–2,200 PSI (ต่ำสุด 100)</td><td>ถังสีเขียว (Shatter-proof)</td></tr>
+      </table></div>
+
+      <h4>อุปกรณ์พกพา/ฉุกเฉิน</h4>
+      <div class="tbl"><table>
+        <tr><th></th><th>A-6 Cylinder (Walk-around)</th><th>H-2 Bottle (Emergency)</th></tr>
+        <tr><td>ความดัน</td><td>400–450 PSI (ต่ำ)</td><td>1,800–2,200 PSI (สูง)</td></tr>
+        <tr><td>สีถัง</td><td>เหลือง</td><td>เขียว</td></tr>
+        <tr><td>ใช้ได้นาน</td><td>20–30 นาที</td><td>8–12 นาที</td></tr>
+        <tr><td>Regulator</td><td>A-15 (มีช่องผสมอากาศ)</td><td>A-13, A-21 (ไม่มีช่องผสมอากาศ)</td></tr>
+        <tr><td>ใช้สำหรับ</td><td>เคลื่อนที่ในเครื่อง</td><td>สละอากาศยาน/ดีดตัวที่สูง</td></tr>
+      </table></div>
+
+      <h4>การ Purge ระบบ (ไล่ระบบออกซิเจน)</h4>
+      <ul>
+        <li><b>เมื่อไหร่:</b> เหลือ ≤ 50 PSI, O₂ ไม่ไหลที่ระยะสูง, เปลี่ยนอุปกรณ์, O₂ หมดระหว่างบินและจอดเกิน 2 ชม.</li>
+        <li><b>อย่างไร:</b> ปล่อย O₂ ผ่านระบบที่ 50 PSI นาน 30 นาที หรือบรรจุเต็มแล้วปล่อยออกหมด ≥ 3 ครั้ง</li>
+      </ul>
+
+      <h4>การตรวจสอบระบบ — PRICE Check (ทุก 10,000 ft)</h4>
+      <div class="tbl"><table>
+        <tr><th>P</th><th>R</th><th>I</th><th>C</th><th>E</th></tr>
+        <tr><td>Pressure (ความดัน)</td><td>Regulator</td><td>Indicator (ตัวบอกการไหล)</td><td>Connections (การต่อสาย)</td><td>Emergency</td></tr>
+      </table></div>
+
+      <h4>หน้ากากและ Regulator ที่ใช้</h4>
+      <ul>
+        <li><b>Mask:</b> MBU-12/P, MBU-20/P</li>
+        <li><b>Regulator:</b> A-13, A-14, A-21, A-15, MD-1 (แบบ Manual และ Automatic)</li>
+        <li><b>Chemical O₂:</b> Chlorate candle (NaClO₃ + BaO₂ + KClO₄), Potassium superoxide (KO₂)</li>
+      </ul>
+
+      <div class="box key"><div class="box-t">🔑 จุดที่ต้องจำ</div>
+        <ul>
+          <li>ใช้ O₂: กลางคืน ≥ <b>5,000 ft</b>, กลางวัน ≥ <b>10,000 ft</b></li>
+          <li>ถังเหลือง = ความดันต่ำ (A-6) • ถังเขียว = ความดันสูง (H-2)</li>
+          <li><b>PRICE</b> = Pressure, Regulator, Indicator, Connections, Emergency (เช็คทุก 10,000 ft)</li>
+        </ul>
+      </div>
+
+      <div class="quiz"><div class="qz-t">📝 แบบทดสอบ</div>
+        <div class="qa"><div class="q">PRICE check ย่อมาจากอะไร?</div><div class="a">Pressure, Regulator, Indicator, Connections, Emergency — ตรวจทุก 10,000 ft</div></div>
+        <div class="qa"><div class="q">ต้องเริ่มใช้ O₂ ที่ความสูงเท่าใด กลางวัน/กลางคืน?</div><div class="a">กลางวัน ≥ 10,000 ft • กลางคืน ≥ 5,000 ft</div></div>
+        <div class="qa"><div class="q">A-6 cylinder ใช้ได้นานเท่าใด ถังสีอะไร?</div><div class="a">20–30 นาที ถังสีเหลือง ความดันต่ำ 400–450 PSI</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 8 SD ============ -->
+  <section id="s8">
+    <div class="sec-head"><div class="idx">8</div><h3>Spatial Disorientation (SD)<span class="en">การหลงสภาพการบิน</span></h3><span class="caret">▾</span></div>
+    <div class="sec-body">
+      <p><b>นิยาม:</b> การรับรู้ตำแหน่งและ/หรือการเคลื่อนที่ของตนเอง<b>ผิดไป</b>เมื่อเทียบกับพื้นผิวโลก</p>
+
+      <h4>ระบบรับรู้ทิศทาง (Orientation systems)</h4>
+      <ul><li><b>Visual (~70%)</b>, Vestibular (หูชั้นใน), Somatosensory (proprioception), Auditory</li></ul>
+
+      <h4>Day Visual Illusions — ภาพลวงตากลางวัน</h4>
+      <div class="tbl"><table>
+        <tr><th>สถานการณ์</th><th>การรับรู้ผิด</th><th>ผลต่อการร่อนลง</th></tr>
+        <tr><td>Runway แคบกว่าปกติ</td><td>รู้สึกอยู่ไกล/สูง</td><td>ร่อนต่ำไป (drag/แตะพื้นเร็ว)</td></tr>
+        <tr><td>Runway กว้างกว่าปกติ</td><td>รู้สึกอยู่ใกล้/ต่ำ</td><td>ร่อนชันไป (flare สูง drop in)</td></tr>
+        <tr><td>Runway ลาดขึ้น (upslope)</td><td>รู้สึกสูงไป</td><td>ร่อนต่ำไป (shallow)</td></tr>
+        <tr><td>Runway ลาดลง (downslope)</td><td>รู้สึกต่ำไป</td><td>ร่อนชันไป (steep)</td></tr>
+        <tr><td>ภูมิประเทศลาดขึ้นสู่ runway</td><td>รู้สึกสูงไป</td><td>ร่อนตื้น (shallow)</td></tr>
+      </table></div>
+
+      <h4>ระบบ Vestibular (หูชั้นใน)</h4>
+      <div class="tbl"><table>
+        <tr><th>อวัยวะ</th><th>ตรวจจับ</th><th>ภาพลวงที่เกี่ยวข้อง</th></tr>
+        <tr><td><b>Semicircular canals</b></td><td>Angular acceleration (threshold 1.5–2.0°/sec²)</td><td>Somatogyral & Oculogyral</td></tr>
+        <tr><td><b>Otolith organs</b></td><td>Linear acceleration / ตำแหน่งศีรษะ</td><td>Somatogravic & Oculogravic</td></tr>
+      </table></div>
+
+      <h4>Somatogyral Illusions (จาก semicircular canals)</h4>
+      <ul>
+        <li><b>The Leans</b> — รู้สึกว่ายังเลี้ยวอยู่หลังจากเลิกเลี้ยวแล้ว (จากเข้าเลี้ยว sub-threshold/เลี้ยวนาน) • <b>พบบ่อยที่สุด</b> • จัดการได้ง่าย</li>
+        <li><b>Graveyard Spin / Spiral</b> — รู้สึกหมุน/ควงทิศตรงข้ามหลัง recover (เกิดหลังหมุน/ดิ่งนานในสภาพอากาศแย่)</li>
+        <li><b>Coriolis</b> — ขยับศีรษะระหว่างเลี้ยว → รู้สึกตีลังกาอย่างรุนแรง (กระตุ้น canal หลายอันพร้อมกัน) • <b>ทำให้ไร้ความสามารถได้ (incapacitating)</b></li>
+      </ul>
+
+      <h4>Somatogravic Illusions (จาก otolith)</h4>
+      <ul>
+        <li><b>เร่งความเร็ว (acceleration)</b> เช่น takeoff/go-around → รู้สึกเหมือน<b>เชิดหัวขึ้น</b> → นักบินกด<b>หัวลง</b> (อันตราย!)</li>
+        <li><b>ลดความเร็ว (deceleration)</b> → รู้สึกเหมือนก้มหัวลง</li>
+      </ul>
+
+      <h4>การป้องกันและจัดการ SD</h4>
+      <ul>
+        <li><b>ป้องกัน:</b> Knowledge, Awareness, Training, ปฏิบัติก่อน/ขณะ/หลังบิน (วางแผน–บินตามแผน–debrief)</li>
+        <li><b>จัดการ:</b> "<b>Make the instruments read right</b>" — เปลี่ยนไปดูเครื่องวัดและ<b>เชื่อมัน</b>, บินตรงระดับจนกว่าจะหายงง, ลดการขยับศีรษะ, ใช้ autopilot, โอนการบังคับให้คนอื่นถ้าทำได้</li>
+      </ul>
+
+      <div class="box key"><div class="box-t">🔑 จุดที่ต้องจำ</div>
+        <ul>
+          <li>การมองเห็นให้ข้อมูลทิศทาง ~<b>70%</b></li>
+          <li><b>Leans</b> = พบบ่อยสุด • <b>Coriolis</b> = อันตรายสุด (ขยับหัวขณะเลี้ยว)</li>
+          <li>Somatogravic ตอน takeoff: เร่ง → รู้สึกเชิดหัว → เผลอกดหัวลง</li>
+          <li>ทางออก: <b>เชื่อเครื่องวัด (instruments)</b></li>
+        </ul>
+      </div>
+
+      <div class="quiz"><div class="qz-t">📝 แบบทดสอบ</div>
+        <div class="qa"><div class="q">Vestibular illusion ใดพบบ่อยที่สุด และใดอันตรายที่สุด?</div><div class="a">พบบ่อยสุด = The Leans • อันตรายสุด = Coriolis (ขยับศีรษะระหว่างเลี้ยว)</div></div>
+        <div class="qa"><div class="q">Semicircular canals กับ Otolith ตรวจจับอะไรต่างกัน?</div><div class="a">Canals = angular acceleration (somatogyral) • Otolith = linear acceleration/ตำแหน่งศีรษะ (somatogravic)</div></div>
+        <div class="qa"><div class="q">Runway แคบกว่าปกติทำให้นักบินร่อนลงอย่างไร?</div><div class="a">รู้สึกอยู่ไกล/สูง → ร่อนต่ำเกินไป เสี่ยงแตะพื้นก่อน runway</div></div>
+        <div class="qa"><div class="q">หลักการจัดการ SD คืออะไร?</div><div class="a">"Make the instruments read right" — เชื่อเครื่องวัด บินตรงระดับ ลดการขยับศีรษะ</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 9 VISION ============ -->
+  <section id="s9">
+    <div class="sec-head"><div class="idx">9</div><h3>การมองเห็นในการบิน<span class="en">Vision in Aviation</span></h3><span class="caret">▾</span></div>
+    <div class="sec-body">
+      <p>การมองเห็นให้ข้อมูล orientation <b>80–90%</b> ระหว่างบิน • สำคัญต่อการหลบชน (collision avoidance) และการกะระยะลึก (depth perception)</p>
+
+      <h4>Focal vs Ambient Vision</h4>
+      <div class="tbl"><table>
+        <tr><th></th><th>Focal (Foveal)</th><th>Ambient (Peripheral)</th></tr>
+        <tr><td>ความคมชัด (acuity)</td><td>สูง</td><td>ต่ำ</td></tr>
+        <tr><td>สี</td><td>ดี</td><td>แย่</td></tr>
+        <tr><td>จุดเด่น</td><td>รายละเอียด, จำวัตถุ, อ่านเครื่องวัด</td><td>ไวต่อแสงน้อย/การเคลื่อนไหว, รับรู้ทิศทางจากภายนอก</td></tr>
+        <tr><td>การรับรู้</td><td>ต้องตั้งใจ (conscious)</td><td>ไม่ต้องตั้งใจ (subconscious)</td></tr>
+      </table></div>
+
+      <h4>Rods vs Cones</h4>
+      <div class="tbl"><table>
+        <tr><th></th><th>Rods (แท่ง)</th><th>Cones (กรวย)</th></tr>
+        <tr><td>จำนวน</td><td>~125 ล้าน</td><td>~4–7 ล้าน</td></tr>
+        <tr><td>ตำแหน่ง</td><td>รอบนอกจอตา (periphery)</td><td>กลางจอตา/fovea</td></tr>
+        <tr><td>สี</td><td>ไม่เห็นสี</td><td>เห็นสี (แดง/น้ำเงิน/เขียว)</td></tr>
+        <tr><td>ใช้เมื่อ</td><td>แสงน้อย/กลางคืน (scotopic)</td><td>แสงมาก/กลางวัน (photopic)</td></tr>
+      </table></div>
+      <p>ระดับการมองเห็น: <b>Photopic</b> (cones, กลางวัน), <b>Scotopic</b> (rods, กลางคืน — acuity 20/200 หรือแย่กว่า, ไม่เห็นสี), <b>Mesopic</b> (ทั้งสอง, พลบค่ำ/รุ่งเช้า)</p>
+
+      <h4>จุดบอด (Blind spots)</h4>
+      <ul>
+        <li><b>Physiological/Anatomical blind spot:</b> ที่ optic disc (ไม่มี rods/cones) ครอบคลุม 2–6° • บังวัตถุ 18 m ที่ระยะ 200 m ได้</li>
+        <li><b>Central/Night blind spot:</b> เกิดเฉพาะแสงน้อย ขนาด 1–2° กลางลานสายตา (cones ไม่ทำงานบริเวณ fovea ที่ไม่มี rods) → กลางคืนต้องใช้ <b>off-center viewing</b> (มองเฉียง 10°)</li>
+      </ul>
+
+      <h4>การกะระยะลึก (Depth Perception)</h4>
+      <ul>
+        <li><b>Binocular cues:</b> Convergence, Stereopsis (จำกัดที่ระยะใกล้)</li>
+        <li><b>Monocular cues:</b> Retinal image/Size constancy, Relative motion, Overlap, Position in field, Linear perspective, Aerial perspective</li>
+      </ul>
+
+      <h4>การชนกลางอากาศ (Mid-air collisions)</h4>
+      <ul><li>ปัจจัย: impact time & retinal size, <b>Constant relative bearing</b> (วัตถุอยู่ตำแหน่งเดิมในลานสายตา = กำลังจะชน), ไม่กระตุ้น peripheral, วัตถุถูกบังด้วยโครงสร้างเครื่อง</li></ul>
+
+      <h4>Night Vision & Dark Adaptation</h4>
+      <ul>
+        <li><b>Dark adaptation:</b> Cones ปรับเต็มที่ใน 5–7 นาที, <b>Rods ใช้ 30–45 นาที</b> • แต่ละตาปรับอิสระ • สร้างช้า เสียเร็วเมื่อโดนแสง</li>
+        <li><b>Night scanning:</b> มองเฉียงจากวัตถุ <b>15–20°</b>, สแกนแบบ diamond pattern, refocus ทุก 3–5 วินาที</li>
+        <li><b>Flash blindness:</b> โดนแสงจ้าไม่กี่วินาที → ฟื้นใน 20–30 นาที → <b>ปิดตาข้างหนึ่ง</b>เมื่อคาดว่าจะมีแสงจ้า</li>
+        <li><b>Night myopia:</b> รูม่านตาขยาย เกิด dark focus สายตาสั้นลงกลางคืน → ใส่แว่น</li>
+        <li><b>Autokinesis:</b> แสงนิ่งดูเหมือนขยับ (ขาด reference + กล้ามเนื้อตากระตุก) → แก้ด้วยการสแกนตา</li>
+      </ul>
+
+      <h4>Hypoxia, การสูบบุหรี่ และการมองเห็นกลางคืน</h4>
+      <ul>
+        <li><b>อาการเริ่มต้นที่สุดของ hypoxia = การมองเห็นกลางคืนลดลง</b></li>
+        <li>การบินทหารควรใช้ O₂ ตั้งแต่ takeoff เพื่อ visual acuity สูงสุด</li>
+        <li>สูบบุหรี่ 3 มวน → CO ~4% → เทียบเท่าความสูง 2,800 m → night vision ลด 15–18%</li>
+        <li>CO จับ Hb แรงกว่า O₂ ~210–240 เท่า</li>
+      </ul>
+      <div class="tbl"><table>
+        <tr><th>ความสูง</th><th>% Visual Acuity ที่ลดลง</th></tr>
+        <tr><td>4,000 ft</td><td>5%</td></tr><tr><td>6,000 ft</td><td>10%</td></tr>
+        <tr><td>8,000 ft</td><td>15%</td></tr><tr><td>10,000 ft</td><td>20%</td></tr>
+        <tr><td>12,000 ft</td><td>25%</td></tr><tr><td>14,000 ft</td><td>30%</td></tr>
+      </table></div>
+
+      <h4>ผลของแสงต่อดวงตา & การป้องกัน</h4>
+      <ul>
+        <li><b>UV:</b> photophthalmia, snow blindness • <b>IR:</b> macular burn, pterygium</li>
+        <li>Filter: color/neutral/reflecting • <b>Polarizing filter — ICAO ไม่อนุญาต</b></li>
+      </ul>
+
+      <div class="box tip"><div class="box-t">💡 เพิ่มประสิทธิภาพการมองกลางคืน</div>
+        <ul>
+          <li>งดบุหรี่ • อาหารครบ <b>Vit A</b> • Dark adapt 30 นาที • ใส่แว่นกันแดดตอนกลางวัน</li>
+          <li>มองเฉียง 15–20° (off-center) • สแกนแบบ diamond • O₂ เสริม • ลดไฟใน cockpit • ปิดตาเมื่อโดนแสงจ้า</li>
+        </ul>
+      </div>
+
+      <div class="quiz"><div class="qz-t">📝 แบบทดสอบ</div>
+        <div class="qa"><div class="q">Rods กับ Cones ต่างกันอย่างไร (ตำแหน่ง/สี/แสง)?</div><div class="a">Rods: รอบนอก, ไม่เห็นสี, ใช้แสงน้อย/กลางคืน • Cones: กลาง/fovea, เห็นสี, ใช้แสงมาก/กลางวัน</div></div>
+        <div class="qa"><div class="q">Dark adaptation ของ rods ใช้เวลานานเท่าใด?</div><div class="a">30–45 นาที (cones 5–7 นาที)</div></div>
+        <div class="qa"><div class="q">เทคนิคมองกลางคืนคืออะไร?</div><div class="a">Off-center viewing — มองเฉียงจากวัตถุ 15–20°, สแกน diamond, refocus ทุก 3–5 วินาที</div></div>
+        <div class="qa"><div class="q">Autokinesis คืออะไร?</div><div class="a">ภาพลวงที่แสงนิ่งดูเหมือนเคลื่อนที่ จากการขาด reference และกล้ามเนื้อตากระตุก</div></div>
+        <div class="qa"><div class="q">อาการเริ่มต้นที่สุดของ hypoxia กลางคืนคืออะไร?</div><div class="a">การมองเห็นกลางคืนลดลง (night vision ลด)</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 10 MOTION SICKNESS ============ -->
+  <section id="s10">
+    <div class="sec-head"><div class="idx">10</div><h3>Motion Sickness<span class="en">การเมาจากการเคลื่อนไหว</span></h3><span class="caret">▾</span></div>
+    <div class="sec-body">
+      <p>เป็น<b>การตอบสนองปกติต่อสิ่งแวดล้อมที่ผิดปกติ</b> — ตอบสนองต่อการเคลื่อนไหวจริงหรือลวงที่ร่างกายยังไม่ปรับตัว (unadapted)</p>
+
+      <h4>ความสำคัญ (อุบัติการณ์)</h4>
+      <ul><li>ฝึกบิน: RAF 39%, US Navy 55–83% • turbulence รุนแรง ~90% • sea survival 90% ในทะเลคลื่นแรง</li>
+      <li>ผลกระทบ: ยกเลิก/ปรับภารกิจ, ฝึกช้าลง, กระทบความมั่นใจและสมรรถนะ</li></ul>
+
+      <h4>ทฤษฎี Neural Mismatch</h4>
+      <p>สัญญาณจาก <b>ตา (eyes) + หูชั้นใน (inner ear) + proprioceptors</b> ขัดแย้งกัน → เทียบกับ neural store ไม่ตรง → เกิดอาการ</p>
+      <ul>
+        <li><b>Visual-Vestibular mismatch:</b> อ่านหนังสือขณะเครื่องสั่น, simulator sickness, มองในห้องนักบิน</li>
+        <li><b>Canal-Otolith mismatch:</b> Coriolis (cross-coupled), space sickness</li>
+      </ul>
+
+      <h4>อาการ (Signs & Symptoms)</h4>
+      <ul>
+        <li><b>หลัก:</b> หน้าซีด (pallor), เหงื่อเย็น (cold sweats), คลื่นไส้ (nausea), อาเจียน (vomiting)</li>
+        <li><b>อื่นๆ:</b> น้ำลายมาก, เรอ/ผายลม, รู้สึกที่ท้อง, หาว, ปวดหัว, ง่วงซึม</li>
+        <li><b>ลำดับ:</b> รู้สึกที่ท้อง → รู้สึกไม่สบาย → คลื่นไส้ → ซีด/เหงื่อ → อาเจียน (<b>Avalanche effect</b> = ลุกลามเร็ว)</li>
+      </ul>
+
+      <h4>ปัจจัยส่งเสริม</h4>
+      <ul><li>อายุ (เด็กง่ายกว่า), เพศ (<b>หญิง</b>ง่ายกว่า), ความวิตกกังวล, กิจกรรมทางจิต (อ่านหนังสือ), ปัจจัยเครื่องบิน/สิ่งแวดล้อม, ความแตกต่างบุคคล</li></ul>
+
+      <h4>การป้องกันและรักษา</h4>
+      <ul>
+        <li><b>Behavioural:</b> ขยับศีรษะให้น้อย, นอนราบ, หลับตา, ทำจิตใจให้จดจ่อสิ่งอื่น, อยู่ส่วนที่นิ่งของเครื่อง, <b>มองเส้นขอบฟ้า (horizon)</b></li>
+        <li><b>Adaptation</b> (ค่อยๆ ปรับตัว) และ <b>Desensitization</b></li>
+        <li><b>Drugs:</b> transdermal scopolamine — ต้อง ground trial ก่อน, ใช้ได้สูงสุด 8 sorties ช่วงฝึกแรก, โดยทั่วไป<b>ไม่ใช้กับนักบิน</b> (ทำให้ง่วง)</li>
+      </ul>
+
+      <div class="box key"><div class="box-t">🔑 จุดที่ต้องจำ</div>
+        <ul>
+          <li>กลไก = <b>Neural/Sensory mismatch</b> (ตา↔หูชั้นใน↔proprioception ขัดแย้ง)</li>
+          <li>อาการหลัก 4: ซีด เหงื่อเย็น คลื่นไส้ อาเจียน</li>
+          <li>Behavioural สำคัญสุด: มองขอบฟ้า + ลดการขยับหัว</li>
+        </ul>
+      </div>
+
+      <div class="quiz"><div class="qz-t">📝 แบบทดสอบ</div>
+        <div class="qa"><div class="q">ทฤษฎีหลักที่อธิบาย motion sickness?</div><div class="a">Neural (Sensory) Mismatch — สัญญาณจากตา หูชั้นใน และ proprioceptors ขัดแย้งกัน</div></div>
+        <div class="qa"><div class="q">วิธี behavioural ที่ดีที่สุดมีอะไรบ้าง?</div><div class="a">มองเส้นขอบฟ้า, ลดการขยับศีรษะ, หลับตา/นอนราบ, อยู่ส่วนที่นิ่งของเครื่อง</div></div>
+        <div class="qa"><div class="q">ยา scopolamine มีข้อจำกัดอย่างไรในการฝึกบิน?</div><div class="a">ต้อง ground trial ก่อน, ใช้ได้สูงสุด 8 sorties ช่วงแรก, ไม่เหมาะกับนักบินเพราะทำให้ง่วง</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 11 ACCELERATION & G-LOC ============ -->
+  <section id="s11">
+    <div class="sec-head"><div class="idx">11</div><h3>Acceleration & G-LOC<span class="en">แรงเร่งและการหมดสติจากแรง G</span></h3><span class="caret">▾</span></div>
+    <div class="sec-body">
+      <h4>นิยามและแกน G</h4>
+      <ul>
+        <li>acceleration = การเปลี่ยนความเร็ว • g = ความเร่งโน้มถ่วง (<b>9.81 m/s²</b>) • G = แรงเร่งที่กระทำ ÷ g</li>
+        <li>ตัวอย่างแรงโน้มถ่วง: โลก 1g • ดวงจันทร์ 0.166g • ดาวอังคาร 0.38g</li>
+        <li>แกน: <b>+Gz</b> (หัว→เท้า, "eyes down"), −Gz, ±Gx (อก-หลัง), ±Gy</li>
+        <li><b>LDA (Long Duration Acceleration):</b> แรงเร่ง > 2 วินาที, ส่วนใหญ่ในแกน +Gz</li>
+      </ul>
+
+      <h4>ผลต่อร่างกาย</h4>
+      <div class="tbl"><table>
+        <tr><th>แรง G</th><th>ผลต่อการเคลื่อนไหว</th></tr>
+        <tr><td>2 G</td><td>แขนขาหนักขึ้นชัดเจน</td></tr>
+        <tr><td>3 G</td><td>ลุกจากท่านั่งไม่ได้</td></tr>
+        <tr><td>4–6 G</td><td>ยกศีรษะ (ที่ใส่หมวก) ไม่ขึ้น</td></tr>
+        <tr><td>7–8 G</td><td>ยกแขนขึ้นไม่ได้</td></tr>
+      </table></div>
+      <ul>
+        <li><b>Cardiovascular:</b> เลือดหนักขึ้น, BP ใต้หัวใจเพิ่ม, หลอดเลือดใต้หัวใจขยาย → เลือดกลับหัวใจลด → BP ลด • ตอบสนอง: HR เพิ่ม + vasoconstriction (ใช้เวลา 6–12 วินาที)</li>
+        <li><b>การมองเห็นเสียก่อนหมดสติ</b> — เมื่อ retinal artery BP < 20 mmHg • visual loss สมบูรณ์ ~4.5 G</li>
+      </ul>
+
+      <h4>Greyout → Blackout → G-LOC</h4>
+      <div class="tbl"><table>
+        <tr><th>ภาวะ</th><th>ลักษณะ</th><th>สติ</th></tr>
+        <tr><td><b>Greyout</b></td><td>มัวลง สูญเสียลานสายตารอบนอก</td><td>รู้สึกตัว</td></tr>
+        <tr><td><b>Blackout</b></td><td>มืดสนิท (เลือดไปจอตาไม่พอ)</td><td>ยังรู้สึกตัว</td></tr>
+        <tr><td><b>G-LOC</b></td><td>หมดสติจากแรง G (เกิด 5–6 G)</td><td>หมดสติ + อาจชัก</td></tr>
+      </table></div>
+
+      <div class="box warn"><div class="box-t">⚠️ อันตรายของ G-LOC</div>
+        <p>หมดสติ ~15 วินาทีหลังปลด G + สับสนอีก ~15 วินาที = <b>~30 วินาทีที่ไม่มีใครบังคับเครื่อง</b></p>
+      </div>
+
+      <h4>เพิ่มความทน G (G-tolerance)</h4>
+      <ul>
+        <li>เกร็งกล้ามเนื้อ (+2 G), L1/M1 maneuver (+2 G), <b>AGSM</b> (Anti-G Straining Maneuver, +4.5 G)</li>
+        <li>ออกกำลังกาย, <b>G-suit</b> (+1.2 G, ต้องใส่ถูกต้อง), G-awareness turns</li>
+      </ul>
+
+      <h4>ปัจจัยที่ลดความทน G</h4>
+      <ul><li>เจ็บป่วย, heat stress/ขาดน้ำ, แอลกอฮอล์, hypoxia/hyperventilation, ท้องว่าง</li></ul>
+
+      <h4>Negative G (−Gz)</h4>
+      <ul><li>ทนได้แย่ • เลือดขึ้นหัวมาก → สับสน, ปวดหัว, หมดสติ, ปวด/แน่นหน้า, "<b>red out</b>"</li></ul>
+
+      <div class="box key"><div class="box-t">🔑 จุดที่ต้องจำ</div>
+        <ul>
+          <li>ลำดับ: Greyout → Blackout (ยังมีสติ) → G-LOC (หมดสติ ~5–6 G)</li>
+          <li>การมองเห็นเสียก่อนหมดสติเสมอ</li>
+          <li>AGSM ได้ผลมากสุด (+4.5 G) • G-suit เสริม +1.2 G</li>
+          <li>G-LOC = ~30 วินาทีไร้คนบังคับ</li>
+        </ul>
+      </div>
+
+      <div class="quiz"><div class="qz-t">📝 แบบทดสอบ</div>
+        <div class="qa"><div class="q">ลำดับการสูญเสียการมองเห็นและสติจากแรง +Gz?</div><div class="a">Greyout (มัว, เสียลานรอบนอก) → Blackout (มืดแต่ยังมีสติ) → G-LOC (หมดสติ ~5–6 G)</div></div>
+        <div class="qa"><div class="q">วิธีเพิ่ม G-tolerance ที่ได้ผลมากที่สุด?</div><div class="a">AGSM (Anti-G Straining Maneuver) เพิ่มได้ ~+4.5 G</div></div>
+        <div class="qa"><div class="q">ทำไม G-LOC อันตราย?</div><div class="a">หมดสติ ~15 วินาที + สับสนอีก ~15 วินาที = ~30 วินาทีที่ไม่มีใครบังคับเครื่อง</div></div>
+        <div class="qa"><div class="q">Negative G ทำให้เกิดอะไร?</div><div class="a">เลือดขึ้นหัว → ปวดหัว สับสน "red out" หมดสติ ทนได้แย่</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 12 NOISE ============ -->
+  <section id="s12">
+    <div class="sec-head"><div class="idx">12</div><h3>เสียง (Noise)<span class="en">Noise</span></h3><span class="caret">▾</span></div>
+    <div class="sec-body">
+      <p><b>Noise</b> = เสียงที่ <b>ไม่ต้องการ (Unwanted) / ไม่น่าพอใจ (Unpleasant) / ทำอันตราย (Damaging)</b></p>
+
+      <h4>คุณสมบัติของเสียง</h4>
+      <ul>
+        <li>Amplitude (ความดัง), Wavelength (ความยาวคลื่น), Frequency (ความถี่ Hz)</li>
+        <li><b>SPL</b> (Sound Pressure Level): <span class="formula">SPL(dB) = 20 × log₁₀(P วัดได้ / P อ้างอิง)</span> • P อ้างอิง = 20 µPa • 0 dB = เสียงเบาสุดที่ได้ยิน</li>
+        <li>สเกล dB เป็น logarithmic: <b>เพิ่ม 3 dB = พลังงานเสียงเพิ่มเป็น 2 เท่า</b> • dB(A) ถ่วงน้ำหนักให้เหมือนหูมนุษย์</li>
+      </ul>
+      <div class="tbl"><table>
+        <tr><th>แหล่งเสียง</th><th>ระดับ (dB)</th></tr>
+        <tr><td>Jet takeoff</td><td>140</td></tr><tr><td>สว่านลม/road drill</td><td>120</td></tr>
+        <tr><td>รถบรรทุกหนัก</td><td>80–100</td></tr><tr><td>สำนักงาน</td><td>60</td></tr>
+        <tr><td>ห้องสมุด</td><td>40</td></tr><tr><td>ป่าเงียบ</td><td>20</td></tr>
+      </table></div>
+
+      <h4>กายวิภาคการได้ยิน</h4>
+      <ul><li>Ossicles 3 ชิ้น: hammer–anvil–stirrup (malleus–incus–stapes), eardrum, oval/round window, cochlea, auditory nerve • นำเสียงทาง air conduction & bone conduction</li></ul>
+
+      <h4>แหล่งเสียงในเครื่องบิน</h4>
+      <ul><li>Aerodynamic, Engine/propulsion, Cabin conditioning, Avionics & cooling, Weapons, Auditory warnings/communications</li></ul>
+
+      <h4>ผลของเสียง</h4>
+      <ul>
+        <li>สูญเสียการได้ยิน, สื่อสารแย่ลง, ความเครียด, อ่อนล้า, เสียสมาธิ</li>
+        <li>ไม่จำเพาะ: วิตกกังวล, เวียนหัว, คลื่นไส้, HR/BP/RR ผันผวน, GI motility ลด</li>
+      </ul>
+
+      <h4>การสูญเสียการได้ยิน (Hearing damage)</h4>
+      <ul>
+        <li>ขึ้นกับ <b>ระดับเสียง + ระยะเวลา</b></li>
+        <li><b>Temporary Threshold Shift</b> (ชั่วคราว, มักมี tinnitus) vs <b>Permanent</b> (เริ่มที่ความถี่สูงก่อน)</li>
+        <li><b>Presbycusis</b> = สูญเสียการได้ยินความถี่สูงตามอายุ (SNHL)</li>
+        <li>NIHL: continuous / impact / impulse (ปืน/ระเบิด) — <b>ป้องกันได้</b></li>
+      </ul>
+
+      <h4>ระดับเสียงที่ยอมรับได้</h4>
+      <ul>
+        <li>ไม่เกิด NIHL ที่ 75–80 dB(A) • ขีดจำกัด OH&S = <b>85 dB(A) ต่อวันทำงาน 8 ชม.</b> (Daily Noise Dose) • aircrew มักเกิน</li>
+        <li>หลักการ: เพิ่ม 3 dB → เวลารับลดครึ่ง (85/8h → 88/4h …)</li>
+      </ul>
+
+      <h4>Hearing Conservation Program & การป้องกัน</h4>
+      <ul>
+        <li>ประเมินพื้นที่ทำงาน, ตรวจ <b>audiogram ทุก 12 เดือน</b>, ใช้อุปกรณ์ป้องกัน</li>
+        <li>ลดเสียง: ลดที่แหล่ง → ขวางทางส่งผ่าน → ลดที่ผู้รับ → ใส่อุปกรณ์ป้องกัน</li>
+        <li>HPDs: earplugs, earmuffs, helmets, <b>ANR</b> (Active Noise Reduction) • <b>Helmet + earplug (double) ลดได้ดีสุดแบบ passive; เพิ่ม ANR ยิ่งดี</b></li>
+      </ul>
+
+      <div class="box key"><div class="box-t">🔑 จุดที่ต้องจำ</div>
+        <ul>
+          <li>+3 dB = พลังงานเสียง × 2</li>
+          <li>ขีดจำกัด <b>85 dB(A) / 8 ชม.</b> • audiogram ทุก 12 เดือน</li>
+          <li>Permanent hearing loss เริ่มที่<b>ความถี่สูง</b>ก่อน</li>
+        </ul>
+      </div>
+
+      <div class="quiz"><div class="qz-t">📝 แบบทดสอบ</div>
+        <div class="qa"><div class="q">การเพิ่มเสียง 3 dB หมายความว่าอย่างไร?</div><div class="a">พลังงานเสียงที่หูเพิ่มเป็น 2 เท่า</div></div>
+        <div class="qa"><div class="q">ขีดจำกัดเสียงต่อวันทำงาน 8 ชม. และความถี่ตรวจ audiogram?</div><div class="a">85 dB(A) ต่อ 8 ชม. • ตรวจ audiogram ทุก 12 เดือน</div></div>
+        <div class="qa"><div class="q">Permanent hearing loss มักเริ่มที่ความถี่ใด?</div><div class="a">ความถี่สูงก่อน (high-tone) • ตามอายุเรียก presbycusis</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 13 VIBRATION ============ -->
+  <section id="s13">
+    <div class="sec-head"><div class="idx">13</div><h3>การสั่นสะเทือน (Vibration)<span class="en">Vibration</span></h3><span class="caret">▾</span></div>
+    <div class="sec-body">
+      <p><b>Vibration</b> = การเคลื่อนไหวที่สลับทิศซ้ำๆ (oscillatory) ส่งผ่านการสัมผัสโดยตรงระหว่างร่างกายกับโครงสร้างที่สั่น • <b>เสียงคือการสั่นที่ส่งผ่านอากาศ</b></p>
+
+      <h4>ระบบการสั่น & การวัด</h4>
+      <ul>
+        <li>ระบบง่ายสุด: <b>Mass + Spring + Damper</b> (มวล=kinetic, สปริง=potential, damper=สูญเสียพลังงานกล)</li>
+        <li>Sinusoidal: Frequency (Hz, จำนวนรอบ/วินาที), Amplitude (m, การกระจัดสูงสุดจากจุดพัก)</li>
+        <li>Biomechanical: <b>Body impedance</b> (ลดทอนพลังงาน — soft tissue), <b>Body resonance</b> (ขยายพลังงาน — bony part)</li>
+      </ul>
+
+      <h4>ผลของการสั่นตามความถี่</h4>
+      <div class="tbl"><table>
+        <tr><th>ความถี่</th><th>ผล</th></tr>
+        <tr><td>< 0.7 Hz</td><td>Hyperventilation, การพูด, motion sickness</td></tr>
+        <tr><td>2 Hz</td><td>Pursuit reflex (มองตาม) บกพร่อง</td></tr>
+        <tr><td>2–6 Hz</td><td>ใช้มือที่ยื่นออกแย่ • การเพ่งมองเสียที่ 4–6 Hz</td></tr>
+        <tr><td>4–8 Hz</td><td><b>ทนได้น้อยที่สุด (least tolerance)</b></td></tr>
+        <tr><td>10 Hz</td><td>Tendon reflex หายไป</td></tr>
+        <tr><td>20 Hz</td><td>Speech intelligibility เสีย</td></tr>
+        <tr><td>60 Hz</td><td>Visual acuity ลด</td></tr>
+      </table></div>
+
+      <h4>ผลต่อระบบร่างกายและสมรรถนะ</h4>
+      <ul>
+        <li>Cardiovascular: pulse rate/pressure & cardiac output เพิ่ม • Respiration: metabolic & ventilation เพิ่ม</li>
+        <li>อาการเด่นที่ 4–8 Hz: <b>Precordial pain</b> (ปวดยอดอก) + <b>Mid-abdominal pain</b> (ปวดท้อง)</li>
+        <li>ระยะยาว: อ่อนล้า + ความเครียด, ปวดหลัง/บาดเจ็บ soft tissue (lumbar backache), <b>Raynaud's (vibration white finger)</b> — พบน้อยในการบิน</li>
+      </ul>
+
+      <h4>Infrasonic vibration</h4>
+      <ul><li>หูอื้อจนปวดที่ 155 dB, แน่นหน้าอก/หายใจลำบาก (2–15 Hz), คลื่นไส้/เสียการทรงตัว (vestibular), เป็น psychological stressor</li></ul>
+
+      <h4>แหล่งและการป้องกัน</h4>
+      <ul>
+        <li><b>แหล่ง:</b> Fixed wing (power, propellers, turbulence) • Rotary wing (power, rotor blades, gearboxes)</li>
+        <li><b>ป้องกัน:</b> ลดที่แหล่ง, ดัดแปลงเส้นทางส่งผ่าน, dynamic vibration absorbers, แยกที่นั่ง (sprung seats ในฮ.), เลี่ยงสภาพอากาศ/ใช้ turbulence penetration speed</li>
+      </ul>
+
+      <div class="box key"><div class="box-t">🔑 จุดที่ต้องจำ</div>
+        <ul>
+          <li>มนุษย์ทนได้น้อยสุดที่ <b>4–8 Hz</b></li>
+          <li>การมองเสียที่ 4–6 Hz • visual acuity ลดที่ 60 Hz</li>
+          <li>อาการเด่น: ปวดยอดอก + ปวดท้อง</li>
+        </ul>
+      </div>
+
+      <div class="quiz"><div class="qz-t">📝 แบบทดสอบ</div>
+        <div class="qa"><div class="q">ความถี่ที่มนุษย์ทนได้น้อยที่สุดคือเท่าใด พร้อมอาการเด่น?</div><div class="a">4–8 Hz • อาการเด่น: ปวดยอดอก (precordial) และปวดท้อง (mid-abdominal)</div></div>
+        <div class="qa"><div class="q">ระบบสั่นสะเทือนพื้นฐานประกอบด้วยอะไร?</div><div class="a">Mass + Spring + Damper</div></div>
+        <div class="qa"><div class="q">Body resonance ต่างจาก body impedance อย่างไร?</div><div class="a">Resonance = ขยายพลังงาน (bony part) • Impedance = ลดทอนพลังงาน (soft tissue)</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 14 STRESS & FATIGUE ============ -->
+  <section id="s14">
+    <div class="sec-head"><div class="idx">14</div><h3>Stress & Fatigue<span class="en">ความเครียดและความล้า</span></h3><span class="caret">▾</span></div>
+    <div class="sec-body">
+      <h4>อาการของความเครียด (4 ด้าน)</h4>
+      <div class="tbl"><table>
+        <tr><th>ด้าน</th><th>อาการ</th></tr>
+        <tr><td>กายภาพ (Physical)</td><td>เฉียบพลัน: เหงื่อมือ, HR↑, ตัวสั่น, หายใจสั้น • ระยะยาว: นอนไม่หลับ, ปวดหลัง, BP↑, ภูมิตก, อ่อนล้า</td></tr>
+        <tr><td>อารมณ์ (Emotional)</td><td>หงุดหงิด, ก้าวร้าว, anhedonia, วิตกกังวล, self-esteem ต่ำ, รู้สึกหมดหนทาง</td></tr>
+        <tr><td>ความคิด (Cognitive)</td><td>ครุ่นคิด/กังวลเกิน, สมาธิลด, ความจำเสีย, วิจารณญาณแย่, ประสานงานแย่</td></tr>
+        <tr><td>พฤติกรรม (Behavioral)</td><td>มาสาย, ทำงานแย่, ระเบิดอารมณ์, ใช้สารเสพติด, แยกตัว, ฆ่าตัวตาย</td></tr>
+      </table></div>
+
+      <h4>แหล่งความเครียด</h4>
+      <ul>
+        <li><b>Environmental:</b> altitude, ร้อน/เย็น, speed, terrain, weather, ergonomics</li>
+        <li><b>Psychosocial:</b> แต่งงาน, การตายของคนใกล้ชิด, ย้ายหน่วย, เจ็บป่วย/บาดเจ็บ</li>
+        <li><b>Physiological → "DEATH"</b> (ควบคุมได้): Drugs, Exhaustion, Alcohol, Tobacco, Hypoglycemia</li>
+      </ul>
+
+      <h4>DEATH Model</h4>
+      <div class="tbl"><table>
+        <tr><th>D</th><td>Drugs — self-medication, side effects, overdose, allergic, synergistic</td></tr>
+        <tr><th>E</th><td>Exhaustion — นอนไม่พอ, deployment, circadian, ความฟิต</td></tr>
+        <tr><th>A</th><td>Alcohol — กระทบวิจารณญาณ; <b>12 ชม. "bottle to brief"</b> ไม่มี residual</td></tr>
+        <tr><th>T</th><td>Tobacco — CO เพิ่ม physiological altitude <b>5,000 ft</b>, กระทบ night vision</td></tr>
+        <tr><th>H</th><td>Hypoglycemia — ขาดมื้อสมดุล → อ่อนแรง เป็นลม สมรรถนะตก</td></tr>
+      </table></div>
+
+      <h4>Yerkes-Dodson Law</h4>
+      <p>สมรรถนะสูงสุดที่ระดับความเครียด<b>เหมาะสม (eustress)</b> • น้อยไป = เบื่อ (boredom) • มากไป = distress/burnout</p>
+
+      <h4>สมรรถนะภายใต้ความเครียด</h4>
+      <ul><li>Psychomotor (tracking ลด), Attention (<b>perceptual/cognitive tunneling, task shedding</b>), Memory (ความจำระยะสั้นลด), Judgment, Communication (group think)</li></ul>
+
+      <h4>การจัดการความเครียด (Coping)</h4>
+      <ol>
+        <li><b>Avoiding stressors</b> — ทรงพลังที่สุด</li>
+        <li><b>Change your thinking</b> — self-talk เชิงบวก, อยู่กับปัจจุบัน, เลี่ยง perfectionism</li>
+        <li><b>Relaxation</b> — หายใจ, ผ่อนคลายกล้ามเนื้อ, งานอดิเรก</li>
+        <li><b>Ventilation</b> — ระบายออก, ออกกำลังกาย, คุยกับเพื่อน/แพทย์</li>
+      </ol>
+
+      <h4>ความล้า (Fatigue)</h4>
+      <ul>
+        <li>ชนิด: Acute, Chronic (ค่อยๆ สะสม), <b>Burnout</b> (motivational exhaustion จากความเครียดเรื้อรัง)</li>
+        <li><b>Cognitive deficits มาก่อนผลทางกาย</b> • ในห้องนักบิน: reaction time↑, microsleeps, tunneling, ความจำลด, สื่อสาร/ประสานงานแย่</li>
+      </ul>
+
+      <h4>Circadian Rhythm & Sleep</h4>
+      <ul>
+        <li>Zeitgeber (ตัวตั้งนาฬิกา): แสง, อุณหภูมิแกนกาย, มื้ออาหาร, social cues</li>
+        <li>วงจร 24 ชม.: 0800–1200 พีค, 1300–1500 ลด, 1500–2100 เพิ่ม, 2100+ ลดเข้าสู่การนอน</li>
+        <li><b>Jet lag:</b> ไปตะวันออก (วันสั้นลง) <b>ปรับยากกว่า</b> ไปตะวันตก</li>
+        <li>Sleep cycle: 5 ระยะ, 1 รอบ ~90 นาที, นอน 8 ชม. = 5–6 รอบ • <b>REM</b> = หลับลึกฟื้นฟู • <b>แอลกอฮอล์กด REM</b></li>
+      </ul>
+
+      <h4>ความต้องการการนอน</h4>
+      <ul>
+        <li>เฉลี่ย <b>7–9 ชม./วัน</b> • ลดได้ 1–2 ชม.โดยไม่กระทบมาก • <b>5 ชม. = ขั้นต่ำสุด (CONOPS)</b> • บางคนทน 4 ชม.</li>
+        <li><b>เราประเมินความบกพร่องจากการอดนอนของตัวเองไม่ได้</b></li>
+        <li>Napping: งีบ 10 นาทีก็ฟื้นฟู • งีบนานเกิด-> sleep inertia 20–30 นาที • งีบช่วงอุณหภูมิกายต่ำ (~0300, 1300)</li>
+      </ul>
+
+      <div class="box key"><div class="box-t">🔑 จุดที่ต้องจำ</div>
+        <ul>
+          <li><b>DEATH</b> = Drugs, Exhaustion, Alcohol, Tobacco, Hypoglycemia</li>
+          <li>การนอน 7–9 ชม. • ขั้นต่ำ 5 ชม. • แอลกอฮอล์กด REM</li>
+          <li>Coping ที่ทรงพลังสุด = <b>หลีกเลี่ยง stressor</b></li>
+          <li>Fatigue: cognitive เสียก่อน physical</li>
+        </ul>
+      </div>
+
+      <div class="quiz"><div class="qz-t">📝 แบบทดสอบ</div>
+        <div class="qa"><div class="q">DEATH model ประกอบด้วยอะไรบ้าง?</div><div class="a">Drugs, Exhaustion, Alcohol, Tobacco, Hypoglycemia</div></div>
+        <div class="qa"><div class="q">การนอนเฉลี่ยและขั้นต่ำสำหรับนักบิน?</div><div class="a">เฉลี่ย 7–9 ชม. • ขั้นต่ำสุด 5 ชม. (CONOPS)</div></div>
+        <div class="qa"><div class="q">Jet lag ไปทางไหนปรับตัวยากกว่า?</div><div class="a">ไปทางตะวันออก (วันสั้นลง) ปรับยากกว่าไปตะวันตก</div></div>
+        <div class="qa"><div class="q">เทคนิค coping ที่ทรงพลังที่สุดคือ?</div><div class="a">Avoiding stressors — หลีกเลี่ยง/ลดการสัมผัสต้นเหตุความเครียด</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 15 SELF-IMPOSED STRESS ============ -->
+  <section id="s15">
+    <div class="sec-head"><div class="idx">15</div><h3>Self-Imposed Stress<span class="en">ความเครียดที่สร้างเอง · DEATH · I'M SAFE</span></h3><span class="caret">▾</span></div>
+    <div class="sec-body">
+      <p><b>นิยาม:</b> ความเครียดที่<b>หลีกเลี่ยงได้</b> ซึ่งทำให้เกิดภาวะไม่พร้อมบินชั่วคราว (temporary medical unfitness) — เป็น<b>ความรับผิดชอบของนักบินเองทั้งหมด</b></p>
+      <p>สถิติ: 60–80% ของอุบัติเหตุการบินเกี่ยวกับ human factors • Hans Selye: "stress = การตอบสนองไม่จำเพาะของร่างกายต่อสิ่งเร้าใดๆ ที่ต้องการการเปลี่ยนแปลง"</p>
+
+      <h4>Fight-or-Flight</h4>
+      <p>Hypothalamus → Adrenal → Adrenaline → HR/BP/glucose/การหายใจ ↑ • การย่อย/fine motor ↓ • <b>การคิดเชิงเหตุผลลดลง</b></p>
+
+      <h4>Tunnel Vision</h4>
+      <p>สมาธิแคบลง จดจ่อสิ่งเดียว พลาดข้อมูลรอบข้าง • เสี่ยง CFIT, ชนกลางอากาศ, ลืมปล่อยล้อ • ป้องกันด้วย CRM, callouts, cross-checks</p>
+
+      <h4>DEATH — รายละเอียดเชิงลึก</h4>
+      <ul>
+        <li><b>Drugs:</b> ห้ามใช้ยาขณะบินโดยไม่ได้รับอนุมัติจาก Flight Surgeon (รวม OTC/อาหารเสริม/สมุนไพร) • ระวัง antihistamine, ยานอนหลับ, ยาแก้หวัด (มีแอลกอฮอล์/codeine)</li>
+        <li><b>Exhaustion:</b> sleep architecture (REM สำคัญ, แอลกอฮอล์กด REM); circadian trough <b>0300–0600</b> (อุบัติเหตุมากสุด), post-lunch dip 1300–1500, พีค 1000–1200 & 1600–1800; <b>Microsleep</b> 1–10 วินาที (ไม่มีสัญญาณเตือน); <b>ตื่น 18 ชม. = BAC 0.05%</b></li>
+        <li><b>Alcohol:</b> ดูตาราง BAC; "I feel fine" = หลุมพราง; <b>12 ชม. bottle-to-throttle</b>; 72 ชม.หลังบริจาคเลือด; 24 ชม.หลังฝึก smoke mask; 12 ชม.หลัง altitude chamber; <b>เวลาเท่านั้นที่แก้ได้</b></li>
+        <li><b>Tobacco:</b> CO จับ Hb แรงกว่า O₂ ~240 เท่า; 1 ซอง/วัน ≈ +5,000 ft; night vision ลด ~20%</li>
+        <li><b>Hypoglycemia:</b> สมองใช้กลูโคส 20% ของร่างกาย; <b>ห้ามบินท้องว่าง</b>; กินมื้อสมดุล 1–2 ชม.ก่อนบิน</li>
+      </ul>
+      <div class="tbl"><table>
+        <tr><th>BAC</th><th>ผล</th></tr>
+        <tr><td>0.02%</td><td>ผ่อนคลาย, visual tracking เริ่มเสีย</td></tr>
+        <tr><td>0.04%</td><td>ประสานงานลด, วิจารณญาณเสีย</td></tr>
+        <tr><td>0.05%</td><td>ตอบสนองช้า (ต่ำกว่าขีดกฎหมายแต่บกพร่องแล้ว)</td></tr>
+        <tr><td>0.08%</td><td>เมาตามกฎหมาย, cognitive เสียมาก</td></tr>
+        <tr><td>0.10%</td><td>พูดไม่ชัด, เสียการประสานงาน</td></tr>
+      </table></div>
+
+      <h4>I'M SAFE Checklist (Trollip & Jensen) — ใช้ก่อนบินทุกครั้ง</h4>
+      <div class="tbl"><table>
+        <tr><th>I</th><td>Illness — มีอาการเจ็บป่วยแม้เล็กน้อยหรือไม่?</td></tr>
+        <tr><th>M</th><td>Medication — กินยาที่กระทบสมรรถนะหรือไม่?</td></tr>
+        <tr><th>S</th><td>Stress — มีความกดดันทางใจมากหรือไม่?</td></tr>
+        <tr><th>A</th><td>Alcohol — ดื่มภายใน 12 ชม.หรือไม่?</td></tr>
+        <tr><th>F</th><td>Fatigue — พักผ่อนเพียงพอหรือไม่?</td></tr>
+        <tr><th>E</th><td>Eating — กินอาหารเหมาะสม/ดื่มน้ำพอหรือไม่?</td></tr>
+      </table></div>
+
+      <h4>Coping Strategies</h4>
+      <ul><li>Avoid stressors • Cognitive reframing ("I am trained for this") • Relaxation (หายใจ <b>เข้า 4 – ค้าง 4 – ออก 6</b>) • Ventilation (พูดคุย = ความเข้มแข็ง)</li></ul>
+
+      <div class="box warn"><div class="box-t">⚠️ ความรับผิดชอบ</div>
+        <p>ถ้าข้อใดใน I'M SAFE ไม่ผ่าน → ต้องประเมินความพร้อมใหม่และ<b>กล้าที่จะ ground ตัวเอง</b> • "ถ้าสงสัย — อย่าบิน (If in doubt, don't fly)"</p>
+      </div>
+
+      <div class="box key"><div class="box-t">🔑 ตัวเลขสำคัญ</div>
+        <ul>
+          <li>ตื่น 18 ชม. = เทียบเท่า BAC <b>0.05%</b></li>
+          <li>Bottle-to-throttle ขั้นต่ำ <b>12 ชม.</b></li>
+          <li>Circadian trough = <b>0300–0600</b> (อุบัติเหตุมากสุด)</li>
+        </ul>
+      </div>
+
+      <div class="quiz"><div class="qz-t">📝 แบบทดสอบ</div>
+        <div class="qa"><div class="q">I'M SAFE ย่อมาจากอะไร?</div><div class="a">Illness, Medication, Stress, Alcohol, Fatigue, Eating</div></div>
+        <div class="qa"><div class="q">การตื่น 18 ชม. เทียบเท่า BAC เท่าใด?</div><div class="a">≈ 0.05% (บกพร่องเทียบเท่าผู้ดื่มแอลกอฮอล์)</div></div>
+        <div class="qa"><div class="q">กฎ bottle-to-throttle ขั้นต่ำกี่ชั่วโมง? อะไรช่วยเร่งการสลายแอลกอฮอล์ได้?</div><div class="a">12 ชม. • ไม่มีอะไรเร่งได้ — มีเพียงเวลาเท่านั้น (กาแฟ/ออกกำลัง/นอน ไม่ช่วย)</div></div>
+        <div class="qa"><div class="q">เทคนิคหายใจคลายเครียดคืออะไร?</div><div class="a">เข้า 4 จังหวะ – ค้าง 4 – ออก 6</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 16 CHAMBER ============ -->
+  <section id="s16">
+    <div class="sec-head"><div class="idx">16</div><h3>การฝึกห้องปรับบรรยากาศ (Pre-flight Brief)<span class="en">Hypobaric Chamber Training</span></h3><span class="caret">▾</span></div>
+    <div class="sec-body">
+      <h4>ข้อมูลห้องปรับบรรยากาศ (The Six-Man Hypobaric Chamber)</h4>
+      <ul>
+        <li>สร้าง พ.ศ.2485 • รับจาก USA พ.ศ.2499 • ใช้ครั้งแรกที่ พอ. พ.ศ.2501 • ย้ายมา รพ.จันทรุเบกษา 18 ส.ค.2525 • บินครั้งแรก 21 ก.ค.2526</li>
+        <li>รูปทรงกระบอกบน trailer ขนาด 8×12 ฟุต ความจุ 603.43 ลูกบาศก์ฟุต</li>
+        <li>แบ่ง 2 ส่วน: <b>Main Chamber</b> & <b>Lock Chamber</b> (ห้องแยก)</li>
+        <li>ระบบ: เครื่องยนต์สูบอากาศ, ไฟฟ้า, สื่อสาร, ออกซิเจน, <b>ระบบเสียความกดดันเร็ว (RD)</b></li>
+      </ul>
+
+      <h4>โปรไฟล์การบิน (แบบบินที่ 1) — อัตราไต่ 3,000 ft/min</h4>
+      <div class="tbl"><table>
+        <tr><th>ระดับ</th><th>กิจกรรม/สาธิต</th></tr>
+        <tr><td>5,000 ft</td><td>ตรวจหู-ไซนัส (Ear & Sinus Check)</td></tr>
+        <tr><td>8,000 ft</td><td>Color Vision demo</td></tr>
+        <tr><td>10,000 ft</td><td>Autokinetic illusion, Size-distance illusion, Glare effect</td></tr>
+        <tr><td>18,000 ft</td><td>Mild Hypoxia demo, Gas Law, Trapped/Evolved gas, Night vision & Dark adaptation</td></tr>
+        <tr><td>25,000 ft</td><td>Hypoxia demo / Mass hypoxia</td></tr>
+        <tr><td>30,000–35,000 ft</td><td>Pressure Breathing demo</td></tr>
+      </table><p style="font-size:.85rem;color:var(--muted)">Denitrogenation 30 นาทีก่อนบิน • Rapid Decompression (RD) demo</p></div>
+
+      <h4>อุปกรณ์ที่ใช้</h4>
+      <ul><li>Helmet (S/M/L), Mask <b>MBU-12/P</b> & <b>MBU-20/P</b>, Oxygen Regulator, เครื่องสื่อสาร <b>C-824A / C-825A</b> (press to talk)</li></ul>
+
+      <h4>ข้อปฏิบัติขณะฝึก (ห้าม)</h4>
+      <ul><li>ห้ามหยอกล้อ • ห้ามหลับตา • ห้ามพูดคุย • อย่าเขย่าขา • ตั้งใจฟังคำอธิบาย</li></ul>
+
+      <h4>การปฏิบัติเมื่อเจ็บป่วยขณะบิน</h4>
+      <ul>
+        <li><b>หูอื้อ/ปวดหู:</b> ยืด Eustachian tube (ตะแคงหน้า), ยาพ่นจมูก, Valsalva/pressure breathing, บินขึ้นบรรเทาแล้วค่อยๆ ลด</li>
+        <li><b>แน่นท้อง/ท้องอืด:</b> ขยายเข็มขัด, ผายลม/เรอ, นวดจากขวาไปซ้าย</li>
+        <li><b>พร่องออกซิเจน:</b> หายใจ O₂ 100% ทันที, แจ้งครู, บินลดระดับ</li>
+        <li><b>เจ็บป่วยรุนแรง (ต้องบินห้องแยก/Lock):</b> สูดลึก 2–3 ครั้งแล้วกลั้น, ถอดข้อต่อหน้ากากจาก chamber ต่อเข้า portable bottle อย่างรวดเร็ว</li>
+        <li><b>เหตุฉุกเฉิน</b> (ไฟดับ/น้ำไม่ไหล/ระบบ O₂ หรือเครื่องยนต์ขัดข้อง): ครูฝึกบินลงทันที</li>
+      </ul>
+
+      <h4>การปฏิบัติตัวหลังบิน</h4>
+      <ul>
+        <li>ทำ <b>Valsalva ก่อนนอนและหลังตื่น</b> เพื่อป้องกัน Delay Ear Block</li>
+        <li>งดทำงาน/ออกกำลังกายหนัก <b>ภายใน 12 ชม.</b></li>
+        <li>ถ้ามีอาการผิดปกติภายใน <b>24 ชม.</b> ต้องแจ้งแพทย์</li>
+      </ul>
+
+      <h4>เครื่องบินฝึก (Training aircraft)</h4>
+      <ul><li>บฝ.๒๒ (<b>T-6TH</b>) • บฝ.๑๖ (<b>CT-4A/B/E</b>) • บฝ.๒๐ (<b>DA-42</b>)</li></ul>
+
+      <div class="box key"><div class="box-t">🔑 จุดที่ต้องจำ</div>
+        <ul>
+          <li>Denitrogenation <b>30 นาที</b>ก่อนบิน • อัตราไต่ 3,000 ft/min</li>
+          <li>หลังบิน: Valsalva ก่อนนอน/หลังตื่น, งดออกแรงหนัก 12 ชม., แจ้งแพทย์ถ้าผิดปกติใน 24 ชม.</li>
+          <li>ห้องแยก = Lock Chamber (ใช้เมื่อเจ็บป่วยรุนแรง)</li>
+        </ul>
+      </div>
+
+      <div class="quiz"><div class="qz-t">📝 แบบทดสอบ</div>
+        <div class="qa"><div class="q">เครื่องบินฝึกของ ทอ. มีรุ่นใดบ้าง?</div><div class="a">บฝ.๒๒ (T-6TH), บฝ.๑๖ (CT-4A/B/E), บฝ.๒๐ (DA-42)</div></div>
+        <div class="qa"><div class="q">หลังบินห้องปรับบรรยากาศต้องปฏิบัติตัวอย่างไร?</div><div class="a">ทำ Valsalva ก่อนนอน/หลังตื่น, งดออกกำลังหนัก 12 ชม., แจ้งแพทย์ถ้ามีอาการใน 24 ชม.</div></div>
+        <div class="qa"><div class="q">เมื่อพร่องออกซิเจนในห้องฝึกต้องทำอย่างไร?</div><div class="a">หายใจ O₂ 100% ทันที แจ้งครูฝึก และบินลดระดับ</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GLOSSARY ============ -->
+  <section id="glossary">
+    <div class="sec-head"><div class="idx">📖</div><h3>อภิธานศัพท์<span class="en">Glossary — ศัพท์เทคนิคที่ต้องรู้</span></h3><span class="caret">▾</span></div>
+    <div class="sec-body">
+      <dl class="gloss">
+        <dt>Hypoxia</dt><dd>ภาวะที่เนื้อเยื่อได้รับออกซิเจนไม่เพียงพอจนการทำงานบกพร่อง (4 ชนิด: Hypoxic, Hypaemic, Stagnant, Histotoxic)</dd>
+        <dt>Hyperventilation</dt><dd>การหายใจเร็ว/ลึกเกิน ทำให้ CO₂ ลดลง เลือดเป็นด่าง (alkalosis)</dd>
+        <dt>TUC (Time of Useful Consciousness)</dt><dd>ช่วงเวลาที่ยังทำงานได้อย่างมีประสิทธิภาพหลังขาดออกซิเจนที่ระดับสูง</dd>
+        <dt>Denitrogenation</dt><dd>การหายใจ O₂ 100% เพื่อไล่ไนโตรเจนออกจากร่างกายก่อนบิน (ป้องกัน DCS)</dd>
+        <dt>DCS (Decompression Sickness)</dt><dd>โรคจาก N₂ แยกตัวเป็นฟองเมื่อความดันลด (Bends = ปวดข้อ, Chokes = ระบบหายใจ)</dd>
+        <dt>Trapped Gas</dt><dd>แก๊สขังในโพรงร่างกายที่ขยายตัวเมื่อความดันลด (หู ไซนัส ฟัน ทางเดินอาหาร)</dd>
+        <dt>Valsalva maneuver</dt><dd>เทคนิคปรับความดันหูชั้นกลาง: หายใจเข้าลึก บีบจมูก แล้วเป่าลมเบาๆ</dd>
+        <dt>Barotitis media / Barosinusitis / Barodentalgia</dt><dd>การบาดเจ็บจากความดันที่หูชั้นกลาง / ไซนัส / ฟัน ตามลำดับ</dd>
+        <dt>Spatial Disorientation (SD)</dt><dd>การรับรู้ตำแหน่ง/การเคลื่อนที่ผิดเทียบกับพื้นโลก</dd>
+        <dt>The Leans</dt><dd>Somatogyral illusion ที่พบบ่อยที่สุด — รู้สึกยังเลี้ยวอยู่ทั้งที่บินตรงแล้ว</dd>
+        <dt>Coriolis illusion</dt><dd>รู้สึกตีลังการุนแรงเมื่อขยับศีรษะระหว่างเลี้ยว — อันตราย/incapacitating</dd>
+        <dt>Somatogravic illusion</dt><dd>ภาพลวงจาก otolith — เร่งความเร็วทำให้รู้สึกเชิดหัว (เผลอกดหัวลงตอน takeoff)</dd>
+        <dt>Focal vs Ambient vision</dt><dd>Focal = คมชัด/มีสี/ตั้งใจ (อ่านเครื่องวัด) • Ambient = รอบนอก/รับรู้ทิศทาง/ไม่ตั้งใจ</dd>
+        <dt>Rods / Cones</dt><dd>Rods = เซลล์แท่ง (กลางคืน, ไม่มีสี) • Cones = เซลล์กรวย (กลางวัน, เห็นสี)</dd>
+        <dt>Scotopic / Photopic / Mesopic</dt><dd>การมองในแสงน้อย (rods) / แสงมาก (cones) / แสงปานกลาง (ทั้งสอง)</dd>
+        <dt>Dark adaptation</dt><dd>การปรับตาเข้าสู่ที่มืด — rods ใช้ 30–45 นาที</dd>
+        <dt>Autokinesis</dt><dd>ภาพลวงกลางคืนที่แสงนิ่งดูเหมือนเคลื่อนที่</dd>
+        <dt>Greyout / Blackout / G-LOC</dt><dd>มัว / มืด (ยังมีสติ) / หมดสติจากแรง G</dd>
+        <dt>AGSM</dt><dd>Anti-G Straining Maneuver — เกร็งกล้ามเนื้อ+หายใจ เพิ่ม G-tolerance (~+4.5 G)</dd>
+        <dt>Neural Mismatch</dt><dd>ทฤษฎี motion sickness — สัญญาณจากตา/หูชั้นใน/proprioception ขัดแย้งกัน</dd>
+        <dt>SPL / dB(A)</dt><dd>Sound Pressure Level / สเกล dB ถ่วงน้ำหนักตามการตอบสนองของหูมนุษย์</dd>
+        <dt>NIHL</dt><dd>Noise-Induced Hearing Loss — การสูญเสียการได้ยินจากเสียง (ป้องกันได้)</dd>
+        <dt>Presbycusis</dt><dd>การสูญเสียการได้ยินความถี่สูงตามอายุ</dd>
+        <dt>ANR</dt><dd>Active Noise Reduction — ระบบตัดเสียงแบบ active</dd>
+        <dt>Body resonance / impedance</dt><dd>การขยาย / ลดทอนพลังงานสั่นสะเทือนในร่างกาย</dd>
+        <dt>DEATH model</dt><dd>Drugs, Exhaustion, Alcohol, Tobacco, Hypoglycemia — physiological stressors ที่ควบคุมได้</dd>
+        <dt>I'M SAFE</dt><dd>Illness, Medication, Stress, Alcohol, Fatigue, Eating — checklist ก่อนบิน</dd>
+        <dt>Yerkes-Dodson Law</dt><dd>สมรรถนะสูงสุดที่ระดับความเครียดเหมาะสม (eustress)</dd>
+        <dt>Circadian rhythm / Zeitgeber</dt><dd>นาฬิกาชีวภาพ 24 ชม. / ตัวกระตุ้นที่ตั้งนาฬิกา (แสง, มื้ออาหาร)</dd>
+        <dt>REM sleep</dt><dd>ระยะหลับที่ฟื้นฟูความจำ/อารมณ์ — ถูกแอลกอฮอล์กด</dd>
+        <dt>Microsleep</dt><dd>การหลับวูบ 1–10 วินาทีโดยไม่รู้ตัว</dd>
+        <dt>PRICE check</dt><dd>Pressure, Regulator, Indicator, Connections, Emergency — ตรวจระบบ O₂ ทุก 10,000 ft</dd>
+      </dl>
+    </div>
+  </section>
+
+  <footer>
+    📚 สรุปเพื่อการศึกษา — เรียบเรียงจากเอกสาร Ground School 101 (เวชศาสตร์การบิน, รพ.จันทรุเบกษา พอ.)<br>
+    เนื้อหาเป็นการสรุปเพื่อทบทวน ควรอ่านประกอบสไลด์ต้นฉบับ • อัปเดต: 24 มิ.ย. 2569
+  </footer>
+</main>
+</div>
+
+<button class="backtop" id="backtop" title="กลับขึ้นบน">↑</button>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---------- theme ----------
+  var savedTheme=localStorage.getItem('amsg-theme')||'light';
+  root.setAttribute('data-theme',savedTheme);
+  var themeBtn=document.getElementById('themeBtn');
+  function syncThemeIcon(){themeBtn.textContent=root.getAttribute('data-theme')==='dark'?'☀️':'🌙';}
+  syncThemeIcon();
+  themeBtn.onclick=function(){
+    var t=root.getAttribute('data-theme')==='dark'?'light':'dark';
+    root.setAttribute('data-theme',t);localStorage.setItem('amsg-theme',t);syncThemeIcon();
+  };
+  // ---------- font size ----------
+  var fs=parseInt(localStorage.getItem('amsg-fs')||'17',10);
+  function applyFs(){root.style.setProperty('--fs',fs+'px');localStorage.setItem('amsg-fs',fs);}
+  applyFs();
+  document.getElementById('fsUp').onclick=function(){fs=Math.min(fs+1,24);applyFs();};
+  document.getElementById('fsDown').onclick=function(){fs=Math.max(fs-1,13);applyFs();};
+  // ---------- collapse sections ----------
+  var sections=Array.prototype.slice.call(document.querySelectorAll('section'));
+  sections.forEach(function(sec){
+    sec.querySelector('.sec-head').addEventListener('click',function(){sec.classList.toggle('collapsed');});
+  });
+  document.getElementById('expandAll').onclick=function(){sections.forEach(function(s){s.classList.remove('collapsed');});};
+  document.getElementById('collapseAll').onclick=function(){sections.forEach(function(s){s.classList.add('collapsed');});};
+  // ---------- quiz toggle ----------
+  document.querySelectorAll('.qa').forEach(function(qa){
+    qa.querySelector('.q').addEventListener('click',function(){qa.classList.toggle('open');});
+  });
+  // ---------- mobile menu ----------
+  var side=document.getElementById('side'),menuBtn=document.getElementById('menuBtn');
+  menuBtn.onclick=function(e){e.stopPropagation();side.classList.toggle('open');};
+  document.addEventListener('click',function(e){
+    if(window.innerWidth<=880 && side.classList.contains('open') && !side.contains(e.target) && e.target!==menuBtn){side.classList.remove('open');}
+  });
+  // ---------- nav smooth + active ----------
+  var links=Array.prototype.slice.call(document.querySelectorAll('nav.side a'));
+  links.forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      var id=a.getAttribute('href').slice(1);var tgt=document.getElementById(id);
+      if(tgt){tgt.classList.remove('collapsed');tgt.scrollIntoView({behavior:'smooth',block:'start'});}
+      if(window.innerWidth<=880)side.classList.remove('open');
+    });
+  });
+  var byId={};links.forEach(function(a){byId[a.getAttribute('href').slice(1)]=a;});
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){
+        links.forEach(function(l){l.classList.remove('active');});
+        var a=byId[en.target.id];if(a)a.classList.add('active');
+      }
+    });
+  },{rootMargin:'-30% 0px -60% 0px'});
+  sections.forEach(function(s){obs.observe(s);});
+  // ---------- progress + backtop ----------
+  var prog=document.getElementById('progress'),backtop=document.getElementById('backtop');
+  window.addEventListener('scroll',function(){
+    var h=document.documentElement,sc=h.scrollTop,max=h.scrollHeight-h.clientHeight;
+    prog.style.width=(max>0?(sc/max*100):0)+'%';
+    backtop.classList.toggle('show',sc>400);
+  });
+  backtop.onclick=function(){window.scrollTo({top:0,behavior:'smooth'});};
+  // ---------- search (filter + highlight) ----------
+  var input=document.getElementById('searchInput');
+  function clearMarks(el){
+    el.querySelectorAll('mark').forEach(function(m){var t=document.createTextNode(m.textContent);m.parentNode.replaceChild(t,m);m.parentNode.normalize&&m.parentNode.normalize();});
+  }
+  function highlight(el,q){
+    var walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT,null,false),nodes=[],n;
+    while(n=walker.nextNode()){if(n.nodeValue.toLowerCase().indexOf(q)>-1 && n.parentNode.nodeName!=='SCRIPT' && n.parentNode.nodeName!=='STYLE')nodes.push(n);}
+    nodes.forEach(function(node){
+      var val=node.nodeValue,low=val.toLowerCase(),idx,last=0,frag=document.createDocumentFragment();
+      while((idx=low.indexOf(q,last))>-1){
+        if(idx>last)frag.appendChild(document.createTextNode(val.slice(last,idx)));
+        var m=document.createElement('mark');m.textContent=val.slice(idx,idx+q.length);frag.appendChild(m);
+        last=idx+q.length;
+      }
+      if(last<val.length)frag.appendChild(document.createTextNode(val.slice(last)));
+      node.parentNode.replaceChild(frag,node);
+    });
+  }
+  var t=null;
+  input.addEventListener('input',function(){
+    clearTimeout(t);t=setTimeout(function(){
+      var q=input.value.trim().toLowerCase();
+      sections.forEach(function(sec){clearMarks(sec);});
+      if(!q){sections.forEach(function(sec){sec.classList.remove('hidden');});return;}
+      sections.forEach(function(sec){
+        var hit=sec.textContent.toLowerCase().indexOf(q)>-1;
+        sec.classList.toggle('hidden',!hit);
+        if(hit){sec.classList.remove('collapsed');highlight(sec,q);}
+      });
+    },180);
+  });
+})();
+</script>
+</body>
+</html>

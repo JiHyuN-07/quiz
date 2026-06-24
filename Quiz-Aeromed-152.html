@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ควิซเวชศาสตร์การบิน — โผข้อสอบ 152 (60 ข้อ)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Sarabun','Leelawadee UI','Segoe UI',Arial,sans-serif; background: #eef2f7; color: #1f2733; line-height:1.6; }
+
+  header {
+    background: linear-gradient(135deg, #16345f, #2d6abf);
+    color: #fff; padding: 22px 28px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap:wrap; gap:8px;
+  }
+  header h1 { font-size: 1.35rem; }
+  header p { font-size: 0.85rem; opacity: 0.9; margin-top: 4px; }
+  header .badge-key{ background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.3); padding:8px 12px; border-radius:10px; font-size:.78rem; line-height:1.5 }
+
+  #score-bar {
+    background: #fff; border-bottom: 2px solid #dde3ec;
+    padding: 11px 28px; display: flex; gap: 26px; align-items: center;
+    font-size: 0.88rem; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08); flex-wrap: wrap;
+  }
+  #score-bar b { color: #16345f; }
+  #progress-bar { flex: 1; min-width: 120px; height: 9px; background: #dde3ec; border-radius: 5px; overflow: hidden; }
+  #progress-fill { height: 100%; width:0%; background: linear-gradient(90deg,#2d6abf,#27ae60); border-radius: 5px; transition: width .4s; }
+  #score-bar .pill{ background:#f0f4fa; border:1px solid #dde3ec; padding:4px 10px; border-radius:20px; }
+
+  .section-header {
+    background: #16345f; color: #fff;
+    padding: 13px 28px; font-size: 1.05rem; font-weight: 700;
+    margin-top: 30px; letter-spacing: .3px;
+  }
+  .section-header .en { opacity: 0.75; font-size: 0.8rem; font-weight: 400; margin-left: 6px; display:block;}
+
+  .question-card {
+    background: #fff; margin: 14px 28px;
+    border-radius: 10px; padding: 20px 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    border-left: 4px solid #dde3ec; transition: border-color .2s;
+  }
+  .question-card.answered-correct { border-left-color: #27ae60; }
+  .question-card.answered-wrong   { border-left-color: #e74c3c; }
+
+  .q-top{ display:flex; align-items:center; gap:8px; margin-bottom:7px; flex-wrap:wrap;}
+  .q-number { font-size: 0.72rem; color: #8a93a3; font-weight: 700; text-transform: uppercase; letter-spacing:.04em;}
+  .tag{ font-size:.68rem; padding:2px 8px; border-radius:20px; font-weight:700; }
+  .tag.key{ background:#fef3cd; color:#946200; border:1px solid #f3d98a;}
+  .tag.ana{ background:#e7f0ff; color:#1f5cb8; border:1px solid #c3d8f7;}
+  .tag.warn{ background:#fde8e8; color:#b0322a; border:1px solid #f5c2bd;}
+  .q-text { font-size: 1.02rem; font-weight: 600; line-height: 1.55; margin-bottom: 15px; }
+
+  .choices { display: flex; flex-direction: column; gap: 9px; }
+  .choice-btn {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: #f7f9fc; border: 2px solid #dde3ec;
+    border-radius: 8px; padding: 11px 15px;
+    cursor: pointer; font-size: 0.95rem; text-align: left; width:100%;
+    transition: background .15s, border-color .15s; line-height: 1.5;
+    font-family:inherit; color:inherit;
+  }
+  .choice-btn:hover:not(:disabled) { background: #e8eef8; border-color: #2d6abf; }
+  .choice-btn .letter { font-weight: 800; color: #2d6abf; min-width: 24px; flex-shrink: 0; }
+  .choice-btn.correct  { background: #eafaf1; border-color: #27ae60; }
+  .choice-btn.wrong    { background: #fdf0ef; border-color: #e74c3c; }
+  .choice-btn.correct .letter { color: #1e8e4e; }
+  .choice-btn.wrong   .letter { color: #e74c3c; }
+  .choice-btn:disabled { cursor: default; }
+  .choice-btn .mk{ margin-left:auto; font-weight:800; }
+  .choice-btn.correct .mk::after{ content:"✓"; color:#1e8e4e;}
+  .choice-btn.wrong .mk::after{ content:"✗"; color:#e74c3c;}
+
+  .explanation {
+    display: none; margin-top: 13px;
+    background: #f0f6ff; border-left: 3px solid #2d6abf;
+    border-radius: 6px; padding: 11px 15px;
+    font-size: 0.9rem; line-height: 1.65; color: #2a3340;
+  }
+  .explanation.visible { display: block; }
+  .explanation b { color: #16345f; }
+  .explanation .note{ display:block; margin-top:6px; color:#b0322a; font-size:.85rem;}
+
+  #controls{ text-align:center; margin:26px; }
+  .btn{ background:#2d6abf; color:#fff; border:none; padding:11px 26px; border-radius:8px; font-size:.95rem; cursor:pointer; font-weight:600; font-family:inherit; margin:4px;}
+  .btn:hover{ background:#16345f; }
+  .btn.ghost{ background:#fff; color:#2d6abf; border:2px solid #2d6abf;}
+
+  #end-screen {
+    display: none; text-align: center;
+    background: #fff; margin: 26px; border-radius: 12px;
+    padding: 42px 28px; box-shadow: 0 4px 20px rgba(0,0,0,.1);
+  }
+  #end-screen h2 { font-size: 1.7rem; color: #16345f; margin-bottom: 6px; }
+  #end-screen .big-score { font-size: 3.6rem; font-weight: 800; color: #2d6abf; }
+  #end-screen p { color: #555; margin: 6px 0; }
+  .section-score { display: inline-block; margin: 5px 10px; font-size: 0.92rem; color: #444; background:#f4f7fb; padding:6px 12px; border-radius:8px;}
+  footer{ text-align:center; color:#8a93a3; font-size:.82rem; padding:24px; }
+  @media(max-width:640px){
+    .question-card,.section-header,#score-bar,header{ margin-left:0; margin-right:0; padding-left:16px; padding-right:16px;}
+    .question-card{ border-radius:0;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🩺✈️ ควิซเวชศาสตร์การบิน</h1>
+    <p>โผข้อสอบ ๑๕๒ (Aviation Physiology by SP 152) &nbsp;|&nbsp; 60 ข้อ &nbsp;|&nbsp; Ground School 101</p>
+  </div>
+  <div class="badge-key">
+    🟡 <b>ข้อ 1–16</b> = เฉลยตามรอยขีดในโผ<br>
+    🔵 <b>ข้อ 17–60</b> = วิเคราะห์จากเนื้อหาบทเรียน
+  </div>
+</header>
+
+<div id="score-bar">
+  <div class="pill">ทำแล้ว: <b id="answered-count">0</b> / <b id="total-count">60</b></div>
+  <div id="progress-bar"><div id="progress-fill"></div></div>
+  <div class="pill">ถูก: <b id="correct-count">0</b></div>
+  <div class="pill">คะแนน: <b id="score-pct">0%</b></div>
+</div>
+
+<div id="quiz-container"></div>
+
+<div id="controls">
+  <button class="btn ghost" id="revealAll">เฉลยทั้งหมด</button>
+  <button class="btn" id="finishBtn">ดูสรุปคะแนน</button>
+</div>
+
+<div id="end-screen">
+  <h2>ทำควิซเสร็จแล้ว! 🎉</h2>
+  <div class="big-score" id="final-score"></div>
+  <p id="final-detail"></p>
+  <div id="section-scores"></div>
+  <div style="margin-top:22px"><button class="btn" onclick="restartQuiz()">เริ่มใหม่</button></div>
+</div>
+
+<footer>สร้างจากโผข้อสอบ ๑๕๒ + เนื้อหา Ground School 101 • เฉลยข้อ 17–60 เป็นการวิเคราะห์ ควรตรวจสอบกับครูการบินอีกครั้ง โดยเฉพาะข้อที่มีเครื่องหมาย ⚠️</footer>
+
+<script>
+const sectionNames = {
+  A:["A. บทนำ บรรยากาศ และกฎของแก๊ส","Introduction, Atmosphere & Gas Laws"],
+  B:["B. ผลของการเปลี่ยนแปลงความกดดัน","Effects of Pressure Changes"],
+  C:["C. ระบบหายใจและไหลเวียนเลือด","Respiration & Circulation"],
+  D:["D. Hypoxia & Hyperventilation","ภาวะพร่องออกซิเจนและการหายใจเกิน"],
+  E:["E. Cabin Pressurization & Rapid Decompression","การปรับความกดดันและการลดความกดดันอย่างรวดเร็ว"],
+  F:["F. ปัญหาการมองเห็น","Vision Problems"],
+  G:["G. เสียงและการสั่นสะเทือน","Noise & Vibration"],
+  H:["H. แรงเร่ง (Acceleration)","Acceleration & G-forces"],
+  I:["I. การหลงสภาพการบิน & Motion Sickness","Spatial Disorientation & Motion Sickness"],
+  J:["J. ความล้า ความกลัวการบิน ความเครียดที่สร้างเอง","Flying Fatigue, Fear of Flying, Self-Imposed Stress"],
+  K:["K. อุปกรณ์ออกซิเจน & Pre-Flight Briefing","Oxygen Equipment & Pre-Flight Briefing"]
+};
+
+// k:1 = เฉลยจากรอยขีดในโผ | k:0 = วิเคราะห์เอง | w:1 = ข้อกำกวม
+const questions = [
+// ===== A =====
+{s:"A",k:1,q:"ในแต่ละระดับความสูงของชั้นบรรยากาศ ข้อใดไม่มีการเปลี่ยนแปลง",
+ c:["อุณหภูมิ","อัตราส่วนของก๊าซแต่ละชนิด","ปริมาณ/ความหนาแน่นของก๊าซ","ความกดดันของบรรยากาศ"],a:1,
+ ex:"สัดส่วน (อัตราส่วน) ของก๊าซแต่ละชนิดคงที่ทุกระดับความสูง (N₂ 78%, O₂ 21%) สิ่งที่เปลี่ยนคือความกดดันย่อย (partial pressure) ที่ลดลงเมื่อสูงขึ้น"},
+{s:"A",k:1,q:"ชั้นบรรยากาศที่นิยมทำการบินหรือฝึกบินมากที่สุด",
+ c:["Troposphere","Stratosphere","Ionosphere","Exosphere"],a:0,
+ ex:"Troposphere (0–12 km) เป็นชั้นที่มนุษย์อาศัยและทำการบินมากที่สุด มีไอน้ำ กระแสลม และฤดูกาล"},
+{s:"A",k:1,q:"Gas Law's ข้อใดกล่าวถูกต้อง",
+ c:["Evolved gas is Boyle Law's","Hypoxia is Dalton Law's","Trapped is Henry Law's","Hyperventilation is Henry Law's"],a:1,
+ ex:"Hypoxia เกี่ยวกับ Dalton's Law (pO₂ ลดตามความกด) • Trapped gas = Boyle • Evolved gas/DCS = Henry"},
+// ===== B =====
+{s:"B",k:1,q:"Trapped gas ยกเว้นข้อใด (ข้อใดไม่ใช่ trapped gas)",
+ c:["Gastrointestinal gas expansion","Barodontalgia","Lung embolism","Chokes"],a:3,
+ ex:"Chokes เป็นอาการของ Evolved gas (Decompression Sickness) ไม่ใช่ trapped gas • trapped gas ได้แก่ ลำไส้ ฟัน หู ไซนัส"},
+{s:"B",k:1,q:"Trapped gas ที่พบได้บ่อยในขณะทำการบิน",
+ c:["Ears block","Skin manifestation","Bends","Sinus block"],a:0,
+ ex:"Ear block (Barotitis media) พบบ่อยที่สุด โดยเฉพาะขณะลดระดับ (descent) ที่แก๊สหดตัวเกิดความดันลบ"},
+{s:"B",k:1,q:"วัตถุประสงค์ของ Valsalva Maneuver",
+ c:["ทำให้อากาศไหลผ่านท่อ Eustachian tube ได้ดีขึ้น","ช่วยให้การซึมผ่านของก๊าซในร่างกายดีขึ้น","ป้องกันการเกิดอาการหลงสภาพการบิน","ป้องกันการเจ็บป่วยจาก Evolved gas"],a:0,
+ ex:"Valsalva ใช้ปรับ/ระบายความดันในหูชั้นกลางผ่านท่อ Eustachian tube (หายใจเข้าลึก บีบจมูก เป่าลมเบาๆ)"},
+{s:"B",k:1,q:"Valsalva Maneuver ข้อใดควรปฏิบัติ \"ผิด\" (ไม่ถูกต้อง)",
+ c:["หุบปากให้สนิท","บีบรูจมูก 2 ข้าง","เป่าลมออกจากปาก จมูก แรงๆ ยาวๆ","เป่าลมออกจากปาก จมูก แรงๆ สั้นๆ"],a:2,
+ ex:"วิธีถูกต้องคือเป่าลม \"แรงๆ สั้นๆ\" การเป่าแรงๆ ยาวๆ เป็นวิธีที่ผิด"},
+{s:"B",k:1,q:"Evolved gas ยกเว้นข้อใด (ข้อใดไม่ใช่ evolved gas)",
+ c:["Gastrointestinal gas expansion","Chokes","Bends","Skin manifestation"],a:0,
+ ex:"GI gas expansion เป็น trapped gas • Evolved gas (DCS) ได้แก่ Bends, Chokes, Skin manifestation"},
+{s:"B",k:1,q:"เกิดจากการละลายหรือหลุดตัวของก๊าซที่มีผลต่อของเหลวในร่างกาย (Evolved gas)",
+ c:["Decompression sickness","Tooth pain","Ears block","Sinus block"],a:0,
+ ex:"DCS เกิดจาก N₂ ที่ละลายในเลือด/น้ำในข้อ แยกตัวเป็นฟองเมื่อความดันลด (Henry's Law)"},
+{s:"B",k:1,q:"ปัจจัยที่ก่อให้เกิด Evolved gas",
+ c:["Scuba diving","Altitude and time of exposure","Activity","All above"],a:3,
+ ex:"ทั้งการดำน้ำ, ระดับความสูง+ระยะเวลา และการออกแรง ล้วนเป็นปัจจัยเสี่ยงของ DCS"},
+{s:"B",k:1,q:"เมื่อเกิด Decompression sickness ขณะทำการบิน สิ่งแรกที่ควรปฏิบัติทันที",
+ c:["หายใจด้วยออกซิเจน 100%","ลดระดับความสูงทันทีที่ทำได้","พยายามเคลื่อนไหวร่างกายให้น้อยที่สุด","พบแพทย์เวชศาสตร์การบิน"],a:0,
+ ex:"สิ่งแรก: หายใจ O₂ 100% (ช่วยไล่ N₂) จากนั้นลดระดับ ลดการเคลื่อนไหว และพบแพทย์"},
+{s:"B",k:1,q:"วิธีการป้องกันการเกิด Decompression sickness คือข้อใด",
+ c:["Cabin altitude (ปรับความสูงในห้องโดยสาร)","Use oxygen 100%","Denitrogenation","All above"],a:3,
+ ex:"ป้องกันได้ทั้งด้วยห้องอัดความดัน, O₂ 100% และ Denitrogenation (หายใจ O₂ 100% 30 นาทีก่อนบิน)"},
+// ===== C =====
+{s:"C",k:0,q:"ต่อไปนี้ข้อใดไม่ใช่ประโยชน์ของการหายใจ",
+ c:["นำออกซิเจนเข้าสู่ร่างกาย","รักษาสมดุล กรด-ด่าง ของร่างกาย","นำคาร์บอนไดออกไซด์ออกจากร่างกาย","เพิ่มจำนวนฮีโมโกลบินในเลือด"],a:3,
+ ex:"การหายใจไม่ได้เพิ่มจำนวนฮีโมโกลบิน (Hb สร้างจากไขกระดูก) แต่ทำหน้าที่นำ O₂ เข้า, ขับ CO₂ ออก และรักษาสมดุลกรด-ด่าง"},
+{s:"C",k:0,q:"ก๊าซที่มีผลต่อศูนย์ควบคุมการหายใจในสมองมากที่สุด",
+ c:["ออกซิเจน","ไนโตรเจน","คาร์บอนไดออกไซด์","ถูกทุกข้อ"],a:2,
+ ex:"CO₂ (ผ่าน central chemoreceptor ที่ medulla) เป็นตัวกระตุ้นการหายใจหลัก ไม่ใช่ O₂"},
+{s:"C",k:0,q:"Transportation มีส่วนเกี่ยวข้องกับการหายใจในขั้นตอนใด",
+ c:["ปอด","หัวใจและหลอดเลือด","ถุงลมปอด","ฮีโมโกลบินในเลือด"],a:1,
+ ex:"Transportation (การขนส่งก๊าซ) คือขั้นการไหลเวียนผ่านหัวใจและหลอดเลือดไปเลี้ยงเนื้อเยื่อ"},
+// ===== D =====
+{s:"D",k:1,q:"Hypoxia และ Hyperventilation ข้อใดกล่าวถูกต้องที่สุด",
+ c:["ทั้งคู่มีกล้ามเนื้อเกร็ง ชาตามตัว มือจีบเหมือนกัน","ทั้งคู่มีริมฝีปากและปลายเล็บเขียวคล้ำเหมือนกัน","Hypoxia มีอาการซีด เขียวคล้ำ พบบ่อยที่ความสูง 10,000 ฟุตขึ้นไป","Hyperventilation มีกล้ามเนื้อเกร็ง มือจีบ และมักเกิดที่ความสูง 18,000 ฟุตขึ้นไป"],a:2,
+ ex:"Hypoxia มีเขียวคล้ำ (cyanosis) และสัมพันธ์กับความสูง ≥10,000 ฟุต • Hyperventilation ทำให้ซีด+มือจีบ และไม่ได้ขึ้นกับความสูง"},
+{s:"D",k:0,q:"ข้อใดไม่ใช่ลักษณะสำคัญของ Hypoxia",
+ c:["เกิดขึ้นแบบค่อยเป็นค่อยไป","ไม่มีอาการเจ็บปวด","มีอาการเขียวคล้ำ","หายใจเร็ว กล้ามเนื้อเกร็ง ขา/มือจีบ"],a:3,
+ ex:"\"หายใจเร็ว มือจีบ กล้ามเนื้อเกร็ง\" เป็นลักษณะของ Hyperventilation ไม่ใช่ Hypoxia"},
+{s:"D",k:0,q:"เมื่อเกิดอาการ Hypoxia สิ่งแรกที่ควรปฏิบัติโดยทันที",
+ c:["หายใจด้วยออกซิเจน 100%","ลดระดับต่ำกว่า 10,000 ฟุต","ควบคุมอัตราการหายใจ","ตรวจสอบระบบออกซิเจน"],a:0,
+ ex:"ขั้นแรกของ corrective action คือเลือก O₂ 100% ทันที จากนั้นจึงลดระดับและประกาศฉุกเฉิน"},
+{s:"D",k:0,q:"Time of Useful Consciousness (TUC) ข้อใดกล่าวได้ถูกต้องที่สุด",
+ c:["TUC แต่ละคนไม่แตกต่างกัน","RD ทำให้ TUC ลดลง 60–80%","แตกต่างในแต่ละระดับความสูง","แตกต่างตามประเภทของอากาศยาน"],a:2,
+ ex:"TUC แตกต่างชัดเจนตามระดับความสูง (เช่น FL250 ~3–5 นาที, FL350 ~30–60 วินาที) • Rapid decompression ลด TUC ราวครึ่งหนึ่ง ไม่ถึง 60–80%"},
+{s:"D",k:0,w:1,q:"ข้อแตกต่างที่เด่นชัดระหว่าง Hypoxia และ Hyperventilation",
+ c:["ริมฝีปาก เล็บมือ เท้า เขียวคล้ำ","เกิดขึ้นอย่างช้าๆ ไม่เจ็บปวด","การตัดสินใจหรือทำงานพลาด","กล้ามเนื้อเกร็ง ชาตามร่างกาย มือจีบ"],a:0,
+ ex:"จุดแยกที่เด่นชัด: Hypoxia → เขียวคล้ำ (cyanosis); Hyperventilation → ซีด + มือจีบ (carpopedal spasm). ข้อ ข,ค พบได้ทั้งสองภาวะ จึงไม่ใช่จุดแยก",
+ note:"ข้อนี้กำกวม: \"เขียวคล้ำ\" (ก) เป็นจุดเด่นของ Hypoxia ส่วน \"มือจีบ\" (ง) เป็นจุดเด่นของ Hyperventilation — เลือกตามที่โจทย์เน้น (ในที่นี้ตอบ ก) ควรยืนยันกับครู"},
+{s:"D",k:0,w:1,q:"การดื่มสุราและสูบบุหรี่ มีผลต่อร่างกายทำให้เกิดภาวะ Hypoxia ชนิดใด",
+ c:["Hypoxic Hypoxia","Hypemic Hypoxia","Stagnant Hypoxia","Histotoxic Hypoxia"],a:3,
+ ex:"แอลกอฮอล์ → Histotoxic hypoxia (เซลล์ใช้ O₂ ไม่ได้)",
+ note:"ข้อนี้กำกวม: แอลกอฮอล์ = Histotoxic (ง) แต่ \"การสูบบุหรี่/CO\" จริงๆ ทำให้เกิด Hypaemic (Hypemic) hypoxia (ข) โจทย์รวมสองสาเหตุไว้ด้วยกัน ควรยืนยันเฉลยกับครู"},
+{s:"D",k:0,q:"Hyperventilation มีวิธีการป้องกันและแก้ไขอย่างไร",
+ c:["Control depth and rate of respiration (12–16/min)","Use oxygen 100% and check oxygen equipment","Paper bag or Mask oxygen","All above"],a:3,
+ ex:"ทำได้ทั้งควบคุมการหายใจให้ช้าลง, ใส่ O₂ 100% + เช็คอุปกรณ์ (เผื่อเป็น hypoxia) และหายใจในถุงกระดาษ/หน้ากาก"},
+// ===== E =====
+{s:"E",k:0,q:"ข้อใดไม่ใช่ข้อดีของอากาศยานที่มีระบบควบคุมความกดดันบรรยากาศภายใน",
+ c:["เพิ่มความสะดวกสบายของเจ้าหน้าที่และผู้โดยสาร","ทำให้โครงสร้างของอากาศยานมีขนาดใหญ่และแข็งแรงทนทาน","ควบคุมอุณหภูมิและความชื้นภายใน","สามารถทำการบินในระดับความสูงที่มากขึ้น"],a:1,
+ ex:"การต้องเสริมโครงสร้างให้ใหญ่/แข็งแรง (เพิ่มน้ำหนักเครื่อง) เป็น \"ข้อเสีย\" ของระบบ pressurization ไม่ใช่ข้อดี"},
+{s:"E",k:0,q:"Indication of Rapid decompression ข้อใดกล่าวไม่ถูกต้อง",
+ c:["Increase the thermal effect (อุณหภูมิเพิ่ม)","Explosive Noise","Wind blast effect","Fogging and Flying Debris"],a:0,
+ ex:"Rapid decompression ทำให้อุณหภูมิ \"ลดลง\" (cooling) ไม่ใช่เพิ่มขึ้น • อาการอื่นที่พบ: เสียงดัง, ลมกระแทก, หมอก, เศษวัตถุปลิว"},
+{s:"E",k:0,q:"ในเครื่องบินรบ วัตถุประสงค์สำคัญที่สุดของระบบปรับความกดดันแบบ Isobaric differential (ความต่างความดันต่ำ)",
+ c:["ลดโอกาสเจ็บป่วยจาก Decompression sickness","ลดอันตรายจากการเกิด Rapid decompression","เพิ่มความสะดวกสบายแก่นักบิน","บินได้ในระดับสูงที่มากขึ้น"],a:1,
+ ex:"เครื่องบินรบใช้ความต่างความดันต่ำเพื่อ \"ลดอันตรายจาก Rapid decompression\" (กรณีถูกยิง/แคโนปีหลุด) ความต่างความดันยิ่งน้อย อันตรายยิ่งน้อย"},
+{s:"E",k:0,q:"เมื่อเกิด Rapid decompression สิ่งใดที่ไม่ควรปฏิบัติ",
+ c:["Hold breathing (กลั้นหายใจ)","Stabilized body","Use oxygen equipment 100%","Declare Emergency"],a:0,
+ ex:"ห้ามกลั้นหายใจ เพราะแก๊สในปอดขยายตัวอาจทำให้ปอดบาดเจ็บ (lung overpressure)"},
+// ===== F =====
+{s:"F",k:0,q:"ภาพชัดเจน สีสันสวยงาม ต้องการความเข้มข้นของแสงมาก",
+ c:["Retina","Optic nerve","Rod cell","Cone cell"],a:3,
+ ex:"Cone cell ให้ภาพคมชัด เห็นสี (photopic) แต่ต้องใช้แสงมาก • Rod ใช้แสงน้อย (กลางคืน) ไม่เห็นสี"},
+{s:"F",k:0,w:1,q:"ข้อใดมีผลต่อการมองเห็นในเวลากลางคืนมากที่สุด",
+ c:["ความสะอาดของกระจกกันลม","ก๊าซคาร์บอนมอนนอกไซด์","Rhodopsin","เทคนิคการเพ่งมองในเวลากลางคืน"],a:2,
+ ex:"Rhodopsin (visual purple) เป็นสารในเซลล์ Rod ที่เป็นพื้นฐานของการมองเห็นกลางคืน",
+ note:"กำกวมเล็กน้อย: CO (ข) ก็ลดการมองเห็นกลางคืนอย่างมาก แต่ในแง่ \"ปัจจัยพื้นฐานที่สุด\" ของการมองกลางคืนคือ Rhodopsin"},
+{s:"F",k:0,q:"Night blind spot (จุดบอดในการมองเห็นเวลากลางคืน) พบที่บริเวณใด",
+ c:["ขอบจอรับภาพที่มีแต่ Rod cell","บริเวณที่มีเซลล์ประสาทตา Optic nerve","บริเวณแก้วตา Cornea","บริเวณ Fovea centralis"],a:3,
+ ex:"Night blind spot อยู่ที่ Fovea เพราะมีแต่ Cone (ไม่มี Rod) เมื่อแสงน้อย Cone ไม่ทำงานจึงเป็นจุดบอด • (จุดบอดทางกายวิภาคปกติอยู่ที่ optic disc)"},
+{s:"F",k:0,q:"Rhodopsin พบที่ใด",
+ c:["Rod cell","Optic nerve","Cone cell","Retina"],a:0,
+ ex:"Rhodopsin อยู่ใน Rod cell ทำหน้าที่รับแสงในที่มืด"},
+{s:"F",k:0,q:"วิธีแก้ไข Night blind spot ในการมองเห็นเวลากลางคืน",
+ c:["Off center vision (มองเฉียง)","Colored filters","On oxygen 100%","Scanning techniques vision"],a:0,
+ ex:"ใช้ Off-center vision มองเฉียงจากวัตถุ ~10–20° เพื่อเลี่ยงจุดบอดที่ fovea ให้ภาพตกบน rod รอบนอก"},
+// ===== G =====
+{s:"G",k:0,q:"ข้อใดไม่ใช่ผลกระทบจากเสียงรบกวน (Noise) และความสั่นสะเทือน (Vibration)",
+ c:["สูญเสียการได้ยิน","อ่อนเพลีย ล้า ไม่สบายตัว","รบกวนการสนทนา","เกิดภาวะพร่องออกซิเจนไปด้วย"],a:3,
+ ex:"เสียง/การสั่นไม่ได้ทำให้เกิด hypoxia โดยตรง • ผลที่พบ: สูญเสียการได้ยิน, ล้า, รบกวนการสื่อสาร, เสียสมาธิ"},
+{s:"G",k:0,q:"เสียงดังที่เริ่มเป็นอันตรายเมื่อเข้าไปสัมผัส",
+ c:["84 เดซิเบล เอ","92 เดซิเบล เอ","120 เดซิเบล เอ","140 เดซิเบล เอ"],a:0,
+ ex:"ขีดจำกัดความปลอดภัยคือ ~85 dB(A) ต่อวันทำงาน 8 ชม. ดังนั้น ~84 dB(A) คือระดับที่เริ่มเป็นอันตราย"},
+{s:"G",k:0,q:"อุปกรณ์ในข้อใดช่วยป้องกันเสียงได้ดีที่สุด",
+ c:["ใช้เฉพาะ Ear plugs","ใช้เฉพาะ Ear muff","ใช้ Ear plugs ร่วมกับ Ear muff","ใช้เฉพาะ Head set"],a:2,
+ ex:"การป้องกันแบบคู่ (double protection): Earplugs + Earmuff ลดเสียงได้ดีที่สุดในแบบ passive"},
+{s:"G",k:0,q:"ข้อใดไม่สามารถลดปัญหาจากเสียงและการสั่นสะเทือน",
+ c:["การออกแบบอากาศยานที่ดี","ใช้สายรัดตรึงร่างกาย","สวมหมวกบินชนิด Anti buffet","ใช้ออกซิเจนช่วยหายใจขณะบิน"],a:3,
+ ex:"การใช้ออกซิเจนไม่เกี่ยวกับการลดเสียง/การสั่น • วิธีที่ช่วยได้คือออกแบบดี, รัดตรึงร่างกาย, หมวก anti-buffet"},
+// ===== H =====
+{s:"H",k:0,q:"Red out เกิดจากแรงในทิศใด",
+ c:["แรงจากศีรษะไปเท้า (+Gz)","แรงจากเท้าไปศีรษะ (−Gz)","แรงจากหน้าไปหลัง","แรงจากซ้ายไปขวา"],a:1,
+ ex:"Red out เกิดจาก Negative G (−Gz) แรงจากเท้าไปศีรษะ เลือดไปคั่งที่ศีรษะ/ตา"},
+{s:"H",k:0,q:"Gray out หรือ Black out เกิดจากแรงในทิศใด",
+ c:["แรงจากศีรษะไปเท้า (+Gz)","แรงจากเท้าไปศีรษะ (−Gz)","แรงจากหน้าไปหลัง","แรงจากซ้ายไปขวา"],a:0,
+ ex:"Greyout/Blackout เกิดจาก Positive G (+Gz) แรงจากศีรษะไปเท้า เลือดไหลออกจากศีรษะ/ตา"},
+{s:"H",k:0,q:"การวิ่งขึ้น (Take off) และร่อนลง (Landing) เป็นความเร่งชนิดใด",
+ c:["Linear acceleration","Radial acceleration","Angular acceleration","Graveyard spin"],a:0,
+ ex:"Take off/Landing = Linear acceleration (เปลี่ยนความเร็วเป็นเส้นตรง)"},
+{s:"H",k:0,q:"Acceleration มีผลกระทบต่อระบบใดของร่างกายมนุษย์มากที่สุด",
+ c:["ระบบการไหลเวียนโลหิต","ระบบการมองเห็น","ระบบการหายใจ","ระบบการทรงตัว"],a:0,
+ ex:"ระบบไหลเวียนโลหิต (cardiovascular) ได้รับผลมากที่สุด — เลือดถูกดึงลง ลดเลือดกลับหัวใจ → ผลต่อสายตาและสติตามมา"},
+{s:"H",k:0,q:"ความเร่งที่มีต่อร่างกาย ข้อใดกล่าวไม่ถูก",
+ c:["พื้นที่ของร่างกายยิ่งมากยิ่งมีผลกระทบมาก","ระยะเวลาที่แรงกระทำต่อร่างกาย","การเปลี่ยนแปลง (อัตรา) ของความเร่ง","ขนาดและทิศทางของแรง"],a:0,
+ ex:"ปัจจัยของผลกระทบจากแรง G คือ ขนาด/ทิศทาง, อัตราการเปลี่ยน (onset) และระยะเวลา • \"พื้นที่ร่างกาย\" ไม่ใช่ปัจจัย"},
+{s:"H",k:0,w:1,q:"ปัจจัยที่ทำให้ร่างกายทนต่อแรง G ยกเว้นข้อใด",
+ c:["ออกกำลังกายจนมีกล้ามเนื้อแข็งแรง","นอนหลับพักผ่อนให้เพียงพอ","ทำ M-1 หรือ L-1 Maneuver","Anti-G suit"],a:1,
+ ex:"วิธีเพิ่ม G-tolerance ตามบทเรียน ได้แก่ การฝึกกล้ามเนื้อ, M-1/L-1/AGSM และ G-suit • การนอนหลับไม่ได้อยู่ในรายการ \"วิธีเพิ่ม\" โดยตรง",
+ note:"กำกวมเล็กน้อย: การพักผ่อนช่วยป้องกันความล้า (ซึ่งลด tolerance) แต่ไม่ใช่ \"วิธีเพิ่ม\" tolerance ตามตำรา จึงเป็นข้อยกเว้น"},
+// ===== I =====
+{s:"I",k:0,q:"เมื่อมีอาการหลงสภาพการบิน ข้อใดเชื่อถือได้มากที่สุด",
+ c:["ระบบสิ่งแวดล้อมภายนอก","ระบบเครื่องวัดประกอบการบิน","ระบบการทรงตัว","ระบบการมองเห็น"],a:1,
+ ex:"หลักการ \"Make the instruments read right\" — ต้องเชื่อเครื่องวัด ไม่ใช่ความรู้สึก (ระบบทรงตัว/สายตาหลอกได้)"},
+{s:"I",k:0,q:"เมื่อเครื่องบินหมุน Graveyard spin จนหลงสภาพการบิน สิ่งที่ช่วยป้องกันได้ดีที่สุด",
+ c:["ระบบเครื่องวัดประกอบการบิน","ระบบสิ่งแวดล้อมภายนอก","ระบบการมองเห็น","ระบบการทรงตัว"],a:0,
+ ex:"ใช้และเชื่อเครื่องวัดประกอบการบิน เพราะระบบการทรงตัว (vestibular) ถูกหลอกระหว่างการหมุน"},
+{s:"I",k:0,w:1,q:"ข้อใดมีผลต่อการเกิดการหลงสภาพการบินน้อยที่สุด",
+ c:["หลอดไฟในสนามบิน","หมอกแดดหรือแสงแดดจ้า","แสงไฟกระพริบจากปลายปีกเครื่องบิน","การใช้ช่องทางวิ่งขึ้นลงของสนามบินที่ไม่ดี"],a:0,
+ ex:"แสงแดดจ้า, ไฟกระพริบ (flicker vertigo) และ runway ที่ไม่ดี (landing illusion) ล้วนก่อ SD ได้ชัด • หลอดไฟสนามบินเป็นตัวอ้างอิงที่ช่วยมากกว่า จึงมีผลก่อ SD น้อยที่สุด",
+ note:"ข้อนี้ตีความได้หลายแบบ ควรยืนยันกับครู"},
+{s:"I",k:0,q:"เมื่อเกิดหลงสภาพการบิน ข้อใดไม่ควรปฏิบัติ",
+ c:["มองเครื่องวัดและอ้างอิงภายนอกสลับกันบ่อยๆ","สละเครื่อง ถ้าแก้ไขไม่ได้ในระยะวิกฤต","ใช้ระบบเครื่องวัดประกอบการบิน","เคลื่อนไหวศีรษะให้น้อยที่สุด"],a:0,
+ ex:"การสลับมอง in/out บ่อยๆ ยิ่งทำให้สับสน ควรจดจ่อที่เครื่องวัดและลดการขยับศีรษะ"},
+{s:"I",k:0,q:"สาเหตุของ motion sickness ยกเว้นข้อใด",
+ c:["ความเครียดกังวล","อาการเหนื่อยล้า","ความกล้าหาญ","พักผ่อนไม่เพียงพอ"],a:2,
+ ex:"ความกล้าหาญไม่ใช่สาเหตุ • ปัจจัยส่งเสริม motion sickness ได้แก่ ความวิตกกังวล, ความล้า, พักผ่อนไม่พอ"},
+{s:"I",k:0,q:"การปฏิบัติที่ไม่ถูกต้องในการป้องกัน motion sickness",
+ c:["รับประทานอาหารไม่อิ่มจนเกินไป","งดดื่มสุราก่อนบินอย่างน้อย 8–10 ชม.","กินยาแก้เมาเครื่องบินทุกครั้งก่อนบิน","นอนหลับ พักผ่อนอย่างเพียงพอ"],a:2,
+ ex:"ไม่ควรกินยาแก้เมาทุกครั้ง — ยาทำให้ง่วง ต้องทดลองภาคพื้นก่อน และจำกัด ≤8 sorties ช่วงฝึกแรก โดยทั่วไปไม่ใช้กับนักบิน"},
+// ===== J =====
+{s:"J",k:0,q:"ระเบียบ ทอ. ว่าด้วยความปลอดภัย \"ห้ามขึ้นปฏิบัติหน้าที่ในอากาศยานหลังดื่มสุรา\" เป็นเวลาเท่าใด",
+ c:["8 ชม.","12 ชม.","16 ชม.","20 ชม."],a:1,
+ ex:"กฎ \"bottle to throttle/brief\" ขั้นต่ำ 12 ชม. (และไม่มีฤทธิ์ตกค้าง)"},
+{s:"J",k:0,q:"เมื่อเกิดอาการล้าแบบฉับพลัน (acute fatigue) จากการบิน แก้ไขด้วยวิธีใดเหมาะสมที่สุด",
+ c:["พักผ่อนอย่างเพียงพอ","พบแพทย์เพื่อสั่งยาให้รับประทาน","ลดเที่ยวบินน้อยกว่าเดิม","ลาพักงานทันทีจนกว่าจะหายปกติ"],a:0,
+ ex:"Acute fatigue หายได้ด้วยการพักผ่อน/นอนหลับให้เพียงพอ (ต่างจาก chronic fatigue ที่ต้องดูแลทางการแพทย์)"},
+{s:"J",k:0,w:1,q:"สาเหตุสำคัญที่ทำให้เกิดอาการกลัวการบิน (fear of flying)",
+ c:["กลัวความสูง","โรคประจำตัวทางจิตเวช","ไม่มีแรงจูงใจ","ครูการบิน ลงโทษ ตำหนิ ติเตียน"],a:3,
+ ex:"ในบริบทศิษย์การบิน การถูกครูตำหนิ/ลงโทษอย่างรุนแรง เป็นสาเหตุสำคัญของความกลัว/วิตกในการบิน",
+ note:"ข้อนี้เป็นการวิเคราะห์ อาจตอบ ค (ไม่มีแรงจูงใจ) ได้เช่นกัน ควรยืนยันกับครู"},
+{s:"J",k:0,q:"หลังการดื่มสุรา เกิดอาการเมาค้าง (Hangover) สาเหตุสำคัญคือข้อใด",
+ c:["ภาวะกรด-ด่างในเลือดผิดปกติ","ภาวะการขับถ่ายผิดปกติ","ภาวะสมองบวม","ภาวะร่างกายขาดน้ำ"],a:3,
+ ex:"Hangover สาเหตุหลักคือภาวะขาดน้ำ (dehydration) จากฤทธิ์ขับปัสสาวะของแอลกอฮอล์"},
+{s:"J",k:0,q:"ก๊าซคาร์บอนมอนนอกไซด์จากควันบุหรี่มีผลกระทบต่อข้อใดมากที่สุด",
+ c:["Rod cell","หัวใจและหลอดเลือด","ฮีโมโกลบินในเลือด","ปอดและถุงลม"],a:2,
+ ex:"CO จับกับฮีโมโกลบินแรงกว่า O₂ ~200 เท่า → ลดความสามารถในการขนส่ง O₂ (Hypaemic hypoxia)"},
+{s:"J",k:0,q:"การซื้อยามารับประทานเอง อาจเกิดผลเสียในข้อใด",
+ c:["ผลข้างเคียงจากการใช้ยา","การเสริมฤทธิ์ของยา","การแพ้ยา","ทุกข้อที่กล่าวมา"],a:3,
+ ex:"การ self-medication เสี่ยงทั้งผลข้างเคียง, การเสริมฤทธิ์ (synergistic) และการแพ้ยา — ต้องปรึกษา Flight Surgeon ก่อน"},
+{s:"J",k:0,q:"อาหารกับการฝึกบิน ข้อใดไม่ถูกต้อง",
+ c:["งดอาหารบางมื้อที่ฝึกบิน","ไม่รับประทานอาหารที่มีไขมันสูง","รับประทานอาหารให้ครบ 5 หมู่","รับประทานอาหารเช้าทุกวัน"],a:0,
+ ex:"ห้ามงดมื้ออาหารก่อนบิน เพราะเสี่ยง hypoglycemia (สมองขาดกลูโคส) — ห้ามบินท้องว่าง"},
+// ===== K =====
+{s:"K",k:0,w:1,q:"การเพิ่มความกดดันของออกซิเจนเข้าสู่ระบบการหายใจ (Pressure breathing) มีวัตถุประสงค์อย่างไร",
+ c:["ป้องกันการเกิดภาวะหายใจถี่","เพิ่มปริมาณออกซิเจนในร่างกาย","เพื่อให้เกิดการแลกเปลี่ยนก๊าซในถุงลมปอด","ถูกทุกข้อที่กล่าวมา"],a:2,
+ ex:"ที่ระดับสูงมาก pO₂ ต่ำเกินกว่าจะแลกเปลี่ยนได้พอ การอัดความดันช่วยคงระดับ O₂ ในถุงลมให้เกิดการแลกเปลี่ยนก๊าซ • (ข้อ ก ไม่ถูก เพราะ PPB อาจทำให้หายใจเกินได้ จึงไม่ใช่ \"ถูกทุกข้อ\")",
+ note:"กำกวม: อาจตอบ ข (เพิ่ม O₂ ในร่างกาย) ได้ ควรยืนยันกับครู"},
+{s:"K",k:0,q:"ถ้าปรับ Automix lever (ปุ่มสีขาว) ของ MD-1 Oxygen regulator ไว้ที่ \"Normal\" การผสมออกซิเจนเข้าระบบหายใจจะเกิดที่ความสูงใด",
+ c:["๗,๐๐๐ ฟุต","๑๐,๐๐๐ ฟุต","๒๕,๐๐๐ ฟุต","๓๔,๐๐๐ ฟุต"],a:0,
+ ex:"ที่ตำแหน่ง Normal เริ่มผสม O₂ เข้าระบบหายใจที่ ~7,000 ฟุต และจ่าย O₂ 100% เมื่อถึง ~34,000 ฟุต"},
+{s:"K",k:0,q:"ข้อใดไม่จำเป็นต้องใช้ออกซิเจน ๑๐๐% เมื่อทำการบิน",
+ c:["Denitrogenation","ทำการบินในเวลากลางคืน","เกิดภาวะเจ็บป่วยขณะบิน","มีควันในห้องนักบิน"],a:1,
+ ex:"บินกลางคืนใช้ \"Normal oxygen\" (ตั้งแต่ ≥5,000 ฟุต) ก็พอ ไม่ต้อง 100% • ส่วน denitrogenation, เจ็บป่วย, มีควัน ต้องใช้ O₂ 100%"},
+{s:"K",k:0,q:"ถ้า O-Ring ของ CRU-60/P connector ชำรุด อาจทำให้เกิดภาวะใดทางสรีรวิทยาการบิน",
+ c:["Motion sickness","Hypoxia","DCS","Hyperventilation"],a:1,
+ ex:"O-ring ชำรุด → ระบบรั่ว → O₂ ไหลไม่พอ → Hypoxia"},
+{s:"K",k:0,q:"Oxygen flow indicator (Flow) ของ Oxygen regulator มีประโยชน์และป้องกันการเกิดภาวะใด",
+ c:["Motion sickness","Hypoxia","DCS","Hyperventilation"],a:1,
+ ex:"ตัวบอกการไหล (flow indicator) ยืนยันว่ามี O₂ ไหลจริง จึงช่วยป้องกัน Hypoxia"},
+{s:"K",k:0,q:"เมื่อบริจาคโลหิตจะต้องงดทำการบินอย่างน้อยกี่ชั่วโมง",
+ c:["๒๔ ชม.","๔๘ ชม.","๗๒ ชม.","อย่างน้อย 1 สัปดาห์"],a:2,
+ ex:"หลังบริจาคเลือดต้องงดบินอย่างน้อย 72 ชั่วโมง"}
+];
+
+const TH = ['ก','ข','ค','ง'];
+const container = document.getElementById('quiz-container');
+let answered = 0, correct = 0;
+const stats = {}; // section -> {total, correct}
+
+function buildQuiz(){
+  container.innerHTML='';
+  answered=0; correct=0;
+  for(const k in stats) delete stats[k];
+  let curSec=null, gi=0;
+  questions.forEach((item, idx)=>{
+    if(item.s!==curSec){
+      curSec=item.s;
+      const sh=document.createElement('div');
+      sh.className='section-header';
+      sh.innerHTML = sectionNames[curSec][0] + '<span class="en">'+sectionNames[curSec][1]+'</span>';
+      container.appendChild(sh);
+    }
+    if(!stats[item.s]) stats[item.s]={total:0,correct:0};
+    stats[item.s].total++;
+    gi++;
+    const card=document.createElement('div');
+    card.className='question-card';
+    card.id='q'+idx;
+    let tag = item.k? '<span class="tag key">🟡 เฉลยจากโผ</span>' : '<span class="tag ana">🔵 วิเคราะห์</span>';
+    if(item.w) tag += ' <span class="tag warn">⚠️ ข้อกำกวม</span>';
+    let html = '<div class="q-top"><span class="q-number">ข้อ '+(idx+1)+'</span>'+tag+'</div>';
+    html += '<div class="q-text">'+item.q+'</div><div class="choices">';
+    item.c.forEach((c,i)=>{
+      html += '<button class="choice-btn" data-q="'+idx+'" data-i="'+i+'"><span class="letter">'+TH[i]+'.</span><span>'+c+'</span><span class="mk"></span></button>';
+    });
+    html += '</div><div class="explanation"><b>เฉลย: '+TH[item.a]+'.</b> '+item.ex+(item.note?'<span class="note">⚠️ '+item.note+'</span>':'')+'</div>';
+    card.innerHTML=html;
+    container.appendChild(card);
+  });
+  container.querySelectorAll('.choice-btn').forEach(btn=>{
+    btn.addEventListener('click', onAnswer);
+  });
+  updateBar();
+  document.getElementById('end-screen').style.display='none';
+}
+
+function onAnswer(e){
+  const btn=e.currentTarget;
+  const qi=+btn.dataset.q, ci=+btn.dataset.i;
+  const card=document.getElementById('q'+qi);
+  if(card.classList.contains('done')) return;
+  card.classList.add('done');
+  const item=questions[qi];
+  const btns=card.querySelectorAll('.choice-btn');
+  btns.forEach(b=>{
+    b.disabled=true;
+    const i=+b.dataset.i;
+    if(i===item.a) b.classList.add('correct');
+    else if(i===ci) b.classList.add('wrong');
+  });
+  card.querySelector('.explanation').classList.add('visible');
+  answered++;
+  if(ci===item.a){ correct++; card.classList.add('answered-correct'); stats[item.s].correct++; }
+  else card.classList.add('answered-wrong');
+  updateBar();
+}
+
+function updateBar(){
+  document.getElementById('answered-count').textContent=answered;
+  document.getElementById('correct-count').textContent=correct;
+  document.getElementById('score-pct').textContent=(answered? Math.round(correct/answered*100):0)+'%';
+  document.getElementById('progress-fill').style.width=(answered/questions.length*100)+'%';
+}
+
+document.getElementById('revealAll').addEventListener('click', ()=>{
+  questions.forEach((item,qi)=>{
+    const card=document.getElementById('q'+qi);
+    if(card.classList.contains('done')) return;
+    card.classList.add('done');
+    card.querySelectorAll('.choice-btn').forEach(b=>{
+      b.disabled=true;
+      if(+b.dataset.i===item.a) b.classList.add('correct');
+    });
+    card.querySelector('.explanation').classList.add('visible');
+  });
+});
+
+document.getElementById('finishBtn').addEventListener('click', showEnd);
+function showEnd(){
+  const pct=Math.round(correct/questions.length*100);
+  document.getElementById('final-score').textContent=correct+'/'+questions.length;
+  document.getElementById('final-detail').textContent='ตอบแล้ว '+answered+' ข้อ • คิดเป็น '+pct+'% ของทั้งหมด';
+  let sh='';
+  for(const s in stats){
+    sh+='<span class="section-score">'+s+': '+stats[s].correct+'/'+stats[s].total+'</span>';
+  }
+  document.getElementById('section-scores').innerHTML=sh;
+  const es=document.getElementById('end-screen');
+  es.style.display='block';
+  es.scrollIntoView({behavior:'smooth'});
+}
+function restartQuiz(){ buildQuiz(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+buildQuiz();
+</script>
+</body>
+</html>
