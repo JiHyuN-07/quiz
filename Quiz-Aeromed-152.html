@@ -97,6 +97,11 @@
   #end-screen p { color: #555; margin: 6px 0; }
   .section-score { display: inline-block; margin: 5px 10px; font-size: 0.92rem; color: #444; background:#f4f7fb; padding:6px 12px; border-radius:8px;}
   footer{ text-align:center; color:#8a93a3; font-size:.82rem; padding:24px; }
+  #quiz-tabs{ display:flex; background:#16345f; box-shadow:0 2px 6px rgba(0,0,0,.12); }
+  .qtab{ flex:1; padding:14px 10px; border:none; background:transparent; color:#aebfd6; font-family:inherit; font-size:1rem; font-weight:700; cursor:pointer; border-bottom:3px solid transparent; transition:background .15s,color .15s; }
+  .qtab:hover{ color:#fff; background:rgba(255,255,255,.07); }
+  .qtab.active{ color:#fff; background:#2d6abf; border-bottom-color:#27ae60; }
+  .qtab span{ font-size:.78rem; font-weight:400; opacity:.85; }
   @media(max-width:640px){
     .question-card,.section-header,#score-bar,header{ margin-left:0; margin-right:0; padding-left:16px; padding-right:16px;}
     .question-card{ border-radius:0;}
@@ -108,9 +113,14 @@
 <header>
   <div>
     <h1>🩺✈️ ควิซเวชศาสตร์การบิน</h1>
-    <p>โผข้อสอบ ๑๕๒ (Aviation Physiology by SP 152) &nbsp;|&nbsp; 60 ข้อ &nbsp;|&nbsp; Ground School 101</p>
+    <p>Aviation Physiology · Ground School 101 &nbsp;|&nbsp; เลือกชุดข้อสอบจากแท็บด้านล่าง</p>
   </div>
 </header>
+
+<div id="quiz-tabs">
+  <button class="qtab active" data-quiz="q152">โผ ๑๕๒ <span>(60 ข้อ)</span></button>
+  <button class="qtab" data-quiz="recall">โผข้อสอบ <span>(54 ข้อ)</span></button>
+</div>
 
 <div id="score-bar">
   <div class="pill">ทำแล้ว: <b id="answered-count">0</b> / <b id="total-count">60</b></div>
@@ -137,7 +147,7 @@
 <footer>สร้างจากโผข้อสอบ ๑๕๒ + เนื้อหา Ground School 101 • ใช้สำหรับทบทวนเตรียมสอบ</footer>
 
 <script>
-const sectionNames = {
+const SEC152 = {
   A:["A. บทนำ บรรยากาศ และกฎของแก๊ส","Introduction, Atmosphere & Gas Laws"],
   B:["B. ผลของการเปลี่ยนแปลงความกดดัน","Effects of Pressure Changes"],
   C:["C. ระบบหายใจและไหลเวียนเลือด","Respiration & Circulation"],
@@ -152,7 +162,7 @@ const sectionNames = {
 };
 
 // k:1 = เฉลยจากรอยขีดในโผ | k:0 = วิเคราะห์เอง | w:1 = ข้อกำกวม
-const questions = [
+const Q152 = [
 // ===== A =====
 {s:"A",k:1,q:"ในแต่ละระดับความสูงของชั้นบรรยากาศ ข้อใดไม่มีการเปลี่ยนแปลง",
  c:["อุณหภูมิ","อัตราส่วนของก๊าซแต่ละชนิด","ปริมาณ/ความหนาแน่นของก๊าซ","ความกดดันของบรรยากาศ"],a:1,
@@ -350,6 +360,85 @@ const questions = [
  ex:"หลังบริจาคเลือดต้องงดบินอย่างน้อย 72 ชั่วโมง"}
 ];
 
+const SEC_RECALL = {
+  A:["A. บรรยากาศ & กฎของแก๊ส","Atmosphere & Gas Laws"],
+  B:["B. ระบบหายใจ–ไหลเวียนเลือด","Respiration & Circulation"],
+  C:["C. Hypoxia & Hyperventilation","ภาวะพร่องออกซิเจน & หายใจเกิน"],
+  D:["D. Cabin Pressurization & Rapid Decompression","การปรับ/ลดความกดดัน"],
+  E:["E. การมองเห็น","Vision"],
+  F:["F. เสียง & การสั่นสะเทือน","Noise & Vibration"],
+  G:["G. แรงเร่ง (Acceleration)","Acceleration & G"],
+  H:["H. การหลงสภาพการบิน & Motion Sickness","SD & Motion Sickness"],
+  I:["I. ความล้า & ระเบียบ","Fatigue & Regulations"],
+  J:["J. อุปกรณ์ออกซิเจน","Oxygen Equipment"]
+};
+
+// โผข้อสอบ (54 ข้อ) — คำถาม+คำตอบที่ถูกต้องคงตามต้นฉบับ, ตัวเลือกลวง 3 ข้อเป็นการ generate
+const Q_RECALL = [
+{s:"A",q:"อัตราส่วน N:O:C",c:["78:21:0.03","21:78:0.03","78:21:1","80:20:0"],a:0,ex:"องค์ประกอบอากาศ N₂ 78% : O₂ 21% : CO₂ ~0.03%"},
+{s:"A",q:"International atmosphere",c:["0 องศา 760 mmhg","15 องศา 760 mmhg","25 องศา 760 mmhg","15 องศา 720 mmhg"],a:1,ex:"ICAO ISA: 15 °C และ 760 mmHg ที่ระดับน้ำทะเล"},
+{s:"A",q:"ชั้นบรรยากาศที่คนอยู่",c:["thermosphere","mesosphere","troposphere","stratosphere"],a:2,ex:"มนุษย์อาศัยในชั้น Troposphere"},
+{s:"A",q:"ชั้นบรรยากาศมี ozone",c:["troposphere","mesosphere","thermosphere","stratosphere"],a:3,ex:"Ozone layer อยู่ในชั้น Stratosphere"},
+{s:"A",q:"physiologic zone",c:["10000 Ft","18000 Ft","25000 Ft","50000 Ft"],a:0,ex:"Physiologic zone = 0–10,000 ft"},
+{s:"A",q:"บินสูงขึ้นเกี่ยวกับกฏไร",c:["เปลี่ยนตามกฏ henry","เปลี่ยนตามกฏ boyle","เปลี่ยนตามกฏ dalton","เปลี่ยนตามกฏ charles"],a:1,ex:"แก๊สในโพรงร่างกายขยายตัวเมื่อความดันลด (Boyle)"},
+{s:"A",q:"บอลลูน 10000 ml บินสูง 20000 Ft",c:["1800","4340","2171","760"],a:2,ex:"คำนวณจาก Boyle: V₂ = V₁ × P₁/P₂"},
+{s:"A",q:"gas ที่เกิด decompression",c:["oxygen","carbon dioxide","helium","nitrogen"],a:3,ex:"DCS เกิดจาก Nitrogen แยกตัวเป็นฟอง"},
+{s:"A",q:"trap gas กฏไร decom กฏไร",c:["boyle กับ henry","dalton กับ henry","boyle กับ charles","henry กับ dalton"],a:0,ex:"Trapped gas = Boyle • Decompression = Henry"},
+{s:"A",q:"วัตถุประสงค์ที่ทำ valsova",c:["เพิ่มออกซิเจนในเลือด","ระบายความดันออกจากหูชั้นกลาง","ป้องกันการหลงสภาพการบิน","ลดอาการเมาเครื่องบิน"],a:1,ex:"Valsalva ปรับ/ระบายความดันในหูชั้นกลางผ่าน Eustachian tube"},
+{s:"A",q:"Scuba diving กี่ชม",c:["12 ชม","48 ชม","24 ชม","72 ชม"],a:2,ex:"ห้ามบินภายใน 24 ชม. หลังดำน้ำ scuba"},
+{s:"A",q:"decompression เกิดที่ความสูงเท่าไหร่",c:["10000 Ft.","25000 Ft.","18000 Ft.","33000 Ft."],a:2,ex:"DCS เริ่มเสี่ยงที่ระดับสูงกว่า 18,000 ft"},
+{s:"A",q:"การป้องกัน decom ทำยังไง",c:["Denitrogenation","ใช้ห้องปรับความดัน","หายใจ O₂ 100%","ถูกทุกข้อ"],a:3,ex:"ป้องกัน DCS ได้หลายวิธีรวมกัน"},
+{s:"B",q:"การเผาผลาญไม่เกี่ยวข้องกับอะไร",c:["O₂","พลังงาน (energy)","CO2","น้ำ (H₂O)"],a:2,ex:"(ตามเฉลยที่ให้มาในโผ)"},
+{s:"B",q:"มีผลกับการควบคุมการหายใจ",c:["CO₂","O₂","pH ของเลือด","ถูกทุกข้อ"],a:3,ex:"การควบคุมการหายใจเกี่ยวข้องกับ CO₂, O₂ และ pH"},
+{s:"B",q:"แลกเปลี่ยน o2 กับ co2 เกิดที่",c:["หลอดลมใหญ่","ถุงลม+เส้นเลือดที่ปอด","หัวใจ","กล้ามเนื้อ"],a:1,ex:"แลกเปลี่ยนแก๊สที่ถุงลม (alveoli) กับหลอดเลือดฝอยปอด"},
+{s:"C",q:"hypoxia มีอาการยกเว้นข้อใด",c:["เขียวคล้ำ","เคลิ้มสุข (euphoria)","เจ็บปวดกล้ามเนื้อ","วิจารณญาณเสีย"],a:2,ex:"Hypoxia มักไม่เจ็บปวด → 'เจ็บปวดกล้ามเนื้อ' เป็นข้อยกเว้น"},
+{s:"C",q:"บริจาคเลือด งดบินกี่ชม",c:["24 ชม","48 ชม","12 ชม","72 ชม"],a:3,ex:"งดบิน 72 ชม. หลังบริจาคเลือด"},
+{s:"C",q:"กินเหล้ามา 6 ชม อาการ",c:["hypoxic","hypaemic","stagnant","histotoxic"],a:3,ex:"แอลกอฮอล์ → Histotoxic hypoxia"},
+{s:"C",q:"ความสูง 10000 Ft. เสี่ยงอะไร",c:["Hypoxic","Hypaemic","Stagnant","Histotoxic"],a:0,ex:"ที่ระดับสูง pO₂ ลด → Hypoxic hypoxia"},
+{s:"C",q:"ข้อใดเสี่ยง hypaemic สุด",c:["ดื่มแอลกอฮอล์","ขึ้นที่สูง","ภาวะช็อก","เป็นโลหิตจาง"],a:3,ex:"โลหิตจาง (anemia) ลด Hb ที่ขนส่ง O₂ → Hypaemic"},
+{s:"C",q:"ไม่มีผลให้เกิด hypoxia ง่าย",c:["สูบบุหรี่จัด","ว่าย/ดำนี้ในสระประจำ","ขึ้นที่สูงอย่างรวดเร็ว","ดื่มสุรา"],a:1,ex:"การว่าย/ดำน้ำในสระเป็นประจำไม่เพิ่มความเสี่ยง hypoxia"},
+{s:"C",q:"Hypoxia แก้ได้ แต่ยกเว้นข้อใด",c:["ใช้ O₂ 100%","ลดระดับความสูง","หายใจเร็ว","ตรวจระบบออกซิเจน"],a:2,ex:"'หายใจเร็ว' ไม่ใช่วิธีแก้ hypoxia (เสี่ยง hyperventilation)"},
+{s:"C",q:"นักบินดำรง (จำโจทย์ไม่ได้)",c:["ระยะ Compensatory","มี (Indifferent) ข้างหลัง","ระยะ Disturbance","ระยะ Critical"],a:1,flag:"โจทย์ไม่สมบูรณ์",ex:"(โจทย์ในโผไม่สมบูรณ์ — เฉลยที่ให้คือข้อ ข)"},
+{s:"C",q:"อาการ hypoxia มีอาการยกเว้นข้อใด",c:["เขียวคล้ำ","ปลายมือเท้าเกร็ง","เคลิ้มสุข (euphoria)","วิจารณญาณเสีย"],a:1,ex:"ปลายมือเท้าเกร็ง (carpopedal spasm) เป็นอาการของ Hyperventilation"},
+{s:"C",q:"Hyperventilation เกิดจากยกเว้นข้อใด",c:["ความเครียดและความกลัว","ความเจ็บปวด","ได้ O2 100 นานๆ","การสั่นสะเทือน"],a:2,ex:"การได้ O₂ 100% นานๆ ไม่ใช่สาเหตุของ hyperventilation"},
+{s:"D",q:"ข้อเสียของ cabin pressure",c:["พื้นที่น้อยลง ดูแลถี่ถ้วน","ควบคุมอุณหภูมิและความชื้นได้","ลดความเสี่ยง trapped gas","เพิ่มความสะดวกสบาย"],a:0,ex:"ข้อเสีย = ต้องดูแล/มีอุปกรณ์มากขึ้น • ข้ออื่นเป็นข้อดี"},
+{s:"D",q:"ข้อใดไม่พบเมื่อ pressure เปลี่ยนเร็ว",c:["เสียงดังคล้ายระเบิด","หมอกในห้อง","วัตถุภายนอกถูกดูดเข้า","ลมกระแทก (wind blast)"],a:2,ex:"RD อากาศพุ่งออก เศษวัตถุปลิวออก ไม่ใช่ดูดวัตถุภายนอกเข้า"},
+{s:"D",q:"ปรากฏการณ์ใดไม่พบเมื่อ Pressure เปลี่ยนช้า",c:["ภาวะพร่องออกซิเจน","แก๊สค่อยๆ ขยายตัว","wind blast","ไม่มีเสียงดัง"],a:2,ex:"Slow decompression → hypoxia ค่อยเป็นค่อยไป ไม่มี wind blast"},
+{s:"E",q:"ข้อใดผิด",c:["Physiologic blind spot","Cone cell เห็นสี","Rod cell ใช้ตอนกลางคืน","Fovea มีความคมชัดสูง"],a:0,flag:"โจทย์ไม่สมบูรณ์",ex:"(โจทย์ 'ข้อใดผิด' ในโผไม่ระบุตัวเลือกครบ — เฉลยที่ให้คือ Physiologic blind spot)"},
+{s:"E",q:"ข้อใดผิด",c:["Cone ใช้ตอนกลางวัน","Rod อยู่รอบนอกจอตา","Fovea ไม่มี rod","การมองกลางคืน ... (Focal)(rod cell)"],a:3,flag:"โจทย์ไม่สมบูรณ์",ex:"(โจทย์ 'ข้อใดผิด' ในโผไม่ระบุตัวเลือกครบ — การมองกลางคืนใช้ ambient/rod ไม่ใช่ Focal)"},
+{s:"E",q:"เทคนิดการมองเห็นกลางคืนข้อใดผิด",c:["ปรับสายตาในที่มืด ~30 นาที","night blind spot แก้ด้วย scan tech","มองเฉียง (off-center) 10–20°","หลีกเลี่ยงแสงจ้าก่อนบิน"],a:1,ex:"Night blind spot ที่ fovea แก้ด้วย off-center viewing ไม่ใช่ scanning"},
+{s:"E",q:"อาการหลอน Auto kinesis แก้ยังไง",c:["หลับตาพักเป็นระยะ","เพ่งมองจุดเดียวนิ่งๆ","ติดไฟ 2 ดวงห่างกัน","เปิดไฟห้องนักบินให้สว่าง"],a:2,ex:"ติดไฟอ้างอิงหลายดวง ช่วยไม่ให้แสงดวงเดียวดูเหมือนเคลื่อนที่"},
+{s:"F",q:"อันตรายจากเสียงสัมผัส",c:["60 Db","80 Db","100 Db","120 Db"],a:1,ex:"เสียงเริ่มเป็นอันตรายที่ ~80 dB"},
+{s:"F",q:"ป้องกันเสียงดีที่สุด",c:["EP อย่างเดียว","EM อย่างเดียว","headset อย่างเดียว","EP กับ EM"],a:3,ex:"earplug ร่วม earmuff (double protection) ดีที่สุด"},
+{s:"F",q:"ข้อใดลดเสียงและการสั่น",c:["ออกแบบอากาศยานที่ดี","ใช้สายรัดตรึงร่างกาย","หมวกบิน anti-buffet","ถูกทุกข้อ"],a:3,ex:"ลดเสียง/การสั่นได้หลายวิธีรวมกัน"},
+{s:"G",q:"acceleration ส่งผลต่ออะไร",c:["ระบบหายใจ","ระบบไหลเวียนโลหิต","ระบบย่อยอาหาร","ระบบประสาท"],a:1,ex:"แรงเร่งกระทบระบบไหลเวียนโลหิตมากที่สุด"},
+{s:"G",q:"ข้อใดมีผลกับ +Gz",c:["เลือดไหลลงส่วนล่างของร่างกาย","ความดันเลือดที่ศีรษะลด","การมองเห็นเสียก่อนหมดสติ","ถูกทุกข้อ"],a:3,ex:"+Gz มีผลหลายอย่างรวมกัน"},
+{s:"G",q:"เพิ่มแรงทน G ได้น้อยที่สุด",c:["นอนให้พอ","ทำ AGSM / M-1","ใส่ G-suit","เกร็งกล้ามเนื้อ"],a:0,ex:"การนอนพักช่วยได้น้อยสุดเมื่อเทียบกับ AGSM/G-suit/เกร็งกล้ามเนื้อ"},
+{s:"G",q:"โดน 6+Gz 10 วิ เป็นยังไง",c:["มองเห็นมัว (greyout)","มองมืด (blackout)","หมดสติ","ปวดศีรษะ"],a:2,ex:"6+Gz นาน ~10 วิ → G-LOC (หมดสติ)"},
+{s:"G",q:"ข้อใดถูกเกี่ยวกับองค์ประกอบแรง/ความเร่ง",c:["ระยะเวลาไม่มีผล","พื้นที่มากแรงน้อยลง","ทิศทางไม่สำคัญ","อัตราการเปลี่ยนไม่เกี่ยว"],a:1,ex:"(ตามเฉลยในโผ)"},
+{s:"G",q:"+Gz มากขึ้น สาเหตุใดจะมาก่อน",c:["หมดสติทันที","ตามืดทั้งหมด","ปวดหน้าอก","มองเห็นแคบลง ในอุโมงค์"],a:3,ex:"การมองเห็นรอบนอกหายไป (tunnel/greyout) มาก่อน blackout และ G-LOC"},
+{s:"H",q:"ข้อใดเกี่ยวกับการหลงสภาพอากาศ",c:["นักบินบอกไม่ได้ว่าเป็นอย่างไรเทียบกับสภาพแวดล้อม","เกิดจากเครื่องวัดเสีย","เป็นอาการทางกายเท่านั้น","แก้ได้ด้วยการมองภายนอกอย่างเดียว"],a:0,ex:"SD = การรับรู้ตำแหน่ง/การเคลื่อนที่ผิดเทียบกับสภาพแวดล้อม"},
+{s:"H",q:"ความรู้สึกเกี่ยวกับการหลงสภาพอากาศ",c:["มองเห็น กับ หูชั้นในเท่านั้น","มองเห็น หูชั้นใน ผิวหนัง กล้อมเนื้อ ข้อต่อ","หูชั้นในอย่างเดียว","ผิวหนังกับข้อต่อเท่านั้น"],a:1,ex:"ระบบรับรู้ทิศทาง = สายตา + หูชั้นใน + somatosensory (ผิวหนัง/กล้ามเนื้อ/ข้อต่อ)"},
+{s:"H",q:"จากข้อที่แล้วเราจะป้องกันยังไง",c:["ปิดเครื่องวัด","หลับตาพัก","อย่าหมุนหัวตอนเลี้ยว","มองภายนอกตลอด"],a:2,ex:"ลดการขยับ/หมุนศีรษะระหว่างเลี้ยว เพื่อเลี่ยง Coriolis"},
+{s:"H",q:"หลงสภาพอากาศทำยังไง",c:["เชื่อเครื่องวัด","บินตรงระดับ","ลดการขยับศีรษะ","ถูกทุกข้อ"],a:3,ex:"จัดการ SD ได้หลายอย่างรวมกัน"},
+{s:"H",q:"ข้อใดผิด",c:["เป็นการตอบสนองปกติต่อสิ่งแวดล้อมผิดปกติ","เกิดจาก sensory mismatch","เกิดเมาเครื่องบินผิดปกติ ตอบสนองต่อสภาพแวดล้อม","ป้องกันได้ด้วยการมองขอบฟ้า"],a:2,flag:"โจทย์ไม่สมบูรณ์",ex:"Motion sickness เป็นการตอบสนอง 'ปกติ' ต่อสิ่งแวดล้อมผิดปกติ → ข้อที่ว่า 'ผิดปกติ' จึงผิด"},
+{s:"H",q:"การปฏิบัติใดไม่ถูกต้องกับการป้องกัน motion sickness",c:["กินยาแก้เมาทุกครั้ง","มองขอบฟ้า","พักผ่อนให้พอ","ลดการขยับศีรษะ"],a:0,ex:"ไม่ควรกินยาแก้เมาทุกเที่ยวบิน (ทำให้ง่วง ต้องทดลองภาคพื้นก่อน)"},
+{s:"H",q:"ข้อใดไม่ใช่สาเหตุการหลงสภาพอากาศ",c:["แสงแดดจ้า","ไฟกระพริบ","ตึกสูง","การหมุน/เลี้ยว"],a:2,ex:"ตึกสูงไม่ใช่สาเหตุของ SD"},
+{s:"H",q:"เกิดการหลงสภาพอากาศมากที่สุด",c:["บินตรงระดับ","เปลี่ยนความเร่งเชิงมุม","ความเร่งเชิงเส้น","อยู่นิ่ง"],a:1,ex:"การเปลี่ยนความเร่งเชิงมุม (angular) กระตุ้น semicircular canals → SD มากสุด"},
+{s:"I",q:"ข้อใดไม่ใช่กลุ่มอาการที่พบบ่อยที่สุดใน Chronic Fatique",c:["ปวดศีรษะ หงุดหงิด","สมาธิลดลง","เหนื่อยล้าเรื้อรัง","ประสิทธิภาพการทำงานลด"],a:0,ex:"(ตามเฉลยในโผ)"},
+{s:"I",q:"ระเบียบ ทอ. ดื่มสุรา",c:["8 ชม","12 ชม","16 ชม","24 ชม"],a:1,ex:"ระเบียบ ทอ.: ห้ามปฏิบัติหน้าที่ในอากาศยานภายใน 12 ชม. หลังดื่มสุรา"},
+{s:"J",q:"MD1 เพิ่มความดัน O2 ที่",c:["10000 Ft","18000 Ft","28000 Ft","40000 Ft"],a:2,ex:"MD-1 เริ่มเพิ่มความดัน O₂ ที่ ~28,000 ft"},
+{s:"J",q:"PRICE ตัว I ย่อมาจากอะไร",c:["I=Inhale","I=Indicator","I=Inspect","I=Internal"],a:1,ex:"PRICE: Pressure, Regulator, Indicator, Connections, Emergency"}
+];
+
+const QUIZZES = {
+  q152:   { data: Q152,     sections: SEC152 },
+  recall: { data: Q_RECALL, sections: SEC_RECALL }
+};
+let activeKey = 'q152';
+let questions = QUIZZES[activeKey].data;
+let sectionNames = QUIZZES[activeKey].sections;
+
 const TH = ['ก','ข','ค','ง'];
 const container = document.getElementById('quiz-container');
 let answered = 0, correct = 0;
@@ -374,7 +463,8 @@ function buildQuiz(){
     const card=document.createElement('div');
     card.className='question-card';
     card.id='q'+idx;
-    let html = '<div class="q-top"><span class="q-number">ข้อ '+(idx+1)+'</span></div>';
+    let flag = item.flag ? ' <span class="tag warn">⚠️ '+item.flag+'</span>' : '';
+    let html = '<div class="q-top"><span class="q-number">ข้อ '+(idx+1)+'</span>'+flag+'</div>';
     html += '<div class="q-text">'+item.q+'</div><div class="choices">';
     item.c.forEach((c,i)=>{
       html += '<button class="choice-btn" data-q="'+idx+'" data-i="'+i+'"><span class="letter">'+TH[i]+'.</span><span>'+c+'</span><span class="mk"></span></button>';
@@ -446,6 +536,19 @@ function showEnd(){
   es.scrollIntoView({behavior:'smooth'});
 }
 function restartQuiz(){ buildQuiz(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+function switchQuiz(key){
+  if(key===activeKey) return;
+  activeKey=key;
+  questions = QUIZZES[key].data;
+  sectionNames = QUIZZES[key].sections;
+  document.getElementById('total-count').textContent = questions.length;
+  document.querySelectorAll('.qtab').forEach(b=>b.classList.toggle('active', b.dataset.quiz===key));
+  buildQuiz();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.qtab').forEach(b=> b.addEventListener('click', ()=>switchQuiz(b.dataset.quiz)));
+document.getElementById('total-count').textContent = questions.length;
 
 buildQuiz();
 </script>
