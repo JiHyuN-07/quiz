@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 6 – Meteorology For Pilots | Quiz</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", Tahoma, "Sarabun", sans-serif;
+    background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
+    color: #1a202c;
+    padding: 20px;
+    line-height: 1.6;
+  }
+  .container { max-width: 880px; margin: 0 auto; }
+  header {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 24px;
+  }
+  header h1 { font-size: 1.8rem; margin-bottom: 6px; }
+  header p { opacity: 0.9; font-size: 0.95rem; }
+
+  .scorebar {
+    position: sticky; top: 10px; z-index: 10;
+    background: #fff; border-radius: 12px;
+    padding: 14px 20px; margin-bottom: 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  }
+  .scorebar .stat { font-weight: 600; font-size: 0.95rem; }
+  .scorebar .stat span { font-weight: 700; }
+  .correct-c { color: #2f855a; }
+  .wrong-c { color: #c53030; }
+  .reset-btn {
+    background: #2c5282; color: #fff; border: none;
+    padding: 8px 16px; border-radius: 8px; cursor: pointer;
+    font-size: 0.9rem; font-weight: 600;
+  }
+  .reset-btn:hover { background: #1e3a5f; }
+
+  .section-title {
+    color: #fff; font-size: 1.3rem; font-weight: 700;
+    margin: 28px 0 14px; padding-bottom: 6px;
+    border-bottom: 2px solid rgba(255,255,255,0.4);
+  }
+
+  .q-card {
+    background: #fff; border-radius: 12px;
+    padding: 20px 22px; margin-bottom: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  }
+  .q-num {
+    display: inline-block; background: #2c5282; color: #fff;
+    font-size: 0.8rem; font-weight: 700;
+    padding: 2px 10px; border-radius: 20px; margin-bottom: 10px;
+  }
+  .q-text { font-weight: 600; margin-bottom: 14px; font-size: 1.02rem; }
+  .options { list-style: none; }
+  .options li {
+    border: 2px solid #e2e8f0; border-radius: 9px;
+    padding: 11px 14px; margin-bottom: 9px; cursor: pointer;
+    transition: all 0.15s; display: flex; gap: 10px; align-items: flex-start;
+  }
+  .options li:hover { border-color: #90cdf4; background: #f7fafc; }
+  .options li .letter {
+    font-weight: 700; color: #2c5282; flex-shrink: 0;
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 2px solid #2c5282; display: flex;
+    align-items: center; justify-content: center; font-size: 0.78rem;
+  }
+  .options li.correct {
+    border-color: #38a169; background: #f0fff4;
+  }
+  .options li.correct .letter { background: #38a169; border-color: #38a169; color: #fff; }
+  .options li.wrong {
+    border-color: #e53e3e; background: #fff5f5;
+  }
+  .options li.wrong .letter { background: #e53e3e; border-color: #e53e3e; color: #fff; }
+  .options li.disabled { cursor: default; }
+  .options li.disabled:hover { background: inherit; }
+
+  .feedback {
+    margin-top: 12px; padding: 10px 14px; border-radius: 8px;
+    font-size: 0.92rem; font-weight: 600; display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #c6f6d5; color: #22543d; }
+  .feedback.no { background: #fed7d7; color: #742a2a; }
+
+  footer { text-align: center; color: rgba(255,255,255,0.8); font-size: 0.85rem; margin: 30px 0 10px; }
+
+  .complete-banner {
+    display: none; background: #38a169; color: #fff;
+    text-align: center; padding: 16px; border-radius: 12px;
+    font-size: 1.1rem; font-weight: 700; margin-bottom: 20px;
+  }
+  .complete-banner.show { display: block; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Chapter 6 — Meteorology For Pilots</h1>
+    <p>Private Pilot FAA Airmen Knowledge Test Guide 2024 (Jeppesen) · รวม 69 ข้อ (Section A, B, C)</p>
+  </header>
+
+  <div class="scorebar">
+    <div class="stat">ตอบแล้ว: <span id="answered">0</span> / 69</div>
+    <div class="stat correct-c">ถูก: <span id="correct">0</span></div>
+    <div class="stat wrong-c">ผิด: <span id="wrong">0</span></div>
+    <div class="stat">คะแนน: <span id="percent">0%</span></div>
+    <button class="reset-btn" onclick="resetQuiz()">เริ่มใหม่</button>
+  </div>
+
+  <div class="complete-banner" id="banner"></div>
+
+  <div id="quiz"></div>
+
+  <footer>
+    📌 Chapter 6 — Meteorology For Pilots · Section A (Basic Weather Theory) · Section B (Weather Patterns) · Section C (Weather Hazards)
+  </footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  // ===================== SECTION A — Basic Weather Theory =====================
+  { s:"A", q:"What causes variations in altimeter settings between weather reporting points?",
+    o:["Unequal heating of the earth's surface.","Variation of terrain elevation.","Coriolis force."], a:0 },
+  { s:"A", q:"The wind at 5,000 feet AGL is southwesterly while the surface wind is southerly. This difference in direction is primarily due to",
+    o:["stronger pressure gradient at higher altitudes.","friction between the wind and the surface.","stronger Coriolis force at the surface."], a:1 },
+  { s:"A", q:"Convective circulation patterns associated with sea breezes are caused by",
+    o:["warm, dense air moving inland from over the water.","water absorbing and radiating heat faster than the land.","cool, dense air moving inland from over the water."], a:2 },
+  { s:"A", q:"Every physical process of weather is accompanied by, or is the result of, a",
+    o:["movement of air.","pressure differential.","heat exchange."], a:2 },
+
+  // ===================== SECTION B — Weather Patterns =====================
+  { s:"B", q:"What measurement can be used to determine the stability of the atmosphere?",
+    o:["Atmospheric pressure.","Actual lapse rate.","Surface temperature."], a:1 },
+  { s:"B", q:"What would decrease the stability of an air mass?",
+    o:["Warming from below.","Cooling from below.","Decrease in water vapor."], a:0 },
+  { s:"B", q:"What feature is associated with a temperature inversion?",
+    o:["A stable layer of air.","An unstable layer of air.","Chinook winds on mountain slopes."], a:0 },
+  { s:"B", q:"When there is a temperature inversion, you would expect to experience",
+    o:["clouds with extensive vertical development above an inversion aloft.",
+       "good visibility in the lower levels of the atmosphere and poor visibility above an inversion aloft.",
+       "an increase in temperature as altitude increases."], a:2 },
+  { s:"B", q:"The most frequent type of ground or surface-based temperature inversion is that which is produced by",
+    o:["terrestrial radiation on a clear, relatively still night.",
+       "warm air being lifted rapidly aloft in the vicinity of mountainous terrain.",
+       "the movement of colder air under warm air, or the movement of warm air over cold air."], a:0 },
+  { s:"B", q:"Which weather conditions should be expected beneath a low-level temperature inversion layer when the relative humidity is high?",
+    o:["Smooth air, poor visibility, fog, haze, or low clouds.",
+       "Light wind shear, poor visibility, haze, and light rain.",
+       "Turbulent air, poor visibility, fog, low stratus type clouds, and showery precipitation."], a:0 },
+  { s:"B", q:"What is meant by the term \"dewpoint\"?",
+    o:["The temperature at which condensation and evaporation are equal.",
+       "The temperature at which dew always forms.",
+       "The temperature to which air must be cooled to become saturated."], a:2 },
+  { s:"B", q:"The amount of water vapor which air can hold depends on the",
+    o:["dewpoint.","air temperature.","stability of the air."], a:1 },
+  { s:"B", q:"Clouds, fog, or dew will always form when",
+    o:["water vapor condenses.","water vapor is present.","relative humidity reaches 100 percent."], a:0 },
+  { s:"B", q:"What are the processes by which moisture is added to unsaturated air?",
+    o:["Evaporation and sublimation.","Heating and condensation.","Supersaturation and evaporation."], a:0 },
+  { s:"B", q:"Which conditions result in the formation of frost?",
+    o:["The temperature of the collecting surface is at or below freezing when small droplets of moisture fall on the surface.",
+       "The temperature of the collecting surface is at or below the dewpoint of the adjacent air and the dewpoint is below freezing.",
+       "The temperature of the surrounding air is at or below freezing when small drops of moisture fall on the collecting surface."], a:1 },
+  { s:"B", q:"Why is frost considered hazardous to flight?",
+    o:["Frost changes the basic aerodynamic shape of the airfoils, thereby increasing lift.",
+       "Frost slows the airflow over the airfoils, thereby increasing control effectiveness.",
+       "Frost spoils the smooth flow of air over the wings, thereby decreasing lifting capability."], a:2 },
+  { s:"B", q:"How does frost affect the lifting surfaces of an airplane on takeoff?",
+    o:["Frost may prevent the airplane from becoming airborne at normal takeoff speed.",
+       "Frost changes the camber of the wing, increasing lift during takeoff.",
+       "Frost may cause the airplane to become airborne with a lower angle of attack at a lower indicated airspeed."], a:0 },
+  { s:"B", q:"How does frost on the wings of an airplane affect takeoff performance?",
+    o:["Frost disrupts the smooth flow of air over the wing, adversely affecting its lifting capability.",
+       "Frost changes the camber of the wing, increasing its lifting capability.",
+       "Frost causes the airplane to become airborne with a higher angle of attack, decreasing the stall speed."], a:0 },
+  { s:"B", q:"What is the approximate base of the cumulus clouds if the surface air temperature at 1,000 feet MSL is 70°F and the dewpoint is 48°F?",
+    o:["4,000 feet MSL.","5,000 feet MSL.","6,000 feet MSL."], a:2 },
+  { s:"B", q:"At approximately what altitude above the surface would the pilot expect the base of cumuliform clouds if the surface air temperature is 82°F and the dewpoint is 38°F?",
+    o:["9,000 feet AGL.","10,000 feet AGL.","11,000 feet AGL."], a:1 },
+  { s:"B", q:"What is a characteristic of stable air?",
+    o:["Stratiform clouds.","Unlimited visibility.","Cumulus clouds."], a:0 },
+  { s:"B", q:"The suffix \"nimbus,\" used in naming clouds, means",
+    o:["a cloud with extensive vertical development.","a rain cloud.","a middle cloud containing ice pellets."], a:1 },
+  { s:"B", q:"Clouds are divided into four families according to their",
+    o:["outward shape.","height range.","composition."], a:1 },
+  { s:"B", q:"When warm, moist, stable air flows upslope, it",
+    o:["produces stratus type clouds.","causes showers and thunderstorms.","develops convective turbulence."], a:0 },
+  { s:"B", q:"If an unstable air mass is forced upward, what type clouds can be expected?",
+    o:["Stratus clouds with little vertical development.",
+       "Stratus clouds with considerable associated turbulence.",
+       "Clouds with considerable vertical development and associated turbulence."], a:2 },
+  { s:"B", q:"What situation is most conducive to the formation of radiation fog?",
+    o:["Warm, moist air over low, flatland areas on clear, calm nights.",
+       "Moist, tropical air moving over cold, offshore water.",
+       "The movement of cold air over much warmer water."], a:0 },
+  { s:"B", q:"If the temperature/dewpoint spread is small and decreasing, and the temperature is 62°F, what type weather is most likely to develop?",
+    o:["Freezing precipitation.","Thunderstorms.","Fog or low clouds."], a:2 },
+  { s:"B", q:"In which situation is advection fog most likely to form?",
+    o:["A warm, moist air mass on the windward side of mountains.",
+       "An air mass moving inland from the coast in winter.",
+       "A light breeze blowing colder air out to sea."], a:1 },
+  { s:"B", q:"What types of fog depend upon wind to exist?",
+    o:["Radiation fog and ice fog.","Steam fog and ground fog.","Advection fog and upslope fog."], a:2 },
+  { s:"B", q:"Low-level turbulence can occur and icing can become hazardous in which type of fog?",
+    o:["Rain-induced fog.","Upslope fog.","Steam fog."], a:2 },
+  { s:"B", q:"The presence of ice pellets at the surface is evidence that there",
+    o:["are thunderstorms in the area.","has been cold frontal passage.","is a temperature inversion with freezing rain at a higher altitude."], a:2 },
+  { s:"B", q:"What are characteristics of a moist, unstable air mass?",
+    o:["Cumuliform clouds and showery precipitation.","Poor visibility and smooth air.","Stratiform clouds and showery precipitation."], a:0 },
+  { s:"B", q:"What are characteristics of unstable air?",
+    o:["Turbulence and good surface visibility.","Turbulence and poor surface visibility.","Nimbostratus clouds and good surface visibility."], a:0 },
+  { s:"B", q:"A stable air mass is most likely to have which characteristic?",
+    o:["Showery precipitation.","Turbulent air.","Smooth air."], a:2 },
+  { s:"B", q:"One of the most easily recognized discontinuities across a front is",
+    o:["a change in temperature.","an increase in cloud coverage.","an increase in relative humidity."], a:0 },
+  { s:"B", q:"One weather phenomenon that always occurs when flying across a front is a change in the",
+    o:["wind direction.","type of precipitation.","stability of the air mass."], a:0 },
+  { s:"B", q:"Steady precipitation preceding a front is an indication of",
+    o:["stratiform clouds with moderate turbulence.","cumuliform clouds with little or no turbulence.","stratiform clouds with little or no turbulence."], a:2 },
+
+  // ===================== SECTION C — Weather Hazards =====================
+  { s:"C", q:"The conditions necessary for the formation of cumulonimbus clouds are a lifting action and",
+    o:["unstable air containing an excess of condensation nuclei.","unstable, moist air.","either stable or unstable air."], a:1 },
+  { s:"C", q:"What feature is normally associated with the cumulus stage of a thunderstorm?",
+    o:["Roll cloud.","Continuous updraft.","Frequent lightning."], a:1 },
+  { s:"C", q:"The mature stage of a thunderstorm begins with",
+    o:["formation of the anvil top.","the start of precipitation.","continuous downdrafts."], a:1 },
+  { s:"C", q:"What conditions are necessary for the formation of thunderstorms?",
+    o:["High humidity, lifting force, and unstable conditions.",
+       "High humidity, high temperature, and cumulus clouds.",
+       "Lifting force, moist air, and extensive cloud cover."], a:0 },
+  { s:"C", q:"During the life cycle of a thunderstorm, which stage is characterized predominately by downdrafts?",
+    o:["Cumulus.","Dissipating.","Mature."], a:1 },
+  { s:"C", q:"Thunderstorms reach their greatest intensity during the",
+    o:["mature stage.","downdraft stage.","cumulus stage."], a:0 },
+  { s:"C", q:"Thunderstorms that generally produce the most intense hazard to aircraft are",
+    o:["squall line thunderstorms.","steady-state thunderstorms.","warm front thunderstorms."], a:0 },
+  { s:"C", q:"A nonfrontal, narrow band of active thunderstorms that often develop ahead of a cold front is known as a",
+    o:["prefrontal system.","squall line.","dry line."], a:1 },
+  { s:"C", q:"If thunderstorm activity is in the vicinity of an airport at which you plan to land, which hazardous atmospheric phenomenon might be expected on the landing approach?",
+    o:["Precipitation static.","Wind-shear turbulence.","Steady rain."], a:1 },
+  { s:"C", q:"Which weather phenomenon is always associated with a thunderstorm?",
+    o:["Lightning.","Heavy rain.","Hail."], a:0 },
+  { s:"C", q:"What cloud types would indicate convective turbulence?",
+    o:["Cirrus clouds.","Nimbostratus clouds.","Towering cumulus clouds."], a:2 },
+  { s:"C", q:"What clouds have the greatest turbulence?",
+    o:["Towering cumulus.","Cumulonimbus.","Nimbostratus."], a:1 },
+  { s:"C", q:"Upon encountering severe turbulence, which flight condition should the pilot attempt to maintain?",
+    o:["Constant altitude and airspeed.","Constant angle of attack.","Level flight attitude."], a:2 },
+  { s:"C", q:"Wingtip vortices are created only when an aircraft is",
+    o:["operating at high airspeeds.","heavily loaded.","developing lift."], a:2 },
+  { s:"C", q:"The greatest vortex strength occurs when the generating aircraft is",
+    o:["light, dirty, and fast.","heavy, dirty, and fast.","heavy, clean, and slow."], a:2 },
+  { s:"C", q:"Wingtip vortices created by large aircraft tend to",
+    o:["sink below the aircraft generating turbulence.","rise into the traffic pattern.","rise into the takeoff or landing path of a crossing runway."], a:0 },
+  { s:"C", q:"When taking off or landing at an airport where heavy aircraft are operating, pilots should be alert to the hazards of wingtip vortices because this turbulence tends to",
+    o:["rise from a crossing runway into the takeoff or landing path.",
+       "rise into the traffic pattern area surrounding the airport.",
+       "sink into the flight path of aircraft operating below the aircraft generating the turbulence."], a:2 },
+  { s:"C", q:"The wind condition that requires maximum caution when avoiding wake turbulence on landing is a",
+    o:["light, quartering headwind.","light, quartering tailwind.","strong headwind."], a:1 },
+  { s:"C", q:"When departing behind a heavy aircraft, the pilot should avoid wake turbulence by maneuvering the aircraft",
+    o:["below and downwind from the heavy aircraft.","above and upwind from the heavy aircraft.","below and upwind from the heavy aircraft."], a:1 },
+  { s:"C", q:"When landing behind a large aircraft, which procedure should be followed for vortex avoidance?",
+    o:["Stay above its final approach flight path all the way to touchdown.",
+       "Stay below and to one side of its final approach flight path.",
+       "Stay well below its final approach flight path and land at least 2,000 feet behind."], a:0 },
+  { s:"C", q:"How does the wake turbulence vortex circulate around each wingtip?",
+    o:["Inward, upward, and around each tip.","Inward, upward, and counterclockwise.","Outward, upward, and around each tip."], a:2 },
+  { s:"C", q:"When landing behind a large aircraft, the pilot should avoid wake turbulence by staying",
+    o:["above the large aircraft's final approach path and landing beyond the large aircraft's touchdown point.",
+       "below the large aircraft's final approach path and landing before the large aircraft's touchdown point.",
+       "above the large aircraft's final approach path and landing before the large aircraft's touchdown point."], a:0 },
+  { s:"C", q:"An almond or lens-shaped cloud that appears stationary, but that can contain winds of 50 knots or more, is referred to as",
+    o:["an inactive frontal cloud.","a funnel cloud.","a lenticular cloud."], a:2 },
+  { s:"C", q:"Crests of standing mountain waves may be marked by stationary, lens-shaped clouds known as",
+    o:["mammatocumulus clouds.","standing lenticular clouds.","roll clouds."], a:1 },
+  { s:"C", q:"Possible mountain wave turbulence could be anticipated when winds of 40 knots or greater blow",
+    o:["across a mountain ridge, and the air is stable.",
+       "down a mountain valley, and the air is unstable.",
+       "parallel to a mountain peak, and the air is stable."], a:0 },
+  { s:"C", q:"Where does wind shear occur?",
+    o:["Only at higher altitudes.","Only at lower altitudes.","At all altitudes, in all directions."], a:2 },
+  { s:"C", q:"When may hazardous wind shear be expected?",
+    o:["When stable air crosses a mountain barrier where it tends to flow in layers forming lenticular clouds.",
+       "In areas of low-level temperature inversion, frontal zones, and clear air turbulence.",
+       "Following frontal passage when stratocumulus clouds form indicating mechanical mixing."], a:1 },
+  { s:"C", q:"A pilot can expect a wind-shear zone in a temperature inversion whenever the wind speed at 2,000 to 4,000 feet above the surface is at least",
+    o:["10 knots.","15 knots.","25 knots."], a:2 },
+  { s:"C", q:"One in-flight condition necessary for structural icing to form is",
+    o:["small temperature/dewpoint spread.","stratiform clouds.","visible moisture."], a:2 },
+  { s:"C", q:"In which environment is aircraft structural ice most likely to have the highest accumulation rate?",
+    o:["Cumulus clouds with below freezing temperatures.","Freezing drizzle.","Freezing rain."], a:2 },
+  { s:"C", q:"Considering the significant hazard that freezing rain presents to aircraft, how does it affect the operation of deicing and anti-icing equipment?",
+    o:["Deicing and anti-icing equipment should not be used in freezing rain conditions.",
+       "Freezing rain has no impact on the operation of deicing and anti-icing equipment.",
+       "Freezing rain can overwhelm deicing and anti-icing equipment, leading to ice accumulation."], a:2 },
+  { s:"C", q:"If you inadvertently enter a volcanic ash cloud, the recommended course of action is to",
+    o:["reverse course.","attempt to climb up and out of the ash cloud.","continue straight ahead and exit on the opposite side."], a:0 }
+];
+
+const SECTION_NAMES = {
+  A: "SECTION A — Basic Weather Theory",
+  B: "SECTION B — Weather Patterns",
+  C: "SECTION C — Weather Hazards"
+};
+const LETTERS = ["A","B","C","D"];
+const answeredState = {}; // index -> true once answered
+let correctCount = 0, wrongCount = 0, answeredCount = 0;
+
+function buildQuiz() {
+  const quiz = document.getElementById("quiz");
+  quiz.innerHTML = "";
+  let lastSection = null;
+  QUESTIONS.forEach((item, idx) => {
+    if (item.s !== lastSection) {
+      const h = document.createElement("div");
+      h.className = "section-title";
+      h.textContent = SECTION_NAMES[item.s];
+      quiz.appendChild(h);
+      lastSection = item.s;
+    }
+    const card = document.createElement("div");
+    card.className = "q-card";
+    card.id = "card-" + idx;
+
+    let html = `<span class="q-num">ข้อ ${idx+1}</span>
+                <div class="q-text">${item.q}</div><ul class="options">`;
+    item.o.forEach((opt, oi) => {
+      html += `<li onclick="answer(${idx},${oi})" data-i="${oi}">
+                 <span class="letter">${LETTERS[oi]}</span><span>${opt}</span></li>`;
+    });
+    html += `</ul><div class="feedback" id="fb-${idx}"></div>`;
+    card.innerHTML = html;
+    quiz.appendChild(card);
+  });
+}
+
+function answer(qIdx, optIdx) {
+  if (answeredState[qIdx]) return;
+  answeredState[qIdx] = true;
+  const item = QUESTIONS[qIdx];
+  const card = document.getElementById("card-" + qIdx);
+  const lis = card.querySelectorAll(".options li");
+  lis.forEach(li => {
+    li.classList.add("disabled");
+    const i = parseInt(li.dataset.i);
+    if (i === item.a) li.classList.add("correct");
+    if (i === optIdx && optIdx !== item.a) li.classList.add("wrong");
+  });
+  const fb = document.getElementById("fb-" + qIdx);
+  fb.classList.add("show");
+  if (optIdx === item.a) {
+    correctCount++;
+    fb.classList.add("ok");
+    fb.textContent = "✓ ถูกต้อง! คำตอบคือ " + LETTERS[item.a];
+  } else {
+    wrongCount++;
+    fb.classList.add("no");
+    fb.textContent = "✗ ผิด — คำตอบที่ถูกคือ " + LETTERS[item.a] + ": " + item.o[item.a];
+  }
+  answeredCount++;
+  updateScore();
+}
+
+function updateScore() {
+  document.getElementById("answered").textContent = answeredCount;
+  document.getElementById("correct").textContent = correctCount;
+  document.getElementById("wrong").textContent = wrongCount;
+  const pct = answeredCount ? Math.round(correctCount / answeredCount * 100) : 0;
+  document.getElementById("percent").textContent = pct + "%";
+  const banner = document.getElementById("banner");
+  if (answeredCount === QUESTIONS.length) {
+    banner.classList.add("show");
+    const finalPct = Math.round(correctCount / QUESTIONS.length * 100);
+    banner.textContent = `🎉 ทำครบ ${QUESTIONS.length} ข้อแล้ว! ได้ ${correctCount}/${QUESTIONS.length} (${finalPct}%)`;
+  } else {
+    banner.classList.remove("show");
+  }
+}
+
+function resetQuiz() {
+  for (const k in answeredState) delete answeredState[k];
+  correctCount = wrongCount = answeredCount = 0;
+  buildQuiz();
+  updateScore();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+buildQuiz();
+updateScore();
+</script>
+</body>
+</html>
