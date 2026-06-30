@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สรุป Ch6-A: Basic Weather Theory</title>
+<style>
+  :root{
+    --bg:#f4f7fb; --card:#ffffff; --card2:#eef3f9; --accent:#1769c0; --accent2:#d97706;
+    --red:#dc2626; --green:#16a34a; --text:#1f2a37; --muted:#5c6b7a; --line:#d7e0ea;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; font-family:"Segoe UI","Sarabun",Tahoma,sans-serif; background:var(--bg);
+    color:var(--text); line-height:1.7; font-size:16px;
+  }
+  header{
+    background:linear-gradient(135deg,#2c7fd0,#1769c0); padding:34px 24px; border-bottom:3px solid var(--accent2);
+    color:#fff;
+  }
+  header h1{margin:0; font-size:28px; letter-spacing:.5px; color:#fff;}
+  header .sub{color:#ffe9c9; font-size:15px; margin-top:6px;}
+  header .meta{color:#d6e6f7; font-size:13px; margin-top:10px;}
+  .wrap{max-width:980px; margin:0 auto; padding:24px;}
+  nav.toc{
+    background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 22px; margin-bottom:26px;
+  }
+  nav.toc h2{margin:0 0 10px; font-size:16px; color:var(--accent);}
+  nav.toc ol{margin:0; padding-left:20px; columns:2; column-gap:30px;}
+  nav.toc a{color:var(--text); text-decoration:none; font-size:14px;}
+  nav.toc a:hover{color:var(--accent2); text-decoration:underline;}
+  section{
+    background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px 24px; margin-bottom:22px;
+    scroll-margin-top:14px; box-shadow:0 1px 3px rgba(20,40,70,.06);
+  }
+  h2.sec{
+    margin:0 0 16px; font-size:21px; color:var(--accent); border-left:4px solid var(--accent);
+    padding-left:12px; scroll-margin-top:14px;
+  }
+  h3{font-size:17px; color:var(--accent2); margin:18px 0 8px;}
+  p{margin:8px 0;}
+  ul{margin:8px 0; padding-left:22px;}
+  li{margin:5px 0;}
+  .term{color:var(--accent); font-weight:700;}
+  .en{color:var(--muted); font-style:italic;}
+  .key{
+    background:var(--card2); border-left:3px solid var(--accent2); padding:10px 14px; border-radius:6px;
+    margin:12px 0; font-size:14.5px;
+  }
+  .warn{border-left-color:var(--red);}
+  .num{color:var(--accent2); font-weight:700;}
+  table{width:100%; border-collapse:collapse; margin:12px 0; font-size:14px;}
+  th,td{border:1px solid var(--line); padding:7px 10px; text-align:left; vertical-align:top;}
+  th{background:var(--card2); color:var(--accent);}
+  td.code{font-family:"Consolas",monospace; color:#b45309; letter-spacing:1px;}
+  td.t{white-space:nowrap; font-weight:700; color:var(--accent);}
+  .freq{
+    display:inline-block; background:#fdecd2; color:#b45309; font-family:"Consolas",monospace;
+    padding:1px 7px; border-radius:4px; font-size:13.5px;
+  }
+  .hi{display:inline-block; background:#dbeafe; color:#1e40af; font-weight:700; padding:1px 8px; border-radius:4px;}
+  .lo{display:inline-block; background:#fde0e0; color:var(--red); font-weight:700; padding:1px 8px; border-radius:4px;}
+  details{background:var(--card2); border:1px solid var(--line); border-radius:8px; padding:10px 14px; margin:10px 0;}
+  summary{cursor:pointer; font-weight:600; color:var(--accent);}
+  details[open] summary{margin-bottom:8px;}
+  .ans{color:var(--green); font-weight:700;}
+  .callout-quote{font-style:italic; color:#b45309; background:#fdecd2; padding:8px 12px; border-radius:6px; display:inline-block;}
+  .qa{border-top:1px solid var(--line); padding-top:16px; margin-top:16px;}
+  .qa:first-of-type{border-top:none; padding-top:0; margin-top:0;}
+  .qq{font-weight:700; margin:0 0 10px; color:var(--text);}
+  .qq .n{color:var(--accent2); margin-right:4px;}
+  .qc{background:var(--card2); border-radius:6px; padding:10px 14px; margin:0 0 10px; font-size:14.5px; line-height:1.9;}
+  .qa details{margin:0; background:#effaf1; border-color:#c7e8cd;}
+  .qa summary{color:var(--green); font-weight:700; list-style:none;}
+  .qa summary::-webkit-details-marker{display:none;}
+  .qa summary::before{content:"▼ "; font-size:11px;}
+  .qa details[open] summary::before{content:"▲ ";}
+  .note{background:#eef6fd; border:1px solid #cfe3f6; border-radius:6px; padding:8px 12px; margin:10px 0; font-size:13.5px; color:var(--muted);}
+
+  footer{text-align:center; color:var(--muted); font-size:13px; padding:20px;}
+  @media(max-width:640px){nav.toc ol{columns:1;}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Chapter 6 — Section A: Basic Weather Theory</h1>
+  <div class="sub">ทฤษฎีอากาศพื้นฐาน (Jeppesen Private Pilot • Meteorology for Pilots)</div>
+  <div class="meta">สรุปเข้มข้น • หน้า 6-2 ถึง 6-15</div>
+</header>
+
+<div class="wrap">
+
+<nav class="toc">
+  <h2>สารบัญ</h2>
+  <ol>
+    <li><a href="#atmos">บรรยากาศโลก (The Atmosphere)</a></li>
+    <li><a href="#levels">ชั้นบรรยากาศ (Atmospheric Levels)</a></li>
+    <li><a href="#comp">องค์ประกอบของบรรยากาศ</a></li>
+    <li><a href="#circ">การหมุนเวียน &amp; อุณหภูมิ</a></li>
+    <li><a href="#convection">Convection</a></li>
+    <li><a href="#cells">Three-Cell Circulation</a></li>
+    <li><a href="#pressure">ความกดอากาศ &amp; Isobars</a></li>
+    <li><a href="#forces">3 แรงที่สร้างลม</a></li>
+    <li><a href="#global">Global Wind Patterns</a></li>
+    <li><a href="#local">Local Wind Patterns</a></li>
+    <li><a href="#summary">Summary Checklist</a></li>
+    <li><a href="#quiz">ข้อสอบท้ายบท + เฉลย</a></li>
+  </ol>
+</nav>
+
+<!-- Atmosphere -->
+<section id="atmos">
+  <h2 class="sec">1. บรรยากาศโลก (The Atmosphere)</h2>
+  <ul>
+    <li>อากาศกับการบินแยกกันไม่ได้ — ต้องเข้าใจธรรมชาติของบรรยากาศเพื่อประเมินผลกระทบต่อเที่ยวบิน</li>
+    <li>บรรยากาศคือชั้นแก๊สบางๆ ที่ห่อหุ้มโลก — <b>เกือบ 99% ของบรรยากาศอยู่ภายใน 30 กม. (~100,000 ฟุต)</b> จากผิวโลก (เทียบเหมือนกระดาษพันรอบลูกบาส)</li>
+    <li>ไม่มีน้ำ/ไอน้ำ → ไม่มีเมฆ มหาสมุทร หรือเกราะกันรังสีดวงอาทิตย์</li>
+  </ul>
+  <details>
+    <summary>เกร็ด: ทำไมท้องฟ้าเป็นสีฟ้า?</summary>
+    <p>แสงอาทิตย์ผ่านอากาศ → แก๊สกระเจิงแสง <b>ความยาวคลื่นสั้น (ฟ้า/เขียว/ม่วง) กระเจิงมากกว่า</b> และตาคนไวต่อสีฟ้า จึงเห็นฟ้ามาจากทุกทิศ → ท้องฟ้าดูฟ้า; ถ้ามีอนุภาคใหญ่ (ฝุ่น) ลอยอยู่ จะกระเจิงทุกความยาวคลื่น → ฟ้าดูขาวขุ่น/ฟ้าหลัว (hazy)</p>
+  </details>
+</section>
+
+<!-- Levels -->
+<section id="levels">
+  <h2 class="sec">2. ชั้นบรรยากาศ (Atmospheric Levels)</h2>
+  <p>บรรยากาศไม่มีขอบบนชัดเจน — แบ่งชั้นตาม<b>การเปลี่ยนแปลงของอุณหภูมิ</b> (เกณฑ์ที่ใช้บ่อยที่สุด)</p>
+  <table>
+    <tr><th>ชั้น</th><th>ระดับสูง (โดยประมาณ)</th><th>หมายเหตุ</th></tr>
+    <tr><td class="t">Troposphere</td><td>ผิวพื้น → ~<b>36,000 ฟุต</b> (เฉลี่ย)</td><td>ชั้นที่<b>เกิดสภาพอากาศเกือบทั้งหมด</b> (trope = "เปลี่ยน")</td></tr>
+    <tr><td class="t">Tropopause</td><td>เหนือ troposphere</td><td>เป็น <b>"ระดับ" ไม่ใช่ "ชั้น"</b> — ทำหน้าที่เป็นฝาขัง<b>ไอน้ำและสภาพอากาศ</b>ไว้ใน troposphere; ต่ำใกล้ขั้วโลก/ฤดูหนาว, สูงใกล้ศูนย์สูตร/ฤดูร้อน</td></tr>
+    <tr><td class="t">Stratosphere</td><td>→ ~160,000 ฟุต</td><td>องค์ประกอบคล้าย troposphere</td></tr>
+    <tr><td class="t">Mesosphere</td><td>เหนือ stratosphere</td><td>มีผลต่อสภาพอากาศน้อยมาก</td></tr>
+    <tr><td class="t">Thermosphere</td><td>ชั้นบนสุด</td><td>มีผลต่อสภาพอากาศน้อยมาก</td></tr>
+  </table>
+  <div class="key">💡 จำลำดับจากพื้นขึ้นไป: <b>Tropo → Strato → Meso → Thermo</b> (สภาพอากาศอยู่ที่ Troposphere เป็นหลัก)</div>
+</section>
+
+<!-- Composition -->
+<section id="comp">
+  <h2 class="sec">3. องค์ประกอบของบรรยากาศ</h2>
+  <table>
+    <tr><th>แก๊ส</th><th>สัดส่วน (โดยปริมาตร)</th></tr>
+    <tr><td>Nitrogen (ไนโตรเจน)</td><td><b>~78%</b></td></tr>
+    <tr><td>Oxygen (ออกซิเจน)</td><td><b>~21%</b></td></tr>
+    <tr><td>แก๊สอื่นๆ (argon, CO₂ ฯลฯ)</td><td>~1%</td></tr>
+    <tr><td>ไอน้ำ (Water Vapor)</td><td>~0 ถึง 4% (แปรผัน)</td></tr>
+  </table>
+  <div class="key">สัดส่วนค่อนข้างคงที่จนถึง ~<b>260,000 ฟุต</b> — แม้<b>ไอน้ำจะมีปริมาณน้อย แต่เป็นตัวการหลักของการเปลี่ยนแปลงสภาพอากาศ</b></div>
+</section>
+
+<!-- Circulation & Temperature -->
+<section id="circ">
+  <h2 class="sec">4. การหมุนเวียน &amp; อุณหภูมิ</h2>
+  <ul>
+    <li><span class="term">Atmospheric Circulation</span> = การเคลื่อนที่ของอากาศเทียบกับผิวโลก — บรรยากาศยึดติดและหมุนไปกับโลกด้วยแรงโน้มถ่วง จะไม่มีการหมุนเวียนเลยถ้าไม่มีแรงมารบกวนสมดุล</li>
+    <li>ตัวการหลัก = <b>อุณหภูมิที่ผิวโลกไม่เท่ากัน (unequal heating)</b></li>
+    <li>มุมและระยะเวลาที่แสงอาทิตย์ตกกระทบเปลี่ยนไปตามฤดู; <b>บริเวณศูนย์สูตรได้รับแสงตรงที่สุด ขั้วโลกได้รับน้อยที่สุด</b></li>
+  </ul>
+</section>
+
+<!-- Convection -->
+<section id="convection">
+  <h2 class="sec">5. Convection (การพาความร้อน)</h2>
+  <div class="key"><b>กระบวนการ convection:</b> อากาศ<b>ร้อน</b> → โมเลกุลแยกห่าง → ขยายตัว เบาและความหนาแน่นต่ำ → <b>ลอยขึ้น</b>; อากาศ<b>เย็น</b> → โมเลกุลอัดแน่น → หนาแน่นและหนักกว่า → <b>จมลง</b> ไปแทนที่อากาศอุ่นที่ลอยขึ้น</div>
+  <p>โมเดลอย่างง่าย (convection-only): โลกหยุดนิ่ง ปกคลุมด้วยน้ำทั้งหมด ดวงอาทิตย์อยู่เหนือศูนย์สูตร → ศูนย์สูตรร้อนกว่ามาก → <b>อากาศเย็นหนาแน่นจากขั้วโลกจมและไหลไปศูนย์สูตร</b> แทนที่อากาศอุ่นที่ลอยขึ้น</p>
+  <p class="en">→ นี่คือคำตอบของ "convection process" ในข้อสอบ</p>
+</section>
+
+<!-- Three-cell -->
+<section id="cells">
+  <h2 class="sec">6. Three-Cell Circulation Pattern</h2>
+  <p>เมื่อโลก<b>หมุน</b> การหมุนเวียนเซลล์เดียวแตกเป็น <b>3 เซลล์ต่อซีกโลก</b> เพื่อกระจายพลังงานความร้อน (สะท้อนเหมือนกันในซีกโลกใต้)</p>
+  <table>
+    <tr><th>เซลล์</th><th>ลักษณะ</th></tr>
+    <tr><td class="t">Hadley Cell</td><td>อากาศอุ่นลอยขึ้นที่ศูนย์สูตร เคลื่อนสู่ขั้วโลก จนถึง ~<b>30° latitude</b> แล้วเย็นตัวจมลง</td></tr>
+    <tr><td class="t">Ferrel Cell</td><td>เซลล์กลาง (ระหว่าง ~30° ถึง ~60°)</td></tr>
+    <tr><td class="t">Polar Cell</td><td>อากาศเย็นจากขั้วโลก — มาพบอากาศที่เคลื่อนจาก ~30° ที่ราว <b>60° latitude</b> → ถูกดันขึ้น</td></tr>
+  </table>
+  <p class="en">Hadley และ Ferrel ตั้งชื่อตามนักวิทยาศาสตร์ที่เสนอโมเดลนี้</p>
+</section>
+
+<!-- Pressure -->
+<section id="pressure">
+  <h2 class="sec">7. ความกดอากาศ &amp; Isobars</h2>
+  <ul>
+    <li>การให้ความร้อนไม่เท่ากันทำให้ความหนาแน่นอากาศและ<b>ความกดอากาศเปลี่ยน</b> — เป็นเหตุผลหลักที่ค่า <b>altimeter setting</b> ต่างกันระหว่างสถานีตรวจอากาศ</li>
+    <li><span class="term">Isobars</span> = เส้นเชื่อมจุดที่มีความกดอากาศ<b>เท่ากัน</b>; หน่วย <b>millibars</b>, ปกติลากทุก <b>4 มิลลิบาร์</b></li>
+  </ul>
+  <div class="key"><b>Pressure Gradient (ความชันของความกด):</b> isobars ห่างกัน = gradient <b>อ่อน</b> → ลมเบา; isobars ชิดกัน = gradient <b>แรง</b> → ลมแรง</div>
+  <h3>ระบบความกดอากาศ (Pressure Systems)</h3>
+  <table>
+    <tr><th>ระบบ</th><th>ความหมาย</th></tr>
+    <tr><td><span class="hi">High (H)</span></td><td>ศูนย์กลางความกด<b>สูง</b> ล้อมรอบด้วยความกดต่ำกว่าทุกด้าน</td></tr>
+    <tr><td><span class="lo">Low (L)</span></td><td>ศูนย์กลางความกด<b>ต่ำ</b> ล้อมรอบด้วยความกดสูงกว่า</td></tr>
+    <tr><td class="t">Ridge</td><td>แนว<b>ความกดสูง</b>ที่ยืดยาว</td></tr>
+    <tr><td class="t">Trough</td><td>แนว<b>ความกดต่ำ</b>ที่ยืดยาว</td></tr>
+    <tr><td class="t">Col</td><td>พื้นที่<b>เป็นกลาง</b>ระหว่าง 2 high กับ 2 low หรือจุดตัดของ ridge กับ trough</td></tr>
+  </table>
+  <p>อากาศไหลจาก high (เย็น/หนาแน่น) → low (อุ่น/เบา) — ความเร็วลมขึ้นกับความแรงของ pressure gradient</p>
+</section>
+
+<!-- Forces -->
+<section id="forces">
+  <h2 class="sec">8. สามแรงที่สร้างลม (Forces)</h2>
+  <table>
+    <tr><th>แรง</th><th>ผลต่อลม</th></tr>
+    <tr><td class="t">Pressure Gradient Force</td><td>ดันอากาศจาก<b>ความกดสูง → ความกดต่ำ</b>; ถ้ามีแรงนี้แรงเดียว ลมจะพัดตรงจาก high ไป low</td></tr>
+    <tr><td class="t">Coriolis Force</td><td>เบี่ยงทิศอากาศที่เคลื่อนที่ (เพราะโลกหมุน) — <b>ซีกโลกเหนือเบี่ยงไปทางขวา</b>, ซีกโลกใต้ไปทางซ้าย</td></tr>
+    <tr><td class="t">Frictional Force</td><td>แรงเสียดทานจากผิวโลก (ภายใน ~2,000 ฟุต) ทำให้ลมช้าลงและเปลี่ยนทิศ</td></tr>
+  </table>
+  <h3>Coriolis Force (ละเอียด — จุดสอบ)</h3>
+  <ul>
+    <li>ตั้งชื่อตามนักวิทยาศาสตร์ฝรั่งเศส (อธิบายปี 1835); ทำให้วัตถุที่เคลื่อนอิสระวิ่งเป็น<b>เส้นโค้ง</b>เพราะโลกหมุน</li>
+    <li>มีนัยสำคัญเฉพาะเมื่อเคลื่อนที่<b>ระยะไกล</b> (หลายร้อยไมล์ขึ้นไป)</li>
+    <li><b>3 ปัจจัยที่กำหนดปริมาณการเบี่ยง:</b> ① ระยะทางที่เคลื่อนที่ (distance traveled) ② ตำแหน่งบนผิวโลก/ละติจูด (latitude) ③ ความเร็วของวัตถุ (speed)</li>
+    <li><b>เป็นศูนย์ที่ศูนย์สูตร เพิ่มขึ้นเมื่อเข้าใกล้ขั้วโลก</b>; ยิ่งเร็วยิ่งเบี่ยงมาก</li>
+  </ul>
+  <h3>Frictional Force (จุดสอบ)</h3>
+  <div class="key">ลม<b>ชั้นบน</b>: pressure gradient + Coriolis สมดุลกัน → ลมพัด<b>ขนานกับ isobars</b> (ตามเข็มนาฬิการอบ H, ทวนเข็มรอบ L ในซีกโลกเหนือ)<br>
+  ลม<b>ใกล้พื้น</b> (ภายใน ~2,000 ฟุต): เสียดทานทำให้ลมช้าลง → <b>ลด Coriolis</b> → pressure gradient ชนะ → ลมถูกเบี่ยง<b>ตัดข้าม isobars เข้าหาความกดต่ำ</b></div>
+</section>
+
+<!-- Global -->
+<section id="global">
+  <h2 class="sec">9. Global Wind Patterns (ลมประจำโลก)</h2>
+  <p>การหมุนเวียน 3 เซลล์สร้างบริเวณความกดสูง/ต่ำกึ่งถาวร และลมประจำ:</p>
+  <table>
+    <tr><th>ลม</th><th>บริเวณ / ลักษณะ</th></tr>
+    <tr><td class="t">Northeast Trade Winds</td><td>ลมระดับล่างไหลจากความกดสูง ~30°N กลับสู่ศูนย์สูตร ถูก Coriolis เบี่ยงไปทางตะวันตก (ลมค้าที่เรือใช้แล่นสู่โลกใหม่)</td></tr>
+    <tr><td class="t">Prevailing Westerlies</td><td>ลมระดับล่างที่ไหลขึ้นเหนือจากความกดสูง 30° ถูกเบี่ยงขวา → ลมตะวันตกประจำในละติจูดกลาง</td></tr>
+    <tr><td class="t">Polar Easterlies</td><td>อากาศเย็นความกดสูงจากขั้วโลกไหลลงใต้ ถูกเบี่ยงขวา</td></tr>
+    <tr><td class="t">Polar Front</td><td>แนวที่อากาศเย็น (polar easterlies) พบอากาศอุ่น (westerlies) ราว <b>60°N</b> → เกิดความกดต่ำ</td></tr>
+  </table>
+</section>
+
+<!-- Local -->
+<section id="local">
+  <h2 class="sec">10. Local Wind Patterns (ลมท้องถิ่น)</h2>
+  <p>ลมท้องถิ่นสำคัญต่อนักบินมากในทางปฏิบัติ — เกิดจากความต่างของภูมิประเทศ (ภูเขา หุบเขา แหล่งน้ำ); แรงขับเคลื่อนเหมือนลมโลก (อากาศเย็นแทนที่อากาศอุ่น) แต่สเกลเล็กกว่า</p>
+  <table>
+    <tr><th>ลม</th><th>เมื่อไร</th><th>ทิศ &amp; รายละเอียด</th></tr>
+    <tr><td class="t">Sea Breeze (ลมทะเล)</td><td><b>กลางวัน</b></td><td>พัดจาก<b>ทะเล(เย็น) → ฝั่ง(อุ่น)</b> เพราะพื้นดินร้อนเร็วกว่าน้ำ; 10–20 kt; พัฒนาเต็มที่ที่ 1,500–3,000 ฟุต AGL; มี return flow ด้านบน</td></tr>
+    <tr><td class="t">Land Breeze (ลมบก)</td><td><b>กลางคืน</b></td><td>พัดจาก<b>ฝั่ง(เย็น) → ทะเล(อุ่น)</b> เพราะดินเย็นเร็วกว่าน้ำ; <b>อ่อนกว่า</b> sea breeze; 1,000–2,000 ฟุต AGL; ไกลเข้าฝั่ง 5–100 nm</td></tr>
+    <tr><td class="t">Valley Breeze (ลมหุบเขา)</td><td><b>กลางวัน</b></td><td>แดดอุ่นไหล่เขา → อากาศไต่ขึ้น (upslope); 5–20 kt; ลมแรงสุดสองสามร้อยฟุตเหนือผิว</td></tr>
+    <tr><td class="t">Mountain Breeze (ลมภูเขา)</td><td><b>กลางคืน</b></td><td>ยอดเขาเย็นกว่าอากาศเหนือหุบเขา → ไหลลง (downslope); 5–15 kt (>25 kt ที่ปากหุบเขา)</td></tr>
+  </table>
+  <h3>Katabatic Winds (ลมไหลลง)</h3>
+  <ul>
+    <li>ทางเทคนิค: <b>ลมไหลลงทุกชนิด</b>เป็น katabatic — แต่มักใช้เรียกลมที่<b>แรงกว่า</b> mountain breeze; เป็นได้ทั้งลมอุ่นและลมเย็น</li>
+  </ul>
+  <table>
+    <tr><th></th><th>กลไก</th><th>ตัวอย่าง</th></tr>
+    <tr><td class="t">Cold Downslope</td><td>ทุ่งน้ำแข็ง/หิมะ → อากาศเย็นจัดเป็นโดมความกดสูง → ดันผ่านช่องเขา; ในหุบแคบเร่งเร็วเกิน <b>100 kt</b> ได้; แม้อุ่นขึ้นบ้างตอนไหลลง แต่ยังเย็นกว่าอากาศที่ไปแทนที่</td><td>Bora (โครเอเชีย), Mistral (หุบ Rhone ฝรั่งเศส), Columbia Gorge (ตะวันตกเฉียงเหนือสหรัฐฯ)</td></tr>
+    <tr><td class="t">Warm Downslope</td><td>มวลอากาศอุ่นข้ามเทือกเขา → เกิด trough ความกดต่ำด้าน lee → อากาศไหลลงถูก<b>อัด → อุ่นขึ้น</b> (เพิ่มอุณหภูมิเกิน 20° ในชั่วโมงเดียวได้); 20–50 kt (สุดขีดเกือบ 100 kt)</td><td>Chinook (ขอบตะวันออกเทือกเขา Rocky), Foehn (เทือกแอลป์), Santa Ana (แคลิฟอร์เนียใต้)</td></tr>
+  </table>
+</section>
+
+<!-- Summary -->
+<section id="summary">
+  <h2 class="sec">11. Summary Checklist (สรุปจุดสอบ)</h2>
+  <ul>
+    <li>Troposphere = ผิวพื้นถึง ~36,000 ฟุต (มีสภาพอากาศเกือบทั้งหมด); เหนือขึ้นไป: stratosphere → mesosphere → thermosphere</li>
+    <li>Tropopause = ระดับ (ไม่ใช่ชั้น) ทำหน้าที่เป็นฝาขังไอน้ำ/สภาพอากาศ</li>
+    <li>องค์ประกอบ: N₂ ~78%, O₂ ~21%, อื่นๆ ~1%, ไอน้ำ 0–4% (ไอน้ำเป็นตัวการเปลี่ยนสภาพอากาศ)</li>
+    <li><b>Convection</b> = พาความร้อนจากละติจูดหนึ่งไปอีกที่ (ร้อนลอย-เย็นจม) จากการให้ความร้อนไม่เท่ากัน</li>
+    <li>Three-cell: <b>Hadley / Ferrel / Polar</b> กระจายพลังงานความร้อน</li>
+    <li><b>Isobars</b> = เส้นความกดเท่ากัน (millibar, ทุก 4 mb); ห่าง = gradient อ่อน/ลมเบา, ชิด = gradient แรง/ลมแรง</li>
+    <li>High = กดสูงล้อมด้วยกดต่ำ; Low = กดต่ำล้อมด้วยกดสูง; <b>Ridge</b>=แนวกดสูง, <b>Trough</b>=แนวกดต่ำ, <b>Col</b>=กลาง/จุดตัด</li>
+    <li><b>สาเหตุหลักที่ altimeter setting ต่างกัน</b>ระหว่างสถานี = การให้ความร้อนผิวโลกไม่เท่ากัน</li>
+    <li><b>Coriolis force</b> = วัตถุเคลื่อนอิสระวิ่งโค้งเพราะโลกหมุน — NH เบี่ยงขวา, SH เบี่ยงซ้าย; 3 ปัจจัย = ระยะทาง, ละติจูด, ความเร็ว (ศูนย์ที่ศูนย์สูตร เพิ่มสู่ขั้วโลก)</li>
+    <li><b>Frictional force</b> (ใกล้พื้น ~2,000 ฟุต) ลด Coriolis → ลมเบี่ยงตัดข้าม isobars เข้าหาความกดต่ำ</li>
+    <li>Sea breeze (กลางวัน: น้ำเย็น→บกอุ่น); Land breeze (กลางคืน: บกเย็น→น้ำอุ่น)</li>
+    <li>Cold downslope = ไหลลงจากที่ราบสูง/ไหล่เขามีหิมะ; Warm downslope = อุ่นขึ้นชัดเจนที่เชิงเขา</li>
+  </ul>
+</section>
+
+<!-- Quiz -->
+<section id="quiz">
+  <h2 class="sec">12. ข้อสอบท้ายบท + เฉลย</h2>
+  <p class="en">คำถามภาษาอังกฤษจากท้ายบท Ch6-A จริง • อ่านคำถาม/ช้อยส์ก่อน แล้วกด "ดูเฉลย" • เฉลยอ้างอิง Appendix A</p>
+
+  <div class="qa">
+    <p class="qq"><span class="n">1.</span>Identify the four major layers of the atmosphere depicted in the accompanying illustration. (A, B, C, D จากล่างขึ้นบน)</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">A. Troposphere · B. Stratosphere · C. Mesosphere · D. Thermosphere</p>
+    </details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">2.</span>Which layer of the atmosphere contains most of the earth's weather?</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">The troposphere</p>
+    </details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">3.</span>Describe the atmospheric convection process.</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">As air is heated, it expands and becomes less dense than the surrounding air. As air cools, its molecules become packed more closely together, making it denser and heavier than warm air. As a result, the cool, heavy air tends to sink and replace warmer, rising air.</p>
+    </details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">4.</span>What is the primary cause of changing altimeter settings between weather reporting points?</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">Unequal heating of the earth's surface</p>
+    </details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">5.</span>True/False. Closely spaced isobars on a weather map is an indicator of light surface winds.</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">False — isobars ที่ชิดกันบ่งบอก pressure gradient ที่แรง = ลมแรง (ไม่ใช่ลมเบา)</p>
+    </details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">6.</span>What three factors affect the amount of deflection caused by Coriolis force?</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">The amount of deflection due to Coriolis force is a function of distance traveled, position on the earth's surface (latitude), and speed of the object.</p>
+    </details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">7.</span>Describe how frictional force causes wind to shift near the earth's surface.</p>
+    <details><summary>ดูเฉลย</summary>
+      <p class="ans">In the upper atmosphere, pressure gradient force and Coriolis force cause wind to flow roughly parallel to the isobars. However, within approximately 2,000 feet of the ground, friction caused by the earth's surface slows the movement of air. This reduces the effect of Coriolis force and causes the pressure gradient force to divert the wind toward the lower pressure area.</p>
+    </details>
+  </div>
+
+  <div class="note">📋 ข้อ 8–11 จับคู่ชนิดลมกับคำอธิบายที่เหมาะสมที่สุด<br>
+  A. เกิดกลางคืน เมื่อพื้นดินเย็นเร็วกว่าน้ำ · B. เกิดกลางวัน เมื่อแดดอุ่นไหล่เขา · C. เกิดกลางคืน เมื่อที่สูงเย็นลง (เทียบกับอากาศเหนือหุบเขา) · D. เกิดกลางวัน เมื่อแดดอุ่นพื้นดิน</div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">8.</span>Sea Breeze</p>
+    <details><summary>ดูเฉลย</summary><p class="ans">D — เกิดกลางวัน เมื่อแดดอุ่นพื้นดิน (ลมพัดจากน้ำเย็นเข้าหาบกอุ่น)</p></details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">9.</span>Land Breeze</p>
+    <details><summary>ดูเฉลย</summary><p class="ans">A — เกิดกลางคืน เมื่อพื้นดินเย็นเร็วกว่าน้ำ (ลมพัดจากบกเย็นออกสู่น้ำอุ่น)</p></details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">10.</span>Valley Breeze</p>
+    <details><summary>ดูเฉลย</summary><p class="ans">B — เกิดกลางวัน เมื่อแดดอุ่นไหล่เขา (อากาศไต่ขึ้น upslope)</p></details>
+  </div>
+
+  <div class="qa">
+    <p class="qq"><span class="n">11.</span>Mountain Breeze</p>
+    <details><summary>ดูเฉลย</summary><p class="ans">C — เกิดกลางคืน เมื่อที่สูงเย็นลงเทียบกับอากาศเหนือหุบเขา (อากาศไหลลง downslope)</p></details>
+  </div>
+</section>
+
+<footer>
+  สรุปจาก Jeppesen Chapter 6, Section A — Basic Weather Theory (หน้า 6-2 ถึง 6-15)<br>
+  สำหรับใช้ทบทวน Ground School • คลิกหัวข้อในสารบัญเพื่อกระโดดไปยังส่วนนั้น
+</footer>
+
+</div>
+</body>
+</html>
