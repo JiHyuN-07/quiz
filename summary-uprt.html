@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สรุป UPRT ศบ.159 — Upset Prevention and Recovery Training</title>
+<style>
+  :root{
+    --navy:#1e2761; --navy2:#28306e; --ice:#cadcfc; --accent:#f9a826;
+    --bg:#f4f6fb; --card:#ffffff; --text:#1f2430; --muted:#5b6478;
+    --green:#2c7a4b; --red:#b3362b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Segoe UI','Leelawadee UI',Tahoma,sans-serif;background:var(--bg);color:var(--text);line-height:1.75}
+  header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 60%,#3a4491 100%);color:#fff;padding:48px 24px 40px;text-align:center}
+  header h1{margin:0 0 8px;font-size:2rem}
+  header .sub{color:var(--ice);font-size:1.05rem}
+  header .meta{margin-top:16px;font-size:.9rem;color:#aab6e8}
+  .wrap{max-width:920px;margin:0 auto;padding:24px 20px 64px}
+  h2{color:var(--navy);font-size:1.45rem;margin:44px 0 12px;padding-top:8px}
+  h3{color:var(--navy);font-size:1.12rem;margin:24px 0 8px}
+  .card{background:var(--card);border-radius:12px;padding:20px 24px;margin:16px 0;box-shadow:0 1px 4px rgba(30,39,97,.08)}
+  .slide-tag{display:inline-block;background:var(--navy);color:#fff;font-size:.78rem;padding:2px 10px;border-radius:999px;margin-bottom:6px;font-weight:600}
+  .extra{background:#eef3fd;border-radius:10px;padding:14px 18px;margin-top:12px;font-size:.95rem}
+  .extra .lbl{font-weight:700;color:var(--navy);display:block;margin-bottom:4px}
+  .warn{background:#fdf3e7}
+  .warn .lbl{color:#9a6006}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.95rem}
+  th{background:var(--navy);color:#fff;padding:8px 12px;text-align:left}
+  td{padding:8px 12px;border-bottom:1px solid #e2e6f0;vertical-align:top}
+  tr:nth-child(even) td{background:#f7f9fd}
+  .big{font-size:1.6rem;font-weight:800;color:var(--navy)}
+  .steps{counter-reset:s;list-style:none;padding:0;margin:12px 0}
+  .steps li{position:relative;padding:10px 14px 10px 54px;margin:8px 0;background:#f7f9fd;border-radius:10px}
+  .steps li::before{counter-increment:s;content:counter(s);position:absolute;left:12px;top:50%;transform:translateY(-50%);
+    width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .kw{font-weight:800;color:var(--navy)}
+  .memo{background:#eaf5ee;border-left:4px solid var(--green);border-radius:8px;padding:12px 16px;margin:12px 0;font-size:.95rem}
+  .memo b{color:var(--green)}
+  ul{margin:8px 0;padding-left:22px}
+  li{margin:4px 0}
+  .ref{font-size:.88rem;color:var(--muted)}
+  .ref li{margin:6px 0}
+  .pill{display:inline-block;background:var(--ice);color:var(--navy);border-radius:999px;padding:1px 10px;font-size:.82rem;font-weight:600;margin:2px}
+  footer{text-align:center;color:var(--muted);font-size:.85rem;padding:24px}
+  .qa{margin:10px 0;padding:12px 16px;background:#fff;border:1px solid #e2e6f0;border-radius:10px}
+  .qa .q{font-weight:700;color:var(--navy)}
+  .qa .a{margin-top:4px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>UPRT — Upset Prevention and Recovery Training</h1>
+  <div class="sub">สรุปการบรรยาย วิชา 113 UPRT · ศิษย์การบิน รร.การบิน ทอ. รุ่น น.159-69-2</div>
+  <div class="meta">จากไฟล์ "UPRT ศบ.159.pptx" (15 สไลด์) · ผู้บรรยาย: น.ท.อัครพล เรืองชูเกียรติ (ศบ.รุ่น น.126-52-2) — ผบ.ฝูงฝึกขั้นต้น กฝบ.ฯ, ครูการบิน บ.ฝ.16 ก (CT-4E) และ บ.ฝ.20/ก, อดีต นบ.ฝูง.461 (บ.ล.9)</div>
+</header>
+
+<div class="wrap">
+
+<!-- ================= OVERVIEW ================= -->
+<h2>ภาพรวมของการบรรยาย</h2>
+<div class="card">
+  <p><span class="kw">UPRT (Upset Prevention and Recovery Training)</span> คือการฝึกเพื่อ <b>ป้องกัน</b> (Prevention) และ <b>แก้ไข</b> (Recovery) สภาวะที่เครื่องบินหลุดออกจากท่าทางการบินปกติ (Airplane Upset) ซึ่งเป็นสาเหตุนำไปสู่ <b>LOC-I (Loss of Control In-flight)</b> — สาเหตุการเสียชีวิตอันดับ 1 ของอุบัติเหตุการบินทั่วโลก</p>
+  <p>โครงเรื่องของการบรรยายวางเป็นคำถาม 4 ข้อ:</p>
+  <ol>
+    <li><b>Why do pilots lose control?</b> — ทำไมนักบินจึงสูญเสียการควบคุม</li>
+    <li><b>What is being done?</b> — วงการการบินกำลังทำอะไรอยู่ (นิยาม upset + ท่าแก้มาตรฐาน)</li>
+    <li><b>What can be done?</b> — อะไรที่ช่วยได้จริง (ผลวิจัยที่คาดไม่ถึง)</li>
+    <li><b>Why not you?</b> — แล้วทำไมไม่เริ่มที่ตัวเรา (SA / ADM / SRM / CRM / Airmanship)</li>
+  </ol>
+  <div class="extra">
+    <span class="lbl">✚ ความรู้เพิ่มเติม: ทำไม LOC-I ถึงสำคัญ</span>
+    ข้อมูลในสไลด์เปิด (อินโฟกราฟิกจากรายงานประจำปีของ Boeing, อัปเดต ธ.ค. 2024) ระบุว่าในรอบ 10 ปี (พ.ศ. 2557–2566) มีอุบัติเหตุที่มีผู้เสียชีวิต 28 ครั้ง รวมผู้เสียชีวิต 1,140 ราย โดยสาเหตุ <b>"นักบินสูญเสียการบังคับ" (LOC-I) มี 8 ครั้ง แต่คร่าชีวิตมากที่สุดถึง 707 ราย</b> — มากกว่าสาเหตุอื่นทุกประเภทรวมกัน (ระบบเครื่องยนต์ขัดข้อง 158 ราย, รันเวย์ 131 ราย, เชื้อเพลิง 71 ราย, สภาพอากาศ 9 ราย) นี่คือเหตุผลที่ ICAO บังคับให้มีการฝึก UPRT ทั่วโลก
+  </div>
+</div>
+
+<!-- ================= SECTION 1 ================= -->
+<h2>1. Why do pilots lose control? — ทำไมนักบินจึงสูญเสียการควบคุม</h2>
+<div class="card">
+  <span class="slide-tag">สไลด์ 4</span>
+  <p>ต้นตอของ LOC-I ส่วนใหญ่ไม่ใช่เครื่องพัง แต่คือ <b>ห่วงโซ่ทางจิตวิทยา</b> ที่เริ่มจากความประหลาดใจ:</p>
+  <ol class="steps">
+    <li><b>Surprise</b> — ตกใจจากเหตุการณ์ที่ไม่คาดคิด (unexpected event)</li>
+    <li><b>Expectation mismatch</b> — สิ่งที่คาดหวังไม่ตรงกับสถานการณ์ที่กำลังเกิดขึ้นจริง</li>
+    <li><b>Impaired / delayed decision making</b> — การตัดสินใจแย่ลงหรือช้าลง</li>
+    <li><b>Fixation</b> — จดจ่อกับเหตุการณ์เดียวจนงานอื่นที่กำลังทำอยู่ขาดตอน (interruption of ongoing activities)</li>
+    <li>งานที่ขาดตอน (เช่น เลิกสแกนเครื่องวัด เลิกบินเครื่อง) นำไปสู่การหลุดท่า → Upset → LOC-I</li>
+  </ol>
+  <div class="extra">
+    <span class="lbl">✚ ความรู้เพิ่มเติม: Startle vs Surprise (ICAO Doc 10011 / EASA)</span>
+    เอกสารมาตรฐานแยก 2 คำนี้ชัดเจน — <b>Startle</b> คือปฏิกิริยาสะดุ้งทางร่างกายแบบอัตโนมัติ (เสี้ยววินาที ชีพจรพุ่ง กล้ามเนื้อเกร็ง สมองส่วนคิดวิเคราะห์ "ค้าง" ชั่วขณะ) ส่วน <b>Surprise</b> คือภาวะทางความคิดที่สิ่งที่เห็นไม่ตรงกับ mental model ของเรา ซึ่งกินเวลานานกว่าและต้อง "สร้างภาพสถานการณ์ใหม่" ก่อนจึงตัดสินใจได้ งานวิจัยพบว่าประสิทธิภาพการทำงานของนักบินหลังถูก startle อาจตกต่ำนาน 30 วินาทีหรือมากกว่า — จึงเป็นเหตุผลที่ท่าแก้ upset ต้องฝึกจน <b>เป็นอัตโนมัติ</b> เพราะตอนเกิดเหตุจริงสมองส่วนวิเคราะห์จะยังทำงานไม่เต็มที่
+  </div>
+  <div class="extra warn">
+    <span class="lbl">⚠ ตัวอย่างคลาสสิกที่ครูมักยกในหัวข้อนี้</span>
+    Air France 447 (2009) — Pitot ถูกน้ำแข็งอุด ทำให้ autopilot ตัด นักบินตกใจ ดึงคันบังคับค้างจนเครื่อง stall จากความสูง 38,000 ฟุต ทั้งที่เครื่องยนต์และพื้นบังคับปกติทุกอย่าง เสียชีวิต 228 คน — เป็นกรณีที่ "surprise + startle + การตัดสินใจที่ล้มเหลว" ล้วน ๆ ไม่ใช่เครื่องเสีย
+  </div>
+</div>
+
+<!-- ================= SECTION 2 ================= -->
+<h2>2. What is being done? — นิยาม Upset และท่าแก้มาตรฐาน</h2>
+
+<div class="card">
+  <span class="slide-tag">สไลด์ 5 — นิยาม Airplane Upset</span>
+  <p>เครื่องบินถือว่าอยู่ในสภาวะ <b>Upset</b> เมื่อหลุดออกจากขอบเขตการบินปกติโดยไม่ตั้งใจ ได้แก่:</p>
+  <table>
+    <tr><th>เกณฑ์</th><th>ค่า</th></tr>
+    <tr><td><b>Pitch (มุมเงย/มุมกด)</b></td><td>เงยเกิน <span class="big">25°</span> nose-up หรือกดเกิน <span class="big">10°</span> nose-down</td></tr>
+    <tr><td><b>Roll (มุมเอียง)</b></td><td>เอียงเกิน <span class="big">45°</span></td></tr>
+    <tr><td><b>Envelope</b></td><td>อยู่ในเกณฑ์ท่าทางข้างต้นก็จริง แต่ <b>ความเร็ว/พารามิเตอร์ไม่เหมาะสม</b> กับสภาวะการบิน (เช่น ความเร็วต่ำใกล้ stall)</td></tr>
+  </table>
+  <p><b>Implications</b> — สภาวะ upset เกี่ยวพันกับขีดจำกัดแอโรไดนามิกส์ เช่น การ Stall, จุด L/D max, ขีดจำกัด Mach ฯลฯ</p>
+  <div class="memo"><b>ท่องไว้สอบ:</b> 25 nose-up / 10 nose-down / 45 bank — ตัวเลขชุดนี้คือนิยามสากลตรงกันทั้ง ICAO Doc 10011, FAA AC 120-111 และ Airplane Upset Recovery Training Aid (AURTA)</div>
+  <div class="extra">
+    <span class="lbl">✚ ความรู้เพิ่มเติม: ทำไม nose-down แค่ 10° ก็นับเป็น upset</span>
+    เพราะเครื่องบินเก็บความเร็วเร็วมากเมื่อหัวต่ำ — มุมกดเพียงเล็กน้อยที่ความเร็วสูงก็พาเครื่องทะลุ V<sub>NE</sub>/M<sub>MO</sub> หรือเสียระยะสูงมหาศาลได้ในไม่กี่วินาที ขณะที่ด้าน nose-up เครื่องทนได้มากกว่าก่อนจะเข้าใกล้ stall จึงให้เกณฑ์ต่างกัน (25° กับ 10°)
+  </div>
+</div>
+
+<div class="card">
+  <span class="slide-tag">สไลด์ 6 — Standard UPRT Recovery Sequence</span>
+  <p>ลำดับการแก้ท่าผิดปกติแบบมาตรฐาน (จำง่าย ๆ ว่า <b>"Upset → Push → Roll → Thrust"</b>):</p>
+  <ol class="steps">
+    <li><b>UPSET — Recognize</b>: รับรู้และยืนยันว่าอยู่ในท่าทางผิดปกติ (ดู Attitude Indicator เป็นหลัก อย่าเชื่อความรู้สึกก้น/หูชั้นใน)</li>
+    <li><b>PUSH</b>: ผลักลดมุม pitch / ลด Angle of Attack เพื่อหนีจาก stall — <b>ต้องมาก่อน roll เสมอ</b></li>
+    <li><b>ROLL</b>: เอียงปีกกลับสู่ขอบฟ้าทาง <b>เส้นทางที่สั้นที่สุด</b> (shortest path)</li>
+    <li><b>THRUST</b>: ปรับกำลังเครื่องยนต์ให้เหมาะสม แล้วประคองเครื่องกลับสู่การบินปกติอย่างนุ่มนวล (stabilize)</li>
+  </ol>
+  <div class="extra">
+    <span class="lbl">✚ ความรู้เพิ่มเติม: ทำไมต้อง Push ก่อน Roll</span>
+    ที่ Angle of Attack สูง ปีกใกล้ stall — aileron จะประสิทธิภาพต่ำและอาจทำให้ปีกข้างที่กด aileron ลง stall ก่อน (เกิด wing drop / เข้าสภาวะหมุน) การ "unload" ด้วยการผลักก่อนจะลด AOA คืนแรงยกและคืนอำนาจการบังคับให้ aileron แล้วจึงค่อย roll ได้อย่างปลอดภัย หลักนี้ตรงกับสูตรใน AURTA/AUPRTA ทุกฉบับ และในเครื่องฝึกอย่าง CT-4E ครูจะเน้นเสมอว่า <b>"Unload ก่อน แล้วค่อย Roll"</b><br><br>
+    <b>ข้อควรระวังเรื่อง Thrust:</b> ถ้าหัวต่ำความเร็วเพิ่มเร็ว ให้ลดกำลังก่อน / ถ้าหัวสูงความเร็วตก อาจต้องเพิ่มกำลัง — Thrust จึงอยู่ท้ายลำดับเพราะต้อง "ปรับตามสถานการณ์" ไม่ใช่ดันสุดเสมอไป
+  </div>
+  <div class="extra warn">
+    <span class="lbl">⚠ กับดักที่พบบ่อยตอนแก้ nose-low</span>
+    ห้ามดึงสวนทันทีขณะปีกยังเอียงมาก — การดึงตอน bank เกิน 45–60° จะยิ่งดึงหัวเครื่อง "อ้อมขอบฟ้า" (เพิ่ม G โดยหัวไม่ขึ้น) ต้อง <b>roll ปีกให้ใกล้ระดับก่อน แล้วค่อยดึงออก</b> และระวังทั้ง 2 ขอบ: ดึงแรงไป = secondary stall / เร็วไป = ทะลุ V<sub>NE</sub>
+  </div>
+</div>
+
+<div class="card">
+  <span class="slide-tag">สไลด์ 8 — กติกาสากลและของไทย</span>
+  <p>สไลด์แสดงเอกสาร 2 ชิ้นเพื่อชี้ว่า UPRT เป็น "ข้อบังคับ" ไม่ใช่แค่ความรู้เสริม:</p>
+  <ul>
+    <li><b>CAAT UPRT Guidance Material (CAAT-PEL-GM 01)</b> — คู่มือแนะแนวของสำนักงานการบินพลเรือนแห่งประเทศไทย อนุมัติโดยผู้อำนวยการ กพท. เมื่อ 8 พ.ค. 2019 (มีไฟล์ประกาศ กพท. เรื่องคำแนะนำการฝึกอบรม UPRT อยู่ในโฟลเดอร์เดียวกันนี้แล้ว)</li>
+    <li><b>โครงสร้างการฝึก UPRT ของโรงเรียนการบินพลเรือน</b> (ตัวอย่างจาก Marigold Aviation อ้างมาตรฐาน EASA FCL.745.A) แบ่ง 3 ระยะ:
+      <ol>
+        <li><b>Ground/Academic Training</b> — แอโรไดนามิกส์, ภัย LOC-I, human factors</li>
+        <li><b>Flight Simulator</b> — จำลองสถานการณ์ upset ในสภาพแวดล้อมควบคุมได้</li>
+        <li><b>Recovery Drills ในอากาศ</b> — ฝึกแก้ท่าจริงกับเครื่องบินจริง</li>
+      </ol>
+    </li>
+  </ul>
+  <div class="extra">
+    <span class="lbl">✚ ความรู้เพิ่มเติม: ลำดับชั้นของกฎเกณฑ์ UPRT</span>
+    <b>ICAO</b> กำหนดมาตรฐานผ่าน Annex 1 / Annex 6 และ <b>Doc 10011 (Manual on Aeroplane UPRT, 2014)</b> → แต่ละประเทศนำไปออกกฎ: <b>FAA</b> ใช้ AC 120-111 (บังคับ full-stall training ในซิมสำหรับสายการบินตั้งแต่ 2019), <b>EASA</b> ใช้ FCL.745.A (Advanced UPRT — บังคับบินจริงกับเครื่องที่ทำท่าได้ ก่อนเข้า type rating เครื่องโดยสาร ตั้งแต่ ธ.ค. 2019), <b>ไทย (CAAT)</b> ออก Guidance Material ตามแนว ICAO สำหรับหลักสูตร CPL/MPL/ATPL — ส่วนของ ทอ. การฝึกท่า advanced handling / spin / unusual attitude ในหลักสูตรศิษย์การบินคือ UPRT ภาคปฏิบัติโดยธรรมชาติอยู่แล้ว
+  </div>
+</div>
+
+<!-- ================= SECTION 3 ================= -->
+<h2>3. What can be done? — ผลวิจัยที่ต้องจำ</h2>
+<div class="card">
+  <span class="slide-tag">สไลด์ 7</span>
+  <p>ประเด็นที่ครูตั้งใจให้จำที่สุดของบทนี้: งานศึกษาพบว่า <b>ความสามารถในการรับมือ LOC-I ไม่ได้ขึ้นอยู่กับ</b>:</p>
+  <ul>
+    <li>❌ ชั่วโมงบิน (Flight hours)</li>
+    <li>❌ Rating ที่ถือ หรือสัญชาติ</li>
+    <li>❌ ประสบการณ์ของครูผู้สอน</li>
+    <li>❌ แบบเครื่องบิน (Aircraft type)</li>
+    <li>❌ ความลึกของความรู้วิชาการแบบท่องตำรา (classic academic knowledge)</li>
+  </ul>
+  <p>นั่นแปลว่า <b>สิ่งเดียวที่สร้างความสามารถนี้ได้คือ "การฝึก UPRT อย่างถูกวิธี"</b> — การได้สัมผัสสภาวะ upset จริง ๆ ภายใต้การควบคุม จนร่างกายและสมองจดจำ ไม่ใช่การมีชั่วโมงบินเยอะหรืออ่านหนังสือเก่ง</p>
+  <div class="extra">
+    <span class="lbl">✚ ความรู้เพิ่มเติม: ที่มาของข้อสรุปนี้</span>
+    ข้อสรุปแนวนี้มาจากงานวิจัยของกลุ่ม ICATEE (International Committee for Aviation Training in Extended Envelopes) และผู้ให้การฝึก UPRT (เช่น APS) ที่เก็บข้อมูลนักบินหลายพันคน พบว่านักบินอาวุโสชั่วโมงสูงที่ไม่เคยฝึก upset จริง ทำผลงานแก้ท่าไม่ต่างจากนักบินใหม่ เพราะการบินปกติทั้งชีวิตแทบไม่เคยพาเครื่องออกนอก bank 30°/pitch 10° เลย — ทักษะ "นอก envelope ปกติ" จึงไม่เกิดเองตามชั่วโมงบิน ต้องฝึกแยกโดยเฉพาะ นี่คือหัวใจของคำว่า <b>"Train beyond the normal envelope"</b>
+  </div>
+</div>
+
+<!-- ================= SECTION 4 ================= -->
+<h2>4. Why not you? — Prevention เริ่มที่ตัวเรา</h2>
+
+<div class="card">
+  <span class="slide-tag">สไลด์ 10</span>
+  <p>การ "แก้" (Recovery) คือด่านสุดท้าย แต่สิ่งที่ดีกว่าคือ <b>"ป้องกันและรับรู้ให้ไว" (Prevention – Recognition)</b> ผ่านทักษะ 3 กลุ่ม:</p>
+  <ul>
+    <li><b>Situation Awareness (SA)</b> — รู้ตัวตลอดว่าเครื่องอยู่ท่าไหน พลังงานเท่าไร กำลังจะเกิดอะไร</li>
+    <li><b>Aeronautical Decision Making (ADM)</b> — กระบวนการตัดสินใจอย่างเป็นระบบ</li>
+    <li><b>SRM / CRM</b> — การบริหารทรัพยากรทั้งแบบบินเดี่ยวและแบบมีลูกเรือ</li>
+  </ul>
+</div>
+
+<div class="card">
+  <span class="slide-tag">สไลด์ 11 — Airmanship Model</span>
+  <p>สไลด์แสดงโมเดล "วิหารกรีก" ของ <b>Airmanship</b> (ตามแนวคิด Dr. Tony Kern จากหนังสือ <i>Redefining Airmanship</i>):</p>
+  <table>
+    <tr><th>ชั้น</th><th>องค์ประกอบ</th></tr>
+    <tr><td><b>ฐานราก (Bedrock Principles)</b></td><td>Discipline (วินัย) · Skill (ทักษะ) · Proficiency (ความชำนาญที่รักษาไว้สม่ำเสมอ)</td></tr>
+    <tr><td><b>เสาแห่งความรู้ (Pillars of Knowledge)</b></td><td>รู้จัก Self (ตัวเอง) · Aircraft (เครื่องบิน) · Team (ทีม) · Environment (สภาพแวดล้อม) · Risk (ความเสี่ยง)</td></tr>
+    <tr><td><b>ยอดวิหาร (Capstone Outcomes)</b></td><td>Situational Awareness → Judgment (วิจารณญาณ)</td></tr>
+  </table>
+  <div class="extra">
+    <span class="lbl">✚ วิธีอ่านโมเดลนี้</span>
+    SA และ Judgment ที่ดี "ซื้อโดยตรงไม่ได้" — มันคือ <b>ผลลัพธ์</b> ที่งอกจากฐานวินัย+ทักษะ+ความชำนาญ และเสาความรู้ทั้ง 5 ต้น ถ้าเสาต้นใดผุ (เช่น ไม่รู้ระบบเครื่อง ไม่ประเมินความเสี่ยง) ยอดวิหารก็เอียง — เชื่อมกับ UPRT ตรงที่ upset ส่วนใหญ่เกิดจาก SA ที่พังก่อนเสมอ
+  </div>
+</div>
+
+<div class="card">
+  <span class="slide-tag">สไลด์ 12 — Aeronautical Decision Making (ADM)</span>
+  <p>สไลด์เปรียบเทียบการตัดสินใจ 2 โหมด (จาก FAA Pilot's Handbook of Aeronautical Knowledge บทที่ 2):</p>
+  <ul>
+    <li><b>A. Analytical</b> — มีเวลา: ประเมินสถานการณ์ (Pilot–Aircraft–Environment–External factors) → ตรวจจับ → ประเมินเหตุ → ไล่ดูความเสี่ยง/ทางเลือกหลายทาง → เลือกทางที่ดีที่สุด → ประเมินผล วนซ้ำจนจบปัญหา</li>
+    <li><b>B. Automatic / Naturalistic</b> — เวลาน้อย: ตรวจจับ → ประเมิน → เลือก "ทางที่ใช้ได้เลย" จากประสบการณ์/การฝึก → ลงมือทันที (นี่คือโหมดที่ทำงานตอนเกิด upset จริง)</li>
+  </ul>
+  <h3>โมเดล DECIDE (สำหรับโหมดวิเคราะห์)</h3>
+  <ol class="steps">
+    <li><b>D — Detect</b>: ตรวจจับว่ามีการเปลี่ยนแปลงเกิดขึ้น</li>
+    <li><b>E — Estimate</b>: ประเมินว่าต้องตอบสนองหรือไม่</li>
+    <li><b>C — Choose</b>: เลือกผลลัพธ์ที่ต้องการ</li>
+    <li><b>I — Identify</b>: ระบุการกระทำที่จะพาไปถึงผลนั้น</li>
+    <li><b>D — Do</b>: ลงมือทำ</li>
+    <li><b>E — Evaluate</b>: ประเมินผลของการกระทำ</li>
+  </ol>
+  <div class="extra">
+    <span class="lbl">✚ ความรู้เพิ่มเติม: โมเดลตัดสินใจอื่นที่ปรากฏในสไลด์</span>
+    สไลด์ยังแสดงตารางเทียบโมเดลอื่น ๆ ที่ใช้ในวงการ: <span class="pill">OODA Loop</span> Observe–Orient–Decide–Act (ทหาร/สถานการณ์เร็ว) · <span class="pill">TAR</span> Time–Assess–React · <span class="pill">FORDEC</span> Facts–Options–Risks–Decide–Execute–Check (นิยมในยุโรป/Lufthansa) · <span class="pill">T-DODAR</span> Time–Diagnose–Options–Decide–Assign–Review (นิยมในสายการบินอังกฤษ) · <span class="pill">NDM</span> Naturalistic Decision Making — จำไว้ว่าทุกโมเดลแก่นเดียวกัน: <b>รับรู้ → ประเมิน → เลือก → ทำ → ตรวจสอบซ้ำ</b>
+  </div>
+</div>
+
+<div class="card">
+  <span class="slide-tag">สไลด์ 13 — CRM และ Swiss Cheese Model</span>
+  <h3>องค์ประกอบแกนกลางของ CRM (Crew Resource Management)</h3>
+  <p>แผนภาพวงกลม CRM (Gross, 2014) แบ่ง 3 กลุ่มความสามารถ:</p>
+  <ul>
+    <li><b>Team Competencies</b>: Leadership · Workload Management · Adaptability</li>
+    <li><b>Communication Competencies</b>: Efficiency · Professionalism · Reflection</li>
+    <li><b>Theoretical Background Knowledge</b>: Human Error · Personal Resources & Stress · (Shared) Situational Awareness · Decision Making</li>
+  </ul>
+  <h3>Swiss Cheese Model (James Reason, 1990)</h3>
+  <p>อุบัติเหตุไม่ได้เกิดจากความผิดพลาดเดี่ยว ๆ แต่เกิดเมื่อ "รู" ของชั้นป้องกันทุกชั้นเรียงตรงกันพอดี:</p>
+  <ol class="steps">
+    <li><b>Organizational Factors</b> (Latent Conditions — ความบกพร่องแฝงระดับองค์กร)</li>
+    <li><b>Unsafe Supervision</b> (การกำกับดูแลที่บกพร่อง)</li>
+    <li><b>Preconditions</b> (สภาพก่อนเกิดเหตุ เช่น ความล้า ความเครียด)</li>
+    <li><b>Unsafe Acts</b> (Active Failures — การกระทำไม่ปลอดภัยของคนหน้างาน)</li>
+  </ol>
+  <div class="extra">
+    <span class="lbl">✚ กรณีศึกษาที่สไลด์อ้างถึง</span>
+    <b>United Airlines 173 (1978)</b> — กัปตันจดจ่อกับปัญหาฐานล้อจนเครื่องน้ำมันหมดตกก่อนถึงสนาม (จุดกำเนิดของการฝึก CRM ทั่วโลก) และ <b>Air France 447 (2009)</b> — cognitive overload + ความเครียดทางจิตใจ เป็น "รู" ที่เรียงตรงกันหลายชั้นพร้อมกัน ทั้งสองเคสยืนยันว่าอุบัติเหตุต้องวิเคราะห์เชิงระบบ ไม่ใช่โทษคนเดียว
+  </div>
+</div>
+
+<div class="card">
+  <span class="slide-tag">สไลด์ 14 — CRM vs SRM</span>
+  <table>
+    <tr><th>CRM (Crew Resource Management)</th><th>SRM (Single-Pilot Resource Management)</th></tr>
+    <tr><td>บินเป็นลูกเรือ: Pilot & Co-pilot</td><td>บินเดี่ยว: Pilot Alone</td></tr>
+    <tr><td>การสื่อสารในทีม (Team Communication)</td><td>บริหารเครื่องบินและระบบด้วยตัวเอง (Aircraft & Systems)</td></tr>
+    <tr><td>ตัดสินใจร่วมกัน (Shared Decision Making)</td><td>เผชิญสภาพอากาศ/สิ่งแวดล้อม และแรงกดดันการตัดสินใจ (Decision Pressure) คนเดียว</td></tr>
+  </table>
+  <div class="extra">
+    <span class="lbl">✚ เชื่อมกับชีวิตศิษย์การบิน</span>
+    ช่วง solo บน CT-4E คือ SRM เต็มรูปแบบ — ทรัพยากรของเราคือ checklist, ATC, เครื่องวัด, และการเตรียมตัวก่อนบิน (chair flying) ยิ่งเตรียมดี "ทรัพยากรในหัว" ยิ่งเยอะ แรงกดดันการตัดสินใจยิ่งต่ำ
+  </div>
+</div>
+
+<!-- ================= KEY POINTS ================= -->
+<h2>สรุปประเด็นท่องสอบ (Quick Drill)</h2>
+<div class="card">
+  <div class="qa"><div class="q">Q: นิยาม Airplane Upset คืออะไร?</div><div class="a">A: หลุดจากท่าบินปกติโดยไม่ตั้งใจ — pitch เกิน <b>25° nose-up</b> หรือ <b>10° nose-down</b>, bank เกิน <b>45°</b>, หรืออยู่ในเกณฑ์แต่<b>ความเร็วไม่เหมาะสม</b>กับสภาวะการบิน</div></div>
+  <div class="qa"><div class="q">Q: ลำดับแก้ upset มาตรฐานคือ?</div><div class="a">A: <b>Recognize → PUSH → ROLL → THRUST</b> (ผลักลด AOA ก่อน แล้ว roll ปีกกลับขอบฟ้าทางสั้นสุด แล้วปรับกำลัง/ประคองเครื่อง)</div></div>
+  <div class="qa"><div class="q">Q: ทำไมต้อง Push ก่อน Roll?</div><div class="a">A: เพื่อ unload ปีก ลด AOA หนี stall และคืนประสิทธิภาพให้ aileron — roll ขณะ AOA สูงเสี่ยง wing drop/spin</div></div>
+  <div class="qa"><div class="q">Q: ความสามารถรับมือ LOC-I ขึ้นกับอะไร?</div><div class="a">A: ไม่ขึ้นกับชั่วโมงบิน, rating, สัญชาติ, ประสบการณ์ครู, แบบเครื่อง, หรือความรู้ตำรา — ขึ้นกับ<b>การฝึก UPRT อย่างถูกวิธี</b>เท่านั้น</div></div>
+  <div class="qa"><div class="q">Q: ห่วงโซ่ที่ทำให้นักบินเสียการควบคุมเริ่มจากอะไร?</div><div class="a">A: Surprise จากเหตุไม่คาดคิด → ความคาดหวังไม่ตรงสถานการณ์ → ตัดสินใจช้า/แย่ลง → จดจ่อจนงานหลัก (บินเครื่อง) ขาดตอน</div></div>
+  <div class="qa"><div class="q">Q: DECIDE ย่อมาจาก?</div><div class="a">A: Detect – Estimate – Choose – Identify – Do – Evaluate</div></div>
+  <div class="qa"><div class="q">Q: 4 ชั้นของ Swiss Cheese Model?</div><div class="a">A: Organizational Factors (latent) → Unsafe Supervision → Preconditions → Unsafe Acts (active failures)</div></div>
+  <div class="qa"><div class="q">Q: Airmanship model — ฐาน เสา ยอด คืออะไร?</div><div class="a">A: ฐาน = Discipline/Skill/Proficiency · เสา 5 ต้น = Self, Aircraft, Team, Environment, Risk · ยอด = Situational Awareness → Judgment</div></div>
+  <div class="qa"><div class="q">Q: การป้องกัน (Prevention) upset ใช้ทักษะอะไร?</div><div class="a">A: Situation Awareness + Aeronautical Decision Making + SRM/CRM</div></div>
+</div>
+
+<!-- ================= REFERENCES ================= -->
+<h2>แหล่งอ้างอิงที่ใช้เสริมเนื้อหา</h2>
+<div class="card">
+  <ul class="ref">
+    <li><b>ICAO Doc 10011</b> — Manual on Aeroplane Upset Prevention and Recovery Training (1st ed., 2014): นิยาม upset, startle/surprise, โครงสร้างการฝึก 3 ระยะ</li>
+    <li><b>FAA AC 120-111</b> (Upset Prevention and Recovery Training) และ <b>Airplane Upset Prevention &amp; Recovery Training Aid (AUPRTA Rev.3)</b>: ท่าแก้มาตรฐาน Push–Roll–Thrust–Stabilize</li>
+    <li><b>EASA FCL.745.A</b> — Advanced UPRT course (บังคับใช้ ธ.ค. 2019)</li>
+    <li><b>CAAT-PEL-GM 01</b> — UPRT Guidance Material, สำนักงานการบินพลเรือนแห่งประเทศไทย (8 พ.ค. 2019) — ไฟล์ประกาศ กพท. อยู่ในโฟลเดอร์นี้แล้ว</li>
+    <li><b>FAA Pilot's Handbook of Aeronautical Knowledge</b> บทที่ 2 (Aeronautical Decision-Making): แผนภาพ ADM Analytical/Naturalistic และ DECIDE model</li>
+    <li><b>Tony Kern, Redefining Airmanship (1997)</b>: โมเดลวิหาร Airmanship</li>
+    <li><b>James Reason (1990)</b>: Swiss Cheese Model</li>
+    <li><b>Boeing Statistical Summary of Commercial Jet Airplane Accidents (2024)</b>: สถิติ LOC-I เป็นสาเหตุเสียชีวิตอันดับ 1</li>
+  </ul>
+</div>
+
+</div>
+<footer>สรุปจาก "UPRT ศบ.159.pptx" · จัดทำ 5 ก.ค. 2569 · สำหรับทบทวน Ground School วิชา 113 UPRT</footer>
+</body>
+</html>
