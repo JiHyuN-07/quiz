@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สรุป Meteorology 109 — ทั้งคอร์ส</title>
+<style>
+  :root{
+    --bg:#f4f7fb; --card:#ffffff; --card2:#eef3f9; --accent:#1769c0; --accent2:#d97706;
+    --red:#dc2626; --green:#16a34a; --text:#1f2a37; --muted:#5c6b7a; --line:#d7e0ea;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; font-family:"Segoe UI","Sarabun",Tahoma,sans-serif; background:var(--bg);
+    color:var(--text); line-height:1.7; font-size:16px;
+  }
+  header{
+    background:linear-gradient(135deg,#2c7fd0,#1769c0); padding:34px 24px; border-bottom:3px solid var(--accent2);
+    color:#fff;
+  }
+  header h1{margin:0; font-size:28px; letter-spacing:.5px; color:#fff;}
+  header .sub{color:#ffe9c9; font-size:15px; margin-top:6px;}
+  header .meta{color:#d6e6f7; font-size:13px; margin-top:10px;}
+  .wrap{max-width:980px; margin:0 auto; padding:24px;}
+  nav.toc{
+    background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 22px; margin-bottom:26px;
+  }
+  nav.toc h2{margin:0 0 10px; font-size:16px; color:var(--accent);}
+  nav.toc ol{margin:0; padding-left:20px; columns:2; column-gap:30px;}
+  nav.toc a{color:var(--text); text-decoration:none; font-size:14px;}
+  nav.toc a:hover{color:var(--accent2); text-decoration:underline;}
+  section{
+    background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px 24px; margin-bottom:22px;
+    scroll-margin-top:14px; box-shadow:0 1px 3px rgba(20,40,70,.06);
+  }
+  h2.sec{
+    margin:0 0 16px; font-size:21px; color:var(--accent); border-left:4px solid var(--accent);
+    padding-left:12px; scroll-margin-top:14px;
+  }
+  h3{font-size:17px; color:var(--accent2); margin:18px 0 8px;}
+  p{margin:8px 0;}
+  ul{margin:8px 0; padding-left:22px;}
+  li{margin:5px 0;}
+  .term{color:var(--accent); font-weight:700;}
+  .en{color:var(--muted); font-style:italic;}
+  .key{
+    background:var(--card2); border-left:3px solid var(--accent2); padding:10px 14px; border-radius:6px;
+    margin:12px 0; font-size:14.5px;
+  }
+  .warn{border-left-color:var(--red);}
+  .num{color:var(--accent2); font-weight:700;}
+  table{width:100%; border-collapse:collapse; margin:12px 0; font-size:14px;}
+  th,td{border:1px solid var(--line); padding:7px 10px; text-align:left; vertical-align:top;}
+  th{background:var(--card2); color:var(--accent);}
+  td.code{font-family:"Consolas",monospace; color:#b45309; letter-spacing:1px;}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:0;}
+  .freq{
+    display:inline-block; background:#fdecd2; color:#b45309; font-family:"Consolas",monospace;
+    padding:1px 7px; border-radius:4px; font-size:13.5px;
+  }
+  .squawk{
+    display:inline-block; background:#fde0e0; color:var(--red); font-family:"Consolas",monospace;
+    padding:1px 7px; border-radius:4px; font-weight:700;
+  }
+  details{background:var(--card2); border:1px solid var(--line); border-radius:8px; padding:10px 14px; margin:10px 0;}
+  summary{cursor:pointer; font-weight:600; color:var(--accent);}
+  details[open] summary{margin-bottom:8px;}
+  .ans{color:var(--green); font-weight:700;}
+  .dot{display:inline-block; width:42px; height:13px; border-radius:3px; vertical-align:middle; margin-right:6px;}
+  .callout-quote{font-style:italic; color:#b45309; background:#fdecd2; padding:8px 12px; border-radius:6px; display:inline-block;}
+  .qa{border-top:1px solid var(--line); padding-top:16px; margin-top:16px;}
+  .qa:first-of-type{border-top:none; padding-top:0; margin-top:0;}
+  .qq{font-weight:700; margin:0 0 10px; color:var(--text);}
+  .qq .n{color:var(--accent2); margin-right:4px;}
+  .qc{background:var(--card2); border-radius:6px; padding:10px 14px; margin:0 0 10px; font-size:14.5px; line-height:1.9;}
+  .qa details{margin:0; background:#effaf1; border-color:#c7e8cd;}
+  .qa summary{color:var(--green); font-weight:700; list-style:none;}
+  .qa summary::-webkit-details-marker{display:none;}
+  .qa summary::before{content:"▼ "; font-size:11px;}
+  .qa details[open] summary::before{content:"▲ ";}
+  .note{background:#eef6fd; border:1px solid #cfe3f6; border-radius:6px; padding:8px 12px; margin:10px 0; font-size:13.5px; color:var(--muted);}
+
+  footer{text-align:center; color:var(--muted); font-size:13px; padding:20px;}
+  th,td{word-break:break-word; overflow-wrap:anywhere;}
+  @media(max-width:640px){
+    nav.toc ol{columns:1;} .grid3{grid-template-columns:1fr;}
+    .wrap{padding:16px;} section{padding:18px 15px;}
+    table{font-size:13px;} th,td{padding:6px 8px;}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>สรุปวิชา 109 Meteorology — ทั้งคอร์ส</h1>
+  <div class="sub">Meteorology I–III · หลักสูตรศิษย์การบิน ศบ. (น.ท.มารุต แสงหิ่งห้อย · กองข่าวอากาศ คปอ.)</div>
+  <div class="meta">รวม Basic Weather Theory · Weather Patterns · Weather Hazards · Interpreting Weather Data (METAR/TAF)</div>
+</header>
+
+<div class="wrap">
+
+<nav class="toc">
+  <h2>สารบัญ</h2>
+  <ol>
+    <li><a href="#atmos">1.1 The Atmosphere — โครงสร้างบรรยากาศ</a></li>
+    <li><a href="#circ">1.2 Atmospheric Circulation</a></li>
+    <li><a href="#gwind">1.3 Global Wind Patterns</a></li>
+    <li><a href="#lwind">1.4 Local Wind Patterns</a></li>
+    <li><a href="#stability">2.1 Atmospheric Stability</a></li>
+    <li><a href="#moisture">2.2 Moisture — การเปลี่ยนสถานะ</a></li>
+    <li><a href="#humidity">2.3 Humidity — ความชื้น</a></li>
+    <li><a href="#clouds">2.4 Clouds — เมฆ &amp; หมอก</a></li>
+    <li><a href="#precip">2.5 Precipitation — หยาดน้ำฟ้า</a></li>
+    <li><a href="#airmass">2.6 Air Masses — มวลอากาศ</a></li>
+    <li><a href="#fronts">2.7 Fronts — แนวปะทะอากาศ</a></li>
+    <li><a href="#jet">Jet Stream</a></li>
+    <li><a href="#ts">3.1 Thunderstorms — พายุฟ้าคะนอง</a></li>
+    <li><a href="#turb">3.2 Turbulence — ความปั่นป่วน</a></li>
+    <li><a href="#ws">3.3 Wind Shear — ลมเฉือน</a></li>
+    <li><a href="#icing">3.4 Icing — น้ำแข็งจับเกาะ</a></li>
+    <li><a href="#vis">3.5 Restrictions to Visibility</a></li>
+    <li><a href="#ash">3.6 Volcanic Ash — เถ้าภูเขาไฟ</a></li>
+    <li><a href="#forecast">III-1 การพยากรณ์อากาศ</a></li>
+    <li><a href="#metar">III-2 METAR — ถอดรหัสข่าวอากาศ</a></li>
+    <li><a href="#taf">III-3 TAF — พยากรณ์สนามบิน</a></li>
+    <li><a href="#charts">III-4 แผนที่อากาศ &amp; SIGWX</a></li>
+    <li><a href="#sources">III-5 แหล่งข้อมูลข่าวอากาศ</a></li>
+  </ol>
+</nav>
+
+<!-- ============ PART 1 ============ -->
+<div style="background:linear-gradient(135deg,#1769c0,#0f4c8a);color:#fff;border-radius:12px;padding:16px 22px;margin:6px 0 22px;">
+  <div style="font-size:20px;font-weight:800;">PART 1 · Basic Weather Theory &amp; Weather Patterns</div>
+  <div style="opacity:.85;font-size:14px;margin-top:4px;">Meteorology I — ทฤษฎีพื้นฐานการเกิดสภาพอากาศ และรูปแบบสภาพอากาศ</div>
+</div>
+
+<section id="atmos">
+  <h2 class="sec">1.1 The Atmosphere — โครงสร้างบรรยากาศ</h2>
+  <p>บรรยากาศแบ่งตามการเปลี่ยนแปลงอุณหภูมิตามความสูง จากล่างขึ้นบน:</p>
+  <table>
+    <tr><th>ชั้น</th><th>ความสูง</th><th>ลักษณะเด่น</th></tr>
+    <tr><td><b>Troposphere</b></td><td>ผิวพื้น–Tropopause</td><td>อุณหภูมิ<b>ลดลง</b>ตามความสูง (Lapse rate <span class="num">2 °C / 1,000 ฟุต</span>) · เกิดเมฆและสภาพอากาศส่วนใหญ่</td></tr>
+    <tr><td><b>Tropopause</b></td><td>เฉลี่ย 36,090 ฟุต (11 กม.) ที่ ~45° lat</td><td>รอยต่อชั้นบรรยากาศ อุณหภูมิ<b>คงที่</b> · สำคัญต่อการบิน — เกิด <b>Jet Stream, CAT, Thunderstorms, High Clouds</b></td></tr>
+    <tr><td><b>Stratosphere</b></td><td>~10 กม.แรกคงที่ แล้วเพิ่มขึ้น</td><td>ลมพัดทางระดับทางเดียว ไม่มีกระแสในทางดิ่ง · มี <b>โอโซน (O₃)</b> สะสมมากสุด</td></tr>
+    <tr><td><b>Mesosphere</b></td><td>50–80 กม.</td><td>อุณหภูมิ<b>ลดลง</b>ตามความสูง · พบการลุกไหม้ของอุกกาบาต</td></tr>
+    <tr><td><b>Thermosphere</b></td><td>80–600 กม.</td><td>อุณหภูมิ<b>เพิ่ม</b>ตามความสูง (เลยออกไป = Exosphere)</td></tr>
+  </table>
+  <div class="key">💡 <b>Tropopause</b> ต่ำสุดที่ขั้วโลก (~26,000 ฟุต) สูงสุดที่ศูนย์สูตร (~52,000 ฟุต)</div>
+  <ul>
+    <li><span class="term">Ozonosphere</span> — ชั้นสะสมโอโซนมากสุด อยู่บริเวณ Stratosphere</li>
+    <li><span class="term">Ionosphere</span> — ชั้นสะสมประจุไฟฟ้า (ion + free electron) ตั้งแต่ Lower Mesosphere ถึง Thermosphere</li>
+  </ul>
+  <h3>Composition — ไอน้ำในอากาศ</h3>
+  <ul>
+    <li>ไอน้ำแปรผันตามพื้นที่: เขตร้อนอาจถึง <span class="num">4%</span> · เขตขั้วโลกหนาวไม่ถึง <span class="num">1%</span></li>
+    <li>มองเห็นไอน้ำได้เมื่อกลั่นตัวเป็นหยดน้ำ</li>
+  </ul>
+</section>
+
+<section id="circ">
+  <h2 class="sec">1.2 Atmospheric Circulation — การหมุนเวียนของบรรยากาศ</h2>
+  <h3>1.2.1 Temperature</h3>
+  <ul>
+    <li>อุณหภูมิผิวโลกเปลี่ยน → อากาศเคลื่อนในแนวดิ่ง (เกิดเมฆ) และทางระดับ (เกิดลม)</li>
+    <li><span class="term">Temperature Inversion</span> = อุณหภูมิ<b>เพิ่ม</b>ตามความสูง (ผกผัน)</li>
+    <li><span class="term">Isothermal Layer</span> = อุณหภูมิ<b>คงที่</b>ตามความสูง</li>
+  </ul>
+  <h3>1.2.2 Convection &amp; Circulation Models</h3>
+  <ul>
+    <li><b>Convection</b> = การพาความร้อนของของไหล ทั้งทางระดับและทางดิ่ง</li>
+    <li><b>Single-Cell</b> (โลกไม่หมุน): อากาศยกตัวที่ศูนย์สูตร จมตัวที่ขั้วโลก แล้วไหลกลับ</li>
+  </ul>
+  <h3>1.2.3 Three-Cell Circulation Pattern</h3>
+  <table>
+    <tr><th>Cell</th><th>ละติจูด</th></tr>
+    <tr><td><b>Hadley Cell</b></td><td>ยกตัวที่ศูนย์สูตร จมตัวที่ ~30° N/S</td></tr>
+    <tr><td><b>Ferrel Cell</b></td><td>หมุนเวียนระหว่าง 30–60° N/S</td></tr>
+    <tr><td><b>Polar Cell</b></td><td>ขั้วโลกจมตัวไหลลงมายัง 60° N/S</td></tr>
+  </table>
+  <ul>
+    <li>ลมประจำ: <b>Northeast Trade Winds, Westerlies, Polar Easterlies</b></li>
+    <li><span class="term">Horse Latitudes</span> = 30° N/S (อากาศจมตัว ลมอ่อน ความกดสูง)</li>
+    <li><span class="term">Doldrums / ITCZ</span> = บริเวณศูนย์สูตร (Intertropical Convergence Zone)</li>
+  </ul>
+  <h3>1.2.4 Atmospheric Pressure</h3>
+  <ul>
+    <li>ความกดอากาศ = น้ำหนักของลำอากาศทั้งหมดที่กระทำต่อ 1 หน่วยพื้นที่</li>
+    <li>หน่วย: <b>นิ้วปรอท (inHg), มิลลิบาร์ (mb), เฮกโตปาสคาล (hPa), PSI</b> · วัดด้วยบารอมิเตอร์ (Mercurial / Aneroid)</li>
+    <li>มาตรฐาน: <b>Sea Level Pressure (SLP)</b> และ <b>Station Pressure</b></li>
+    <li class="key">ความกดอากาศ<b>ลดลง ~1 inHg ต่อทุก 1,000 ฟุต</b>ที่สูงขึ้น</li>
+  </ul>
+  <h3>Altitude &amp; Altimeter Error</h3>
+  <p>Altimeter อ่านผิดพลาดเมื่อ: SLP ≠ 29.92 inHg · อุณหภูมิอุ่น/เย็นกว่ามาตรฐาน · Strong Vertical Gust</p>
+  <table>
+    <tr><th>สถานการณ์</th><th>คำเตือน (altimeter อ่านสูงกว่าจริง = อันตราย)</th></tr>
+    <tr><td>บินจากความกดสูง → ต่ำ</td><td class="callout-quote">"High to low — Look out below"</td></tr>
+    <tr><td>บินจากอุ่น → เย็น</td><td class="callout-quote">"From hot to cold, look out below"</td></tr>
+  </table>
+  <h3>QNH / QNE / QFE</h3>
+  <table>
+    <tr><th>รหัส</th><th>เทียบจาก</th><th>ทางการบินเรียก</th></tr>
+    <tr><td class="code">QNH</td><td>MSL (ค่าเฉลี่ยระดับน้ำทะเล)</td><td><b>Altitude</b></td></tr>
+    <tr><td class="code">QNE</td><td>SMSL (Standard MSL, 29.92)</td><td><b>Flight Level</b></td></tr>
+    <tr><td class="code">QFE</td><td>Field Elevation</td><td><b>Height</b></td></tr>
+  </table>
+  <h3>1.2.5 Coriolis Force</h3>
+  <ul>
+    <li>เกิดจากการหมุนของโลก ทำให้วัตถุ/อากาศที่เคลื่อนที่อิสระเบี่ยงเบน</li>
+    <li>ซีกโลก<b>เหนือเบนขวา</b> · ซีกโลก<b>ใต้เบนซ้าย</b></li>
+    <li>มีค่า <b>= 0 ที่ศูนย์สูตร</b> และ<b>มากสุดที่ขั้วโลก</b></li>
+  </ul>
+  <h3>1.2.6 Frictional Force</h3>
+  <ul>
+    <li>แรงเสียดทานผิวพื้นทำให้ลมช้าลง และพัด<b>ตัดผ่าน isobar เข้าหาความกดต่ำ</b></li>
+    <li>ที่ผิวพื้น: ลม<b>ไหลเข้า</b>รอบ Low และ<b>ไหลออก</b>รอบ High · เหนือระดับแรงเสียดทานลมพัดขนานกับ isobar</li>
+  </ul>
+</section>
+
+<section id="gwind">
+  <h2 class="sec">1.3 Global Wind Patterns — ลมประจำโลก</h2>
+  <table>
+    <tr><th>ลม</th><th>ลักษณะ</th></tr>
+    <tr><td><b>Trade Winds</b></td><td>~30° N/S อากาศอุ่นชื้นที่ยกตัวขึ้นเย็นลงและเริ่มจมตัว</td></tr>
+    <tr><td><b>Prevailing Westerlies</b></td><td>อากาศเย็นที่จมตัวบางส่วนเคลื่อนต่อไปทางเหนือ–ใต้</td></tr>
+    <tr><td><b>Polar Easterlies</b></td><td>Westerlies เริ่มยกตัวและเย็นลงระหว่าง 50–60° ขณะเข้าใกล้ขั้วโลก</td></tr>
+  </table>
+</section>
+
+<section id="lwind">
+  <h2 class="sec">1.4 Local Wind Patterns — ลมประจำถิ่น</h2>
+  <table>
+    <tr><th>ลม</th><th>เวลา</th><th>ความเร็ว/รายละเอียด</th></tr>
+    <tr><td><b>Sea Breeze</b> (ลมทะเล)</td><td>กลางวัน (แรงสุดบ่าย)</td><td>10–20 kt · พัดเข้าฝั่งลึกถึง 50 กม. · กลับสู่ทะเลที่ 1,500–3,000 ฟุต · มี Sea Breeze Front (เมฆแนวแคบ)</td></tr>
+    <tr><td><b>Land Breeze</b> (ลมบก)</td><td>กลางคืน (แรงสุดก่อนอาทิตย์ขึ้น)</td><td>~5 kt · สูงไม่กี่ร้อยฟุต · มี Land Breeze Front</td></tr>
+    <tr><td><b>Valley Breeze</b> (ลมหุบเขา)</td><td>กลางวัน (หลังอาทิตย์ขึ้นไม่กี่ ชม.)</td><td>Anabatic/Upslope · ~5 kt · เกิดเมฆก้อนตามลาดเขา</td></tr>
+    <tr><td><b>Mountain Breeze</b> (ลมภูเขา)</td><td>กลางคืน (ก่อนอาทิตย์ขึ้น)</td><td>Katabatic · 5–15 kt · ทำให้เกิดหมอกในหุบเขา · <b>แรงกว่าลมหุบเขา</b> โดยเฉพาะฤดูหนาว</td></tr>
+    <tr><td><b>Cold Downslope</b> (Bora)</td><td>ได้ทั้งวัน/คืน</td><td>Katabatic · อากาศเย็นหนาแน่นถูกแรงโน้มถ่วงดึงลง · บางที่ >85 kt</td></tr>
+    <tr><td><b>Warm Downslope</b> (Foehn/Chinook)</td><td>-</td><td>อากาศอุ่นข้ามยอดเขาลงด้าน Leeside · <b>warm, dry</b>, gusty 20–50 kt</td></tr>
+  </table>
+</section>
+
+<section id="stability">
+  <h2 class="sec">2.1 Atmospheric Stability — เสถียรภาพบรรยากาศ</h2>
+  <ul>
+    <li><b>Stable</b> = air parcel แทบไม่เคลื่อนที่ · <b>Unstable</b> = มีการเคลื่อนที่ทางดิ่ง</li>
+    <li><b>Buoyancy</b> (แรงลอยตัว): Positive / Negative</li>
+  </ul>
+  <table>
+    <tr><th>ประเภท</th><th>เมื่อยก parcel ขึ้น (เย็นที่ dry adiabatic lapse rate)</th></tr>
+    <tr><td><b>Absolute Stability</b></td><td>parcel <b>เย็นกว่า</b>สิ่งแวดล้อม → หนาแน่นกว่า → <b>จมกลับ</b> = STABLE</td></tr>
+    <tr><td><b>Absolute Instability</b></td><td>parcel <b>อุ่นกว่า</b>สิ่งแวดล้อม → หนาแน่นน้อยกว่า → <b>ลอยขึ้นต่อ</b> = UNSTABLE</td></tr>
+    <tr><td><b>Conditional Instability</b></td><td>parcel อุณหภูมิ<b>เท่ากับ</b>สิ่งแวดล้อม → ความหนาแน่นเท่ากัน → <b>อยู่นิ่ง</b> = NEUTRAL</td></tr>
+  </table>
+  <div class="key">💡 <b>Temperature Inversion</b> (thermal inversion) = การกลับด้านของพฤติกรรมอุณหภูมิปกติใน Troposphere → ชั้นที่<b>เสถียรมาก</b></div>
+</section>
+
+<section id="moisture">
+  <h2 class="sec">2.2 Moisture — การเปลี่ยนสถานะของน้ำ</h2>
+  <table>
+    <tr><th>ดูดความร้อน (Heat taken in → cools air)</th><th>คายความร้อน (Heat given out → warms air)</th></tr>
+    <tr><td><b>Melting</b> (หลอมเหลว) · <b>Sublimation</b> (ระเหิด) · <b>Evaporation</b> (ระเหย)</td><td><b>Condensation</b> (ควบแน่น) · <b>Freezing</b> (เยือกแข็ง) · <b>Deposition</b> (พอกพูน)</td></tr>
+  </table>
+  <ul>
+    <li><b>Melting</b>: หิมะละลายขณะตก (cools air) · <b>Evaporation</b>: ฝนระเหย (cools)</li>
+    <li><b>Sublimation</b>: หิมะบนพื้นระเหิดขณะยังต่ำกว่าจุดเยือกแข็ง (cools)</li>
+    <li><b>Freezing</b>: หยดน้ำถูกยกเข้าชั้นเย็นจัดแล้วแข็ง (warms) · <b>Condensation</b>: เมฆก่อตัวจาก positive buoyancy (warms)</li>
+    <li><b>Deposition</b>: frost เกิดบนพื้นเมื่อต่ำกว่าจุดเยือกแข็ง (warms)</li>
+  </ul>
+</section>
+
+<section id="humidity">
+  <h2 class="sec">2.3 Humidity — ความชื้น</h2>
+  <ul>
+    <li><span class="term">Relative Humidity (RH)</span> — หน่วยความหนาแน่นไอน้ำ g/m³ · เช่น 10 g/m³ ที่ 20 °C เทียบไอน้ำอิ่มตัว 17.3 g/m³ = <span class="num">57.8% RH</span> · คำนวณได้จากอุณหภูมิ + Dew Point</li>
+    <li><span class="term">Dew Point</span> = อุณหภูมิที่ไอน้ำเริ่มกลั่นตัวเป็นหยดน้ำ (มักต่ำกว่า Air Temp) — ทางการบิน<b>นิยมใช้ dew point มากกว่า RH</b> เพราะพยากรณ์หยาดน้ำฟ้า พายุฟ้าคะนอง และ icing ได้</li>
+  </ul>
+  <div class="key">อุณหภูมิอากาศ<b>ใกล้เคียง</b> dew point → ความชื้นสูง · <b>ต่างกันมาก</b> → ความชื้นน้อย</div>
+  <table>
+    <tr><th>ปรากฏการณ์</th><th>กระบวนการ</th></tr>
+    <tr><td><b>Dew</b> (น้ำค้าง)</td><td>Condensation</td></tr>
+    <tr><td><b>White Dew</b> (น้ำค้างขาว)</td><td>Freezing — น้ำค้างที่แข็งตัว สีขาวโพลน (ต่ำกว่าจุดเยือกแข็ง)</td></tr>
+    <tr><td><b>Frost</b> (น้ำค้างแข็ง)</td><td>Deposition — ผลึกน้ำแข็งบางบนพื้นผิวเย็นต่ำกว่าจุดเยือกแข็ง (ไอ → น้ำแข็งโดยตรง)</td></tr>
+  </table>
+</section>
+
+<section id="clouds">
+  <h2 class="sec">2.4 Clouds — เมฆ &amp; หมอก</h2>
+  <h3>Fog &amp; Mist</h3>
+  <table>
+    <tr><th>ชนิด</th><th>ทัศนวิสัย</th></tr>
+    <tr><td><b>หมอก (Fog) — FG</b></td><td>ละอองน้ำเล็ก<b>มองเห็นด้วยตาเปล่า</b> ทำให้ทัศนวิสัย <b>&lt; 1,000 ม.</b> · ฐานติดพื้น (ต่างจากเมฆที่ฐานลอยสูง)</td></tr>
+    <tr><td><b>หมอกน้ำค้าง (Mist) — BR</b></td><td>ละออง<b>เล็กจนมองไม่เห็นด้วยตาเปล่า</b> · ทัศนวิสัย <b>&gt; 1 กม.</b></td></tr>
+  </table>
+  <h3>เมฆชั้นต่ำ (Low Clouds) — ฐาน ≤ 6,500 ฟุต</h3>
+  <ul>
+    <li><b>Stratus (ST)</b> — เรียบเป็นแผ่น สีเทา · <b>Stratocumulus (SC)</b> — ก้อนผสมแผ่น ขาว/เทา</li>
+    <li><b>Cumulus (CU)</b> — รูปโดมคล้ายดอกกะหล่ำ · สูงมากเป็น <b>Towering Cumulus (TCU)</b></li>
+    <li><b>Cumulonimbus (CB)</b> — ดูในเมฆก่อตัวทางตั้ง</li>
+    <li class="note">หมายเหตุ: ฐานต่ำกว่า 50 ฟุตไม่ถือเป็นเมฆ</li>
+  </ul>
+  <h3>เมฆชั้นกลาง (Middle Clouds) — 6,500–20,000 ฟุต</h3>
+  <ul>
+    <li>ส่วนมากเป็น <b>Supercooled Water Droplet</b> (เย็นกว่าจุดเยือกแข็ง) → <b>อันตรายต่ออากาศยาน</b></li>
+    <li><b>Altocumulus (AC)</b> — ชั้นคล้ายลูกฟูก/ขนแกะ · <b>Altostratus (AS)</b> — แผ่นเทาโปร่งแสง เห็นดวงอาทิตย์สลัว</li>
+    <li><b>Nimbostratus (NS)</b> — ปกคลุมกว้าง ฐานแผ่ลงถึงเมฆต่ำ ทัศนวิสัยไม่ดี กระแสอากาศปั่นป่วน</li>
+  </ul>
+  <h3>เมฆชั้นสูง (High Clouds) — 20,000–45,000 ฟุต (ผลึกน้ำแข็ง)</h3>
+  <ul>
+    <li><b>Cirrus (CI)</b> — ใยขาวบางคล้ายขนนก/หางม้า · <b>Cirrostratus (CS)</b> — ใยติดกันปกคลุมฟ้า ทำให้เกิด <b>Halo</b> (ทรงกลด)</li>
+    <li><b>Cirrocumulus (CC)</b> — หย่อมขาวบางก้อนเล็กคล้ายเกล็ดปลา</li>
+  </ul>
+  <h3>เมฆก่อตัวทางตั้ง (Convective Clouds)</h3>
+  <ul>
+    <li><b>Towering Cumulus (TCU)</b> — CU หลายก้อนรวมกัน คล้ายหอคอยขาว กระแสอากาศปั่นป่วน น้ำแข็งเกาะเครื่อง พายุฟ้าคะนอง</li>
+    <li><b>Cumulonimbus (CB)</b> — ก้อนใหญ่โตจาก CU · ส่วนบนเป็นผลึกน้ำแข็ง · มีเม็ดฝน หิมะ ลูกเห็บ · ฟ้าแลบ ฟ้าผ่า ลูกเห็บ ลมงวงช้าง · <b>กระแสอากาศปั่นป่วนรุนแรง</b></li>
+  </ul>
+</section>
+
+<section id="precip">
+  <h2 class="sec">2.5 Precipitation — หยาดน้ำฟ้า</h2>
+  <p>ความชื้นในรูปของเหลว/ของแข็งที่มองเห็นขณะตก · <b>เกิดไม่ได้หากไม่มีเมฆ</b> · อนุภาคต้องใหญ่พอจึงตกถึงพื้น (มักเกิดใน NS, CB)</p>
+  <h3>สาเหตุการเกิด</h3>
+  <ul>
+    <li>1) Condensation/Deposition &nbsp; 2) Collision/Coalescence (การชน/รวมตัว)</li>
+    <li>เขตร้อน 2 กระบวนการนี้เพียงพอ · เขต Mid-High Latitude ต้องอาศัย <b>Ice Crystal Process</b> + <b>Supercooled Water Droplet</b></li>
+  </ul>
+  <h3>ชนิด (8 ประเภท)</h3>
+  <table>
+    <tr><th>ชนิด</th><th>รายละเอียด</th></tr>
+    <tr><td><b>Drizzle</b> (ฝนละออง)</td><td>&lt; 0.5 mm · เกิดกับ Fog และ ST</td></tr>
+    <tr><td><b>Rain</b> (ฝน)</td><td>≥ 0.5 mm · Rain Shower = ฝนที่เปลี่ยนความรุนแรง/หยุดรวดเร็ว</td></tr>
+    <tr><td><b>Freezing Rain</b></td><td>ฝนที่แข็งตัวเมื่อกระทบพื้นผิว</td></tr>
+    <tr><td><b>Ice Pellets (Sleet)</b> · <b>Hail</b> (ลูกเห็บ)</td><td>เม็ดน้ำแข็ง / ลูกเห็บ</td></tr>
+    <tr><td><b>Snow Pellets (Graupel)</b> · <b>Snow</b> · <b>Snow Grain</b></td><td>เม็ดหิมะ / หิมะ / เกล็ดหิมะ (Freezing Drizzle)</td></tr>
+  </table>
+</section>
+
+<section id="airmass">
+  <h2 class="sec">2.6 Air Masses — มวลอากาศ</h2>
+  <p>กลุ่มอากาศขนาดใหญ่ที่ปกคลุมพื้นที่กว้าง มี<b>อุณหภูมิ ความชื้น ความกดอากาศใกล้เคียงกัน</b>ในระดับเดียวกัน · เกิดเมื่ออากาศปกคลุมพื้นผิวหนึ่งนานจนได้สมบัติของพื้นผิวนั้น (Source Region)</p>
+  <h3>Modification — การปรับสภาพ</h3>
+  <table>
+    <tr><th>Warming from Below (มวลเย็นกว่าพื้น)</th><th>Cooling from Below (มวลอุ่นกว่าพื้น)</th></tr>
+    <tr><td>อากาศถูกทำให้ร้อนจากล่าง เกิดกระแสไหลขึ้น · ปั่นป่วนสูงถึง 10,000 ฟุต · การทรงตัว<b>ไม่ดี</b>ระดับต่ำ · เมฆก้อน + CB, Rain Shower, พายุฟ้าคะนอง, ลูกเห็บ · <b>ทัศนวิสัยดี</b> (ยกเว้นในฝน/พายุ)</td><td>อากาศถูกทำให้เย็นจากล่าง · อากาศเรียบเหนือระดับแรงเสียดทาน · การทรงตัว<b>ดี</b>ระดับต่ำ · เมฆแผ่น + ฝนละออง · <b>ทัศนวิสัยเลว</b> (โดยเฉพาะเขตเมือง/อุตสาหกรรม จาก Inversion)</td></tr>
+  </table>
+</section>
+
+<section id="fronts">
+  <h2 class="sec">2.7 Fronts — แนวปะทะอากาศ</h2>
+  <p>เมื่อมวลอากาศ 2 มวลคุณสมบัติต่างกัน (อุณหภูมิ/ความหนาแน่น) มาพบกันโดยไม่ผสมกัน เกิดบริเวณแคบ ๆ (20–90 กม.) เรียก <span class="term">Front</span> · ส่วนสัมผัสพื้น = Surface Front</p>
+  <table>
+    <tr><th>Front</th><th>ลักษณะ &amp; สภาพอากาศ</th></tr>
+    <tr><td><b>Warm Front</b></td><td>อากาศอุ่นเลื่อนขึ้นเหนือลิ่มอากาศเย็น (<b>ชันน้อย</b>) · เมฆ NS, ST · Drizzle, Fog · อุณหภูมิ<b>อุ่นขึ้น</b>เมื่อผ่าน · ความกดเพิ่มแล้วลด · ลม E → S–SW</td></tr>
+    <tr><td><b>Cold Front</b></td><td>อากาศเย็นดันอากาศอุ่นให้ยกตัว (<b>ชันมาก</b>) · เมฆ TCU, CB แล้วฟ้าโปร่งเมื่อผ่าน · พายุฟ้าคะนอง, Rain Shower · อุณหภูมิ<b>เย็นลง</b>เมื่อผ่าน · ความกดลดแล้วเพิ่ม · ลม S,SW → N,NW</td></tr>
+    <tr><td><b>Occluded Front</b></td><td>Cold front ไล่ทัน warm front ที่เคลื่อนช้า · เมฆ NS,ST แล้ว TCU,CB · Drizzle+Fog แล้วพายุ · ลมแปรปรวน (Variable)</td></tr>
+    <tr><td><b>Stationary Front</b></td><td>อากาศไม่เคลื่อน · มีฝน · ลมเปลี่ยนทิศ (Wind Shift)</td></tr>
+  </table>
+  <h3>The Frontal Cyclone — 4 ระยะ</h3>
+  <p>1) Early/Incipient disturbance → 2) Open/Rapid development → 3) Occluded/Maturity → 4) Dissolving/Decay</p>
+</section>
+
+<section id="jet">
+  <h2 class="sec">Jet Stream — กระแสลมกรด</h2>
+  <ul>
+    <li>แถบลมความเร็วสูงแคบ ๆ (Narrow band of high-speed winds) เกิดใกล้ <b>Tropopause</b></li>
+    <li>2 ชนิด: <b>Polar Front Jet</b> · <b>Subtropical Jet</b></li>
+  </ul>
+</section>
+
+<!-- ============ PART 2 ============ -->
+<div style="background:linear-gradient(135deg,#c2410c,#9a3412);color:#fff;border-radius:12px;padding:16px 22px;margin:26px 0 22px;">
+  <div style="font-size:20px;font-weight:800;">PART 2 · Weather Hazards</div>
+  <div style="opacity:.85;font-size:14px;margin-top:4px;">Meteorology II — อันตรายจากสภาพอากาศต่อการบิน</div>
+</div>
+
+<section id="ts">
+  <h2 class="sec">3.1 Thunderstorms — พายุฟ้าคะนอง</h2>
+  <ul>
+    <li>เป็น local storm ที่เกิดจาก <b>CB</b> · อยู่สั้น 1–2 ชม. · single-cell ถึง multi-cell</li>
+    <li>ชนิด: <b>Heat/Airmass</b> (Convection, Orographic Uplift, Advection, Convergence) · <b>Frontal</b></li>
+  </ul>
+  <h3>Life Cycle — 3 ระยะ</h3>
+  <table>
+    <tr><th>ระยะ</th><th>ลักษณะ</th></tr>
+    <tr><td><b>1. Cumulus (Developing)</b></td><td>Updraft แรง ~1,000 fpm (สูงสุด 4,000) · CU → TCU · ~15–20 นาที</td></tr>
+    <tr><td><b>2. Mature</b> ⚠️</td><td>Updraft สูงถึง 10,000 fpm (ปกติ ~5,000) + Downdraft 2,000–3,000 fpm จากหยาดน้ำฟ้า · ฝน, ฟ้าแลบ, ฟ้าร้อง · ~20–30 นาที · <b>อันตรายสุด</b></td></tr>
+    <tr><td><b>3. Dissipating (สลายตัว)</b></td><td>ปรากฏยอดรูปทั่ง (anvil/cirrus) · มีฝน · ~30 นาที (เมฆคงอยู่ได้ 2–3 ชม.)</td></tr>
+  </table>
+  <p class="note">Multicell &amp; Supercell = พายุที่รุนแรงและซับซ้อนกว่า single-cell</p>
+  <h3>Thunderstorm Hazards</h3>
+  <table>
+    <tr><th>อันตราย</th><th>รายละเอียด</th></tr>
+    <tr><td><b>Turbulence (TNT)</b></td><td>A: Within · B: Below · C: Around · <b>คำแนะนำที่ดีสุดคือ "อย่าบินเข้าไป!"</b></td></tr>
+    <tr><td><b>Lightning</b></td><td>IC / CC / CG / CA · <b>ฟ้าผ่าถี่ = พายุยิ่งรุนแรง</b></td></tr>
+    <tr><td><b>Hail</b> (ลูกเห็บ)</td><td>ดูใน Precipitation</td></tr>
+    <tr><td><b>Tornadoes</b></td><td>ลมงวงช้าง</td></tr>
+  </table>
+  <div class="key warn"><b>Within Thunderstorm</b>: updraft/downdraft แรง + ฝนหนัก ฟ้าผ่า ลูกเห็บ icing → disorientation, loss of control · <b>ปัจจัยหลักของอุบัติเหตุร้ายแรง</b> · Overshooting top ทำให้ปั่นป่วนเหนือ CB</div>
+  <div class="key warn"><b>อย่าบินภายใน 20 ไมล์</b>ของพายุที่จัดเป็น severe หรือมี radar echo ระดับ 5 ขึ้นไป</div>
+  <h3>ข้อปฏิบัติเพื่อลดอันตราย (สรุปหลัก)</h3>
+  <ul>
+    <li><b>หลีกเลี่ยงเป็นทางเลือกที่ดีที่สุด</b> · ถ้าเลี่ยงไม่ได้: ตรวจเรดาร์ก่อน, เปิดไฟห้องนักบิน, เปิด Pitot heat, รัดเข็มขัด, ปรับความเร็วให้เข้ากระแสปั่นป่วน (turbulence penetration speed) · เลือกเส้นทาง<b>สั้นที่สุด</b></li>
+    <li>รักษาระยะสูง<b>คงที่</b> · ไม่บินใต้เมฆ Cirrus รูปทั่ง (ลูกเห็บรุนแรง) · ไม่บินใกล้ระดับเยือกแข็งโดยเฉพาะ <b>−8 ถึง 8 °C</b> (อากาศเลวสุด)</li>
+    <li>บินเข้าโดยไม่ตั้งใจ → <b>อย่าบินย้อนกลับ</b> รักษาเส้นทางเดิม · ส่ง PIREP เมื่อทัศนวิสัยปกติ (พายุเปลี่ยนได้ใน &lt;10 นาที)</li>
+    <li>ลดความเสี่ยงประจุไฟฟ้า: เลี่ยงเมฆ cirrus หนา, ผ่านระดับเยือกแข็งเร็วสุด (ฟ้าผ่ามากใน ±8 °C ของระดับเยือกแข็ง), บินเกาะหมู่ให้แยกห่าง</li>
+    <li><b>บินเหนือยอด</b>: เพิ่มความสูง <b>≥1,000 ฟุต ต่อความเร็วลมทุก 10 kt</b> ที่ระดับยอดเมฆ · <b>บินใต้ฐาน = อันตรายสุด</b> (downdraft, microburst, ลมเฉือน, น้ำแข็ง, ลูกเห็บ)</li>
+    <li>บินเข้า: ระดับต่ำสุด 4,000–6,000 ฟุตจากยอดพื้นที่ · ความเร็ว ~50% ของ stall speed ถ้าไม่มีกำหนด · ยกเลิก autopilot ส่วนคุมระดับ/ความเร็ว · ปล่อยเครื่องขึ้นลงตามกระแส เน้นรักษาระยะสูง</li>
+  </ul>
+</section>
+
+<section id="turb">
+  <h2 class="sec">3.2 Turbulence — ความปั่นป่วน</h2>
+  <p>Bumpiness in flight · ขึ้นกับการออกแบบเครื่องและการตอบสนองของนักบิน · ระดับ: <b>Light · Moderate · Severe · Extreme</b></p>
+  <table>
+    <tr><th>ชนิด</th><th>รายละเอียด</th></tr>
+    <tr><td colspan="2"><b>3.2.1 Low Level Turbulence (LLT)</b> — ต่ำกว่า 15,000 ฟุต MSL</td></tr>
+    <tr><td><b>Mechanical</b></td><td>แรงเสียดทานทำให้ลมชั้นล่างช้า + แนวต้นไม้/เนิน/อาคาร · เลี่ยงโดยบินด้านกระแสไหลขึ้น, เลี่ยงร่องเขา, บินสูง/อ้อมเมื่อลมแรง</td></tr>
+    <tr><td><b>Convective (Thermal)</b></td><td>ผิวโลกร้อนไม่สม่ำเสมอ · เลี่ยงโดยบินที่ <b>Capping Stable Layer</b> (เหนือ Condensation Level)</td></tr>
+    <tr><td><b>Frontal</b></td><td>อากาศอุ่นถูกดันเหนืออากาศเย็น · Front 30 kt บนพื้นราบ → LLT Mod+ · ถ้าผ่าน Terrain → Mod+ ไม่ว่าเร็วเท่าไร</td></tr>
+    <tr><td><b>Wake</b></td><td>กระแสปั่นป่วนหลังอากาศยาน · <b>Heavy ACFT แรงกว่า Small</b> · เลี่ยง: บินระดับเดียว/เหนือ, T/O–L/D เลยจุดของเครื่องใหญ่</td></tr>
+  </table>
+  <h3>3.2.2 Clear Air Turbulence (CAT)</h3>
+  <ul>
+    <li>ปั่นป่วนในอากาศแจ่มใส · <b>เหนือ 15,000 ฟุต MSL</b> · เกี่ยวกับ High-Level Frontal, <b>Jet Stream</b> · มองเห็นยาก (ไม่มีเมฆ)</li>
+    <li>เกิดบ่อยในช่วง 2,000–3,000 ฟุตของ Tropopause, เหนือภูเขา, ฤดูหนาว · มักเป็นชั้นบาง &lt;2,000 ฟุต · <b>Jet Stream ที่บิดไปมาเกิด CAT มากกว่าแนวตรง</b></li>
+    <li>แกน Jet อาจถึง 250 mph ขอบนอกเหลือ 50 mph → เกิดกระแสหมุนวน = CAT (Air Pocket ตกหลุมอากาศ)</li>
+    <li class="key">✓ เลี่ยง CAT: อุณหภูมิภายนอก<b>เพิ่ม → เพิ่มระดับบิน</b>, อุณหภูมิ<b>ลด → ลดระดับบิน</b> · ปฏิบัติตามคู่มือเครื่อง</li>
+  </ul>
+  <h3>3.2.3 Mountain Wave Turbulence (MWT)</h3>
+  <ul>
+    <li>เกิดด้านหลังภูเขา · ความรุนแรงขึ้นกับความเร็วลม<b>ตั้งฉากสันเขา ≥ 25 kt</b> · ด้านรับลมชันน้อย+ด้านหลังลมชันมาก = คลื่นรุนแรง · บรรยากาศ Stable → คลื่นแผ่ไกล</li>
+    <li>สังเกต: <b>Rotor Cloud, Lenticular Cloud, Cap Cloud</b> · หลีกเลี่ยงบินเข้าใกล้ · Altimeter อ่านผิดพลาดได้</li>
+    <li class="key warn">ถ้าจำเป็นต้องผ่าน ใช้ความสูง<b>มากกว่าสันเขาอย่างน้อย 50%</b> (สันเขา 12,000 ฟุต → บินอย่างน้อย 18,000 ฟุต) · ลม ≥25 kt ที่ยอดเขา: "go high, go around, or don't go"</li>
+  </ul>
+</section>
+
+<section id="ws">
+  <h2 class="sec">3.3 Wind Shear — ลมเฉือน</h2>
+  <ul>
+    <li>การเปลี่ยนทิศทาง/ความเร็วลมในระยะสั้นมาก (Directional Shear / Speed Shear)</li>
+    <li>เกิดได้ทุกระดับ แต่<b>อันตรายมากที่ ≤ 2,000 ฟุต</b> เหนือพื้น ระหว่างวิ่งขึ้น/ร่อนลง</li>
+  </ul>
+  <h3>สาเหตุ</h3>
+  <table>
+    <tr><th>สาเหตุ</th><th>รายละเอียด</th></tr>
+    <tr><td><b>Microburst / Downburst</b></td><td>จากพายุฟ้าคะนอง · <b>อย่าวิ่งขึ้น/ลงเมื่อพายุกำลังเข้า</b></td></tr>
+    <tr><td><b>Inversion (Low Level Jet)</b></td><td>พื้นเย็นตอนกลางคืน แรงในเขตหิมะ/น้ำแข็ง · LLJ เกิดเหนือชั้นอุณหภูมิกลับ ~30 kt (บางที &gt;65 kt)</td></tr>
+    <tr><td><b>Front</b></td><td>ลมเฉือนรุนแรงเมื่อ Front เคลื่อน ≥30 kt และ/หรืออุณหภูมิต่างกัน ≥5 °C (10 °F)</td></tr>
+  </table>
+  <div class="key"><span class="term">LLWAS</span> (Low-Level Wind Shear Alert System) ติดตั้งใน <b>11 สนามบิน</b>ของไทย: VTBS สุวรรณภูมิ, VTBD ดอนเมือง, VTSP ภูเก็ต, VTCC เชียงใหม่, VTCT เชียงราย, VTUD อุดรฯ, VTUU อุบลฯ, VTUK ขอนแก่น, VTSS หาดใหญ่, VTSG กระบี่, VTSB สุราษฎร์ฯ</div>
+</section>
+
+<section id="icing">
+  <h2 class="sec">3.4 Icing — น้ำแข็งจับเกาะเครื่องบิน</h2>
+  <h3>3 ประเภทตามตำแหน่ง</h3>
+  <table>
+    <tr><th>ประเภท</th><th>รายละเอียด</th></tr>
+    <tr><td><b>Induction Icing</b> (เกาะเครื่องยนต์)</td><td>กระทบการทำงานของเครื่องยนต์ กำลังตกจากน้ำแข็งอุดทางอากาศเข้า · <b>Carburetor Icing</b> · เป็น <b>60%</b> ของอุบัติเหตุ icing (FAA 2010) · ประเมินจากอุณหภูมิ+dew point</td></tr>
+    <tr><td><b>Structural Icing</b> (เกาะผิวเครื่องขณะบิน)</td><td>เสียประสิทธิภาพอากาศพลศาสตร์: <b>drag เพิ่ม, lift ลด, เสถียรภาพลด, stall speed เพิ่ม</b>, ล้อค้าง, ทัศนวิสัยลด</td></tr>
+    <tr><td><b>Ground Icing</b> (ก่อนบิน)</td><td>จาก freezing precipitation หรือ frost</td></tr>
+  </table>
+  <h3>3 ชนิดของน้ำแข็ง</h3>
+  <table>
+    <tr><th>ชนิด</th><th>ลักษณะ</th></tr>
+    <tr><td><b>Rime Ice</b></td><td>ขาว ขุ่น เปราะ · <b>พบบ่อยสุด · อันตรายน้อยสุด</b></td></tr>
+    <tr><td><b>Clear Ice</b></td><td>ใส แข็ง หนัก · <b>อันตรายที่สุด</b></td></tr>
+    <tr><td><b>Mixed Ice</b></td><td>ปนกันระหว่างขุ่นและใส</td></tr>
+  </table>
+  <div class="key">💡 <b>Estimating Freezing Level:</b> ลบ 2 °C ต่อ 1,000 ฟุต (lapse rate เฉลี่ย) · เช่น field 1,000 ฟุต อุณหภูมิผิว 15 °C → freezing level (0 °C) = <b>8,500 ฟุต AMSL</b></div>
+  <h3>Avoiding Ice — ข้อควรระวัง</h3>
+  <ul>
+    <li><b>บนพื้น:</b> ไม่วิ่งขึ้นเมื่อมีน้ำค้างแข็ง/หิมะเกาะ · ไม่บินผ่านบริเวณที่ทราบว่าเกิด icing โดยไม่มี de-/anti-ice</li>
+    <li><b>ในอากาศ:</b> ไม่บินเข้าเมฆ/ผ่านฝน-หิมะเมื่ออุณหภูมิ &lt; 2 °C · รู้ขีดความสามารถเครื่องและอุปกรณ์ de-/anti-ice · ใช้ PIREPS · เวลาในการตัดสินใจ<b>ลดลงเร็ว</b>เมื่อ icing รุนแรงขึ้น</li>
+  </ul>
+</section>
+
+<section id="vis">
+  <h2 class="sec">3.5 Restrictions to Visibility — สิ่งจำกัดทัศนวิสัย</h2>
+  <p><b>IMC</b> (Instrument Meteorological Condition) แบ่ง: VFR · MVFR · IFR · LIFR</p>
+  <p>ทัศนวิสัย = ระยะไกลสุดที่มองเห็นและระบุเป้าหมายได้กลางวัน / เห็นแสงไฟปกติกลางคืน · ชนิด: Surface, Tower, Slant, Vertical Visibility</p>
+  <table>
+    <tr><th>สิ่งจำกัด</th><th>รายละเอียด</th></tr>
+    <tr><td><b>Fog, Mist, Low Stratus</b></td><td>Fog ทัศนวิสัย &lt;1,000 ม. · Mist ≥1,000 ม.</td></tr>
+    <tr><td><b>Precipitation</b></td><td>ฝนปกติ &gt;1 ไมล์ (ฝนหนักอาจ &lt;1 ไมล์) · หิมะทึบแสง ลดได้ถึง 0</td></tr>
+    <tr><td><b>Spray จากทะเล</b></td><td>ลม ≥41 kt ยอดคลื่นเกิดฝอยละอองกระทบทัศนวิสัย</td></tr>
+    <tr><td><b>Oil Particles / Air Pollution</b></td><td>ไอน้ำมันจากยานพาหนะในเขตเมือง/โรงงาน</td></tr>
+    <tr><td><b>Smoke, Smog, Haze</b></td><td>ควันขนาดใหญ่อยู่ระดับต่ำ · Smog = ควัน+หมอก · <b>Haze (ฟ้าหลัว)</b> หนา 2,000–3,000 ฟุต (บางที 15,000) — ในไทยหนักช่วง ก.พ.–มี.ค.</td></tr>
+    <tr><td><b>Dust and Sand</b></td><td>ฝุ่นบังทัศนวิสัยมากกว่าทราย (ทรายยกสูงไม่เกิน 30 ม.) · พายุฝุ่นลดต่ำกว่า 1 กม.</td></tr>
+    <tr><td><b>Salt Particles</b></td><td>ตามชายฝั่ง เป็นแกนกลางการกลั่นตัว (Condensation Nuclei)</td></tr>
+  </table>
+</section>
+
+<section id="ash">
+  <h2 class="sec">3.6 Volcanic Ash — เถ้าภูเขาไฟ</h2>
+  <ul>
+    <li>รบกวนการปฏิบัติการบิน · ต่างจากเมฆปกติ: ฝุ่น/ควันเข้าห้องโดยสาร, มีกลิ่น, อุดตันระบบระบายอากาศ, เครื่องวัดทำงานผิดพลาด (Instrument Malfunction)</li>
+  </ul>
+</section>
+
+<!-- ============ PART 3 ============ -->
+<div style="background:linear-gradient(135deg,#15803d,#166534);color:#fff;border-radius:12px;padding:16px 22px;margin:26px 0 22px;">
+  <div style="font-size:20px;font-weight:800;">PART 3 · Interpreting Weather Data</div>
+  <div style="opacity:.85;font-size:14px;margin-top:4px;">Meteorology III — การแปลข้อมูลข่าวอากาศการบิน (METAR / TAF)</div>
+</div>
+
+<section id="forecast">
+  <h2 class="sec">III-1 The Forecasting Process — วิธีพยากรณ์</h2>
+  <table>
+    <tr><th>วิธี</th><th>หลักการ</th></tr>
+    <tr><td><b>Persistence</b></td><td>สภาพอากาศอนาคต = ปัจจุบัน (คงเดิม)</td></tr>
+    <tr><td><b>Trend</b></td><td>คาดจากแนวโน้ม เช่น พายุห่าง 1,000 ไมล์ เคลื่อน 250 ไมล์/วัน → ถึงใน 4 วัน</td></tr>
+    <tr><td><b>Climatology</b></td><td>ค่าเฉลี่ยสถิติสภาพอากาศหลายปีของวันนั้น</td></tr>
+    <tr><td><b>Analog</b></td><td>เทียบสถานการณ์วันนี้กับเหตุการณ์ในอดีตที่คล้ายกัน</td></tr>
+    <tr><td><b>Numerical Weather Prediction (NWP)</b></td><td>ใช้ supercomputer + forecast models คำนวณตัวแปร (อุณหภูมิ, ความกด, ลม, ฝน)</td></tr>
+  </table>
+</section>
+
+<section id="metar">
+  <h2 class="sec">III-2 METAR — ถอดรหัสข่าวอากาศ</h2>
+  <ul>
+    <li><b>METAR</b> = ข่าวอากาศการบินประจำ (ทุก 1 ชม. หรือครึ่ง ชม.) · <b>SPECI</b> = รายงานพิเศษเมื่อสภาพอากาศถึงเกณฑ์ · รูปแบบรหัสเหมือนกัน</li>
+    <li><b>COR</b> = แก้ไขหลังส่งแล้ว · <b>AUTO</b> = ตรวจอัตโนมัติ (ไทยยังไม่ใช้)</li>
+  </ul>
+  <div class="note">ตัวอย่างเต็ม: <span style="font-family:Consolas,monospace">METAR VTBD 010000Z 31010KT 280V350 4000 1400SW R21/1500 +SHRA FEW005 FEW010CB SCT018 BKN025 25/22 Q1010</span></div>
+  <h3>9 กลุ่มรหัส (เรียงลำดับ)</h3>
+  <table>
+    <tr><th>#</th><th>กลุ่ม</th><th>รายละเอียด</th></tr>
+    <tr><td>1</td><td><b>Identification</b></td><td>ชื่อรายงาน (METAR/SPECI) + <b>CCCC</b> รหัสสนามบิน ICAO 4 ตัว (เช่น VTBS) + <b>YYGGggZ</b> วันที่+เวลา UTC (Z)</td></tr>
+    <tr><td>2</td><td><b>Surface Wind</b></td><td><b>dddff KT</b> ทิศ 3 หลัก (ทุก 10°) + ความเร็ว 2 หลัก · Gust: <span class="code">31010G20KT</span> (สูงกว่าเฉลี่ย ≥10 kt) · ผันแปร ≥60°: <span class="code">280V350</span> · <b>VRB</b> ลมแปรปรวน · <b>00000KT</b> ลมสงบ (Calm &lt;1 kt) · <b>P99</b> เมื่อ ≥100 kt</td></tr>
+    <tr><td>3</td><td><b>Visibility</b></td><td>เลข 4 หลัก หน่วยเมตร · &lt;1,000 เติม 0 นำหน้า · <b>≥10 กม. = 9999</b> · ทิศต่ำสุด: <span class="code">4000 1400SW</span> · <b>CAVOK</b> = ทัศนวิสัย ≥10 กม. + ไม่มีเมฆ &lt;5,000 ฟุต/CB/TCU + ไม่มีสภาพอากาศสำคัญ</td></tr>
+    <tr><td>4</td><td><b>RVR</b> (Runway Visual Range)</td><td>รายงานเมื่อทัศนวิสัย/RVR &lt;1,500 ม. · <span class="code">R21/1300</span> · วัดด้วย Transmissometer ที่ 2.5 ม.เหนือทางวิ่ง · <b>P</b>2000 (เกินสูงสุด) · <b>M</b>0150 (ต่ำกว่าต่ำสุด) · แนวโน้ม U/D/N</td></tr>
+    <tr><td>5</td><td><b>Present Weather</b></td><td>ไม่เกิน 3 ชนิด · เรียง: ความรุนแรง (+,−) หรือ VC → ลักษณะ → ชนิด · <b>VC</b> = ห่างสนามบิน 8–16 กม. (เช่น VCTS, VCFG)</td></tr>
+    <tr><td>6</td><td><b>Cloud / Vertical Visibility</b></td><td>ปริมาณเมฆ (8 ส่วน): <b>FEW</b> 1–2 · <b>SCT</b> 3–4 · <b>BKN</b> 5–7 · <b>OVC</b> 8 · เช่น <span class="code">FEW005 FEW010CB SCT018 BKN025</span> · <b>VV///</b> ทัศนวิสัยแนวตั้ง · <b>NSC</b> / <b>NCD</b> (auto)</td></tr>
+    <tr><td>7</td><td><b>Temp / Dew Point</b></td><td>2 หลัก °C คั่นด้วย / · เช่น <span class="code">25/22</span> · ติดลบใช้ <b>M</b> (เช่น M09) · ปัดเศษ ≥0.5 ขึ้น</td></tr>
+    <tr><td>8</td><td><b>Pressure (QNH)</b></td><td><b>Q</b> + 4 หลัก hPa (เช่น <span class="code">Q1010</span>) · หน่วยนิ้วใช้ <b>A</b> (เช่น A3005 = 30.05 นิ้ว)</td></tr>
+    <tr><td>9</td><td><b>Supplementary</b></td><td>Recent weather (เช่น <b>RERA</b>) · <b>WS RWY24</b> / <b>WS ALL RWY</b> (wind shear &lt;1,600 ฟุต) · TREND</td></tr>
+  </table>
+  <h3>รหัสสภาพอากาศที่พบบ่อย</h3>
+  <table>
+    <tr><th>หยาดน้ำฟ้า</th><th>ทัศนวิสัยลด</th><th>อื่น ๆ</th></tr>
+    <tr>
+      <td>DZ ฝนละออง · RA ฝน · SN หิมะ · SG เกล็ดหิมะ · PL เม็ดน้ำแข็ง · GR ลูกเห็บ (≥5mm) · GS ลูกเห็บเล็ก</td>
+      <td>FG หมอก · BR หมอกบาง · HZ ฟ้าหลัว · FU ควัน · SA ทราย · DU ฝุ่น · VA เถ้าภูเขาไฟ</td>
+      <td>TS พายุฟ้าคะนอง · TSRA (ฝน) · TSGR (ลูกเห็บ) · SQ กระแสลมแรง · FC เมฆงวงช้าง · PO/DS/SS พายุฝุ่น-ทราย</td>
+    </tr>
+  </table>
+  <div class="key">เกณฑ์ความรุนแรงฝน: <b>Light</b> &lt;2.5 mm/ชม. · <b>Moderate</b> 2.5–10 · <b>Heavy</b> ≥10 mm/ชม.</div>
+</section>
+
+<section id="taf">
+  <h2 class="sec">III-3 TAF — พยากรณ์อากาศสนามบิน</h2>
+  <ul>
+    <li>พยากรณ์สภาพอากาศบริเวณสนามบิน <b>30 ชม.</b> (หรือ 24) · ครอบคลุมรัศมี <b>5 ไมล์</b> · 5–10 ไมล์ = Vicinity (VC)</li>
+    <li>Valid Period รูปแบบ <b>YYG1G1/YYG2G2</b> (Zulu) · TAF บรรทัดเดียวได้ถ้าอากาศคงที่ 30 ชม. (พบในเขตร้อน)</li>
+  </ul>
+  <div class="note">ตัวอย่าง: <span style="font-family:Consolas,monospace">TAF VTNC 241100Z 2411/2511 19005KT 9000 HZBR FEW035 SCT300 QNH2988INS</span></div>
+  <h3>Change Groups — กลุ่มการเปลี่ยนแปลง</h3>
+  <table>
+    <tr><th>กลุ่ม</th><th>ความหมาย</th></tr>
+    <tr><td><b>BECMG</b> (Becoming)</td><td>เปลี่ยนแปลง<b>ค่อยเป็นค่อยไป</b> · ช่วงเวลา YYGG/YYGeGe (ปกติ 1 ชม. ไม่เกิน 2) · สภาพใหม่เด่นชัดเมื่อสิ้นสุดกลุ่ม</td></tr>
+    <tr><td><b>FM</b> (From)</td><td>เปลี่ยน<b>รวดเร็ว ณ เวลาที่ระบุ</b> (YYGGgg) · แทนที่ทุก element ก่อนหน้า</td></tr>
+    <tr><td><b>TEMPO</b> (Temporary)</td><td>ผันแปร<b>ชั่วคราว</b> (สั้น/เป็นช่วง) · ระบุเฉพาะสิ่งที่เปลี่ยน · <b>ไม่ใส่ QNH</b></td></tr>
+  </table>
+  <ul>
+    <li><b>TX/TN</b> = อุณหภูมิสูงสุด/ต่ำสุดที่พยากรณ์ (เช่น TX17/0721Z TN08/0812Z) · <b>NSW</b> = No Significant Weather</li>
+    <li class="note">กลุ่ม Icing (6IchihihitL), Turbulence (5BhBhBhBtL) = ข้อมูลเพิ่มเติม (ไม่ออกสอบ)</li>
+  </ul>
+</section>
+
+<section id="charts">
+  <h2 class="sec">III-4 Graphic Weather Products &amp; SIGWX</h2>
+  <ul>
+    <li><b>Surface Chart (Synoptic)</b> · <b>Weather Radar</b> · <b>Satellite Imagery</b> · <b>Winds/Temp Aloft Chart</b> · <b>Significant Weather Chart</b></li>
+  </ul>
+  <h3>Significant Weather Chart (Sig Wx)</h3>
+  <p>แผนที่แสดงลักษณะอากาศที่เป็นอันตรายต่อการบิน: ตำแหน่ง+การเคลื่อนที่ของแนวปะทะ, ศูนย์กลางความกด, บริเวณอากาศเลว (พายุฟ้าคะนอง, Tropical Cyclone, Turbulence, Icing, CB)</p>
+  <table>
+    <tr><th>ประเภท</th><th>ระดับความสูง (FL)</th></tr>
+    <tr><td><b>High-Level (SWH)</b></td><td>FL250–630</td></tr>
+    <tr><td><b>Medium-Level (SWM)</b></td><td>FL100–250</td></tr>
+    <tr><td><b>Low-Level (SWL)</b></td><td>ผิวพื้น–FL100</td></tr>
+  </table>
+  <h3>สัญลักษณ์สำคัญบน Sig Wx</h3>
+  <ul>
+    <li><b>ISOL</b> (Isolated) &lt;50% พื้นที่ · <b>OCNL</b> (Occasional) 50–75% · <b>FRQ</b> (Frequent) &gt;75% · <b>EMBD</b> = CB แฝงในเมฆปกติ</li>
+    <li>เส้นคั่นความสูง เช่น <b>460/270</b> = ตั้งแต่ FL460 ลงมาถึง FL270 · <b>BKN LYR</b> = ชั้นเมฆ Broken</li>
+    <li><b>Jet Stream:</b> สามเหลี่ยมทึบ = 50 kt, ขีดเล็ก = 10 kt · บอกความสูง (FL) + ทิศทาง</li>
+    <li><b>CAT zone</b> = กรอบเส้นประ · <b>Tropopause Height</b> ในกรอบสี่เหลี่ยม (เช่น 400 = 40,000 ฟุต) · สัญลักษณ์ภูเขาไฟระบุพิกัด LAT/LONG</li>
+    <li>Wind/Temp Chart: อุณหภูมิบวกมี <b>+</b> นำหน้า · ไม่มีเครื่องหมาย = ติดลบ (40 = −40 °C)</li>
+  </ul>
+</section>
+
+<section id="sources">
+  <h2 class="sec">III-5 Sources of Weather Information — แหล่งข้อมูล</h2>
+  <ul>
+    <li><b>กองอุตุนิยมวิทยาการบิน</b> → aeromet.tmd.go.th</li>
+    <li><b>กองข่าวอากาศ คปอ.</b> → weather.rtaf.mi.th</li>
+    <li><b>Windy</b> → windy.com · <b>AeroWeather</b> (App) · <b>AWSS</b> กองข่าวอากาศ คปอ. (App)</li>
+  </ul>
+</section>
+
+<footer>
+  📌 สรุปจากเอกสาร Meteorology I–III (ศบ.รุ่น 158-69-1) · จัดทำเพื่อทบทวนวิชา 109 Meteorology<br>
+  ทบทวนแบบทดสอบได้ที่การ์ด "109 Meteorology Quiz" ในหน้า Test Guide
+</footer>
+
+</div>
+</body>
+</html>
