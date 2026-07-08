@@ -150,9 +150,10 @@
     <li><span class="term">Ozonosphere</span> — ชั้นสะสมโอโซนมากสุด อยู่บริเวณ Stratosphere</li>
     <li><span class="term">Ionosphere</span> — ชั้นสะสมประจุไฟฟ้า (ion + free electron) ตั้งแต่ Lower Mesosphere ถึง Thermosphere</li>
   </ul>
-  <h3>Composition — ไอน้ำในอากาศ</h3>
+  <h3>Composition — องค์ประกอบอากาศ</h3>
   <ul>
-    <li>ไอน้ำแปรผันตามพื้นที่: เขตร้อนอาจถึง <span class="num">4%</span> · เขตขั้วโลกหนาวไม่ถึง <span class="num">1%</span></li>
+    <li><b>Permanent Gases</b> (สัดส่วน<b>คงที่</b>): ไนโตรเจน N₂, ออกซิเจน O₂, อาร์กอน Ar</li>
+    <li><b>Variable Gas</b> (สัดส่วน<b>ไม่คงที่</b>): <span class="term">ไอน้ำ (Water Vapor)</span> — แปรผันตามพื้นที่: เขตร้อนอาจถึง <span class="num">4%</span> · เขตขั้วโลกหนาวไม่ถึง <span class="num">1%</span></li>
     <li>มองเห็นไอน้ำได้เมื่อกลั่นตัวเป็นหยดน้ำ</li>
   </ul>
 </section>
@@ -338,6 +339,14 @@
 <section id="airmass">
   <h2 class="sec">2.6 Air Masses — มวลอากาศ</h2>
   <p>กลุ่มอากาศขนาดใหญ่ที่ปกคลุมพื้นที่กว้าง มี<b>อุณหภูมิ ความชื้น ความกดอากาศใกล้เคียงกัน</b>ในระดับเดียวกัน · เกิดเมื่ออากาศปกคลุมพื้นผิวหนึ่งนานจนได้สมบัติของพื้นผิวนั้น (Source Region)</p>
+  <h3>Classification — การจำแนก</h3>
+  <p>ใช้ <b>ตัวอักษรเล็ก</b> (แหล่งกำเนิด/พื้นผิว) นำหน้า <b>ตัวอักษรใหญ่</b> (เขตละติจูด):</p>
+  <table>
+    <tr><th></th><th><b>T</b> — Tropical (ร้อน)</th><th><b>P</b> — Polar (เย็น)</th></tr>
+    <tr><td><b>c</b> — continental (ทวีป, แห้ง)</td><td><b>cT</b> — ร้อน + แห้ง</td><td><b>cP</b> — เย็น + แห้ง</td></tr>
+    <tr><td><b>m</b> — maritime (ทะเล, ชื้น)</td><td><b>mT</b> — ร้อน + ชื้น</td><td><b>mP</b> — เย็น + ชื้น</td></tr>
+  </table>
+  <div class="key">💡 <b>ตัวเล็กบอกพื้นผิว</b> (c=ทวีป/แห้ง, m=ทะเล/ชื้น) · <b>ตัวใหญ่บอกเขต</b> (T=ร้อน, P=เย็น) → เช่น <b>cT</b> = มวลอากาศเขตร้อนภาคพื้นทวีป (ร้อน+แห้ง)</div>
   <h3>Modification — การปรับสภาพ</h3>
   <table>
     <tr><th>Warming from Below (มวลเย็นกว่าพื้น)</th><th>Cooling from Below (มวลอุ่นกว่าพื้น)</th></tr>
@@ -476,7 +485,15 @@
 
 <section id="vis">
   <h2 class="sec">3.5 Restrictions to Visibility — สิ่งจำกัดทัศนวิสัย</h2>
-  <p><b>IMC</b> (Instrument Meteorological Condition) แบ่ง: VFR · MVFR · IFR · LIFR</p>
+  <p><b>IMC</b> (Instrument Meteorological Condition) แบ่งตาม <b>เพดานเมฆ (Ceiling)</b> และ <b>ทัศนวิสัย (Visibility)</b>:</p>
+  <table>
+    <tr><th>ประเภท</th><th>Ceiling</th><th>Visibility</th></tr>
+    <tr><td><b>LIFR</b> (Low IFR)</td><td>&lt; 500 ฟุต</td><td>&lt; 1 ไมล์</td></tr>
+    <tr><td><b>IFR</b></td><td>500 – &lt;1,000 ฟุต</td><td>1 – &lt;3 ไมล์</td></tr>
+    <tr><td><b>MVFR</b> (Marginal VFR)</td><td>1,000 – 3,000 ฟุต</td><td>3 – 5 ไมล์</td></tr>
+    <tr><td><b>VFR</b></td><td>&gt; 3,000 ฟุต</td><td>&gt; 5 ไมล์</td></tr>
+  </table>
+  <div class="key">💡 ใช้ <b>ค่าที่แย่กว่า</b> (ต่ำกว่า) ระหว่าง ceiling กับ visibility เป็นตัวตัดสินประเภท · เช่น ceiling 500–&lt;1,000 ฟุต และ vis 1–&lt;3 ไมล์ = <b>IFR</b></div>
   <p>ทัศนวิสัย = ระยะไกลสุดที่มองเห็นและระบุเป้าหมายได้กลางวัน / เห็นแสงไฟปกติกลางคืน · ชนิด: Surface, Tower, Slant, Vertical Visibility</p>
   <table>
     <tr><th>สิ่งจำกัด</th><th>รายละเอียด</th></tr>
@@ -545,6 +562,7 @@
     </tr>
   </table>
   <div class="key">เกณฑ์ความรุนแรงฝน: <b>Light</b> &lt;2.5 mm/ชม. · <b>Moderate</b> 2.5–10 · <b>Heavy</b> ≥10 mm/ชม.</div>
+  <div class="key">💡 <b>Ceiling (เพดานเมฆ)</b> = ฐานของเมฆชั้นต่ำสุดที่ปกคลุม <b>≥ 5/8 ส่วน</b> (คือ <b>BKN</b> หรือ <b>OVC</b> เท่านั้น) · <b>FEW/SCT ไม่นับ</b> เป็น ceiling · เช่น <span class="code">FEW001 BKN004</span> → ceiling = <b>400 ฟุต</b> (จาก BKN004)</div>
 </section>
 
 <section id="taf">
@@ -585,6 +603,7 @@
     <li><b>ISOL</b> (Isolated) &lt;50% พื้นที่ · <b>OCNL</b> (Occasional) 50–75% · <b>FRQ</b> (Frequent) &gt;75% · <b>EMBD</b> = CB แฝงในเมฆปกติ</li>
     <li>เส้นคั่นความสูง เช่น <b>460/270</b> = ตั้งแต่ FL460 ลงมาถึง FL270 · <b>BKN LYR</b> = ชั้นเมฆ Broken</li>
     <li><b>Jet Stream:</b> สามเหลี่ยมทึบ = 50 kt, ขีดเล็ก = 10 kt · บอกความสูง (FL) + ทิศทาง</li>
+    <li><b>สัญลักษณ์ Turbulence:</b> ยอดแหลม Λ <b>ชั้นเดียว = Moderate</b>, <b>ซ้อน 2 ชั้น = Severe</b> · <b>Icing</b> = สัญลักษณ์รูปถ้วยมีขีด (แฉกเดียว=Mod, ซ้อน=Severe)</li>
     <li><b>CAT zone</b> = กรอบเส้นประ · <b>Tropopause Height</b> ในกรอบสี่เหลี่ยม (เช่น 400 = 40,000 ฟุต) · สัญลักษณ์ภูเขาไฟระบุพิกัด LAT/LONG</li>
     <li>Wind/Temp Chart: อุณหภูมิบวกมี <b>+</b> นำหน้า · ไม่มีเครื่องหมาย = ติดลบ (40 = −40 °C)</li>
   </ul>
