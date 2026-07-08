@@ -55,14 +55,17 @@ quiz-site/
 
 ## Template หน้า 3 แบบ (ลอกจากไฟล์จริงเสมอ อย่าคิดใหม่)
 
-### 1. Quiz กดตอบ — copy จาก `chapter6.html` (template ที่สะอาดที่สุด)
-- **Data-driven**: แก้แค่ array `QUESTIONS` ไม่ต้องแตะ HTML/logic
-- โครงสร้างข้อ: `{ s:"A", q:"คำถาม", o:["ตัวเลือก1","ตัวเลือก2","ตัวเลือก3"], a:0 }`
-  - `s` = section (A/B/C…), `q` = คำถาม, `o` = ตัวเลือก (2–4 ข้อ), `a` = index คำตอบถูก (เริ่มที่ 0)
-- ตั้งชื่อ section ใน object `SECTION_NAMES`
-- ฟังก์ชันหลัก: `buildQuiz()` `answer()` `updateScore()` `resetQuiz()` — ปกติไม่ต้องแก้
-- อย่าลืมอัปเดตเลขรวมข้อใน `<header>`, scorebar (`/ 69`), และ footer ให้ตรงจำนวนจริง
-- มี scorebar sticky (ตอบแล้ว/ถูก/ผิด/คะแนน %) + banner เมื่อทำครบ
+### 1. Quiz กดตอบ = **Template A มาตรฐาน** — copy จาก `chapter5.html` (มีรูป) หรือ `chapter4.html` (ไม่มีรูป)
+> ⚠️ มี template quiz อยู่ 2 แบบในประวัติเว็บ: **Template A** (ฟ้าอ่อน `#1a3c6e→#2d6abf`, `.choice-btn`, progress bar, end-screen) = **มาตรฐานที่ใช้ต่อไป** (101,103,105,106,108,109) · **Template B** (ฟ้าเข้ม `#1e3a5f→#2c5282`, `.options li`, feedback ใต้ข้อ, banner) = แบบเก่า **เลิกใช้แล้ว** (chapter6, และ chapter3/104 ที่ยังไม่ได้แปลง)
+- **Data-driven**: แก้แค่ array `QUESTIONS` (หรือ `questions`) ไม่ต้องแตะ HTML/logic
+- โครงสร้างข้อ: `{ s:"A", q:"คำถาม", o:["ตัวเลือก1","ตัวเลือก2","ตัวเลือก3"], a:0, ex:"คำอธิบายเฉลย", fig:5 }`
+  - `s` = section, `q` = คำถาม (ใส่ HTML/รูปในตัวได้), `o` = ตัวเลือก (2–4 ข้อ), `a` = index คำตอบถูก (เริ่ม 0)
+  - `ex` (บางไฟล์ใช้ `e`) = คำอธิบายเฉลย (optional) · `fig` = เลขรูป map เข้ากับ `FIGIMG` (chapter8 ใช้ `fig:[array]` หลายรูป/ข้อ + `given` = ข้อมูลที่โจทย์ให้)
+- ฟังก์ชันหลัก Template A: `buildQuiz()` `answer()` `showEnd()` `restartQuiz()` (+ `openLightbox/closeLightbox` ถ้ามีรูป) — ปกติไม่ต้องแก้
+- section: กำหนดชื่อใน object `SECTIONS`/`sections` (คีย์ต้องตรงกับ `s` ในข้อมูล — เป็น "A/B/C" หรือ "1/2" ก็ได้)
+- **UI**: header + `#score-bar` sticky (Answered / progress bar / Correct / Score %) + `#end-screen` สรุปคะแนนแยก section เมื่อทำครบ
+- อย่าลืมอัปเดตจำนวนข้อใน `<header>` และ `#total-count` ให้ตรงจำนวนจริง
+- ภาษา UI: ไฟล์เนื้อหาอังกฤษ (Jeppesen/FAA) ใช้ UI อังกฤษ · ไฟล์เนื้อหาไทย (เช่น quiz-met) ใช้ UI ไทยได้
 
 ### 2. หน้าสรุป — copy จาก `summary-ch5a.html`
 - ใช้ CSS variables ใน `:root` (พื้นสว่าง `--bg:#f4f7fb`)
@@ -74,8 +77,9 @@ quiz-site/
 - แต่ละข้อมี `<details>` เปิดดู `.kw-box` (keyword ที่ต้องเขียนให้ติด) + `.model-ans` (คำตอบตัวอย่าง)
 
 ## ธีมสี (ให้ทุกหน้าดูเป็นชุดเดียวกัน)
-- **น้ำเงินหลัก**: `#1e3a5f` → `#2c5282` (พื้นหลัง quiz กดตอบ, ปุ่ม)
-- ถูก = เขียว `#38a169` / `#2f855a` · ผิด = แดง `#e53e3e` / `#c53030`
+- **น้ำเงินหลัก (Template A มาตรฐาน)**: header gradient `#1a3c6e` → `#2d6abf` · พื้นหน้า body `#f0f4f8` (สว่าง)
+  - ⚠️ อย่าใช้ `#1e3a5f→#2c5282` (ฟ้าเข้มแบบเก่า Template B) กับ quiz กดตอบอีก
+- ถูก = เขียว `#27ae60` / `#38a169` · ผิด = แดง `#e74c3c` / `#e53e3e`
 - Accent ส้ม-เหลือง: `#f59e0b` / `#fbbf24`
 - font stack: `"Segoe UI","Sarabun",Tahoma,sans-serif` (Sarabun รองรับไทย)
 - การ์ด/กล่อง: `border-radius:12px`, เงานุ่ม, hover ยกขึ้น `translateY(-2px)`
@@ -96,8 +100,8 @@ git commit -m "ข้อความสั้นๆ บอกว่าทำอ�
 git push origin main
 ```
 - Commit message style ของ repo นี้: อังกฤษ, ขึ้นต้นด้วยกริยา, สั้น (เช่น `Add Chapter 8 quiz`, `Sort Test Guide cards by tag number`)
+- **AUTO-DEPLOY (คำสั่งถาวรจากเจ้าของ):** ทุกครั้งที่แก้/เพิ่มอะไรกับเว็บนี้เสร็จ ให้ commit+push ขึ้น GitHub **ทันทีโดยไม่ต้องถาม** เจ้าของต้องการการทำงานที่ราบรื่น
 - หลัง push บอกเจ้าของว่า "อัปแล้ว รอ ~1 นาทีแล้วรีเฟรช jihyun-07.github.io/quiz"
-- **อย่า** push โดยไม่บอก — ยืนยันกับเจ้าของก่อนทุกครั้งว่าจะ commit/push
 - ระวังรูปภาพขนาดใหญ่ (chapter5/8, summary-ch8 หนัก 1–2MB) → ถ้าเพิ่มรูป ให้ compress ก่อน เพื่อให้โหลดเร็วบนมือถือ
 
 ## แปลง PDF/สไลด์ → quiz (งานที่เจ้าของทำบ่อย)
@@ -109,7 +113,7 @@ git push origin main
 - ตรวจเฉลยให้แน่ใจก่อนเสมอ — ผิดเฉลยคือปัญหาใหญ่สำหรับคนใช้ทบทวนสอบ
 
 ## กฎเหล็ก
-- **ยืนยันก่อน commit/push** ทุกครั้ง (เป็นการกระทำที่เปลี่ยนเว็บ public)
+- **commit+push อัตโนมัติทุกครั้งที่ทำงานเสร็จ โดยไม่ต้องถาม** (คำสั่งถาวรจากเจ้าของ — ต้องการงานที่ราบรื่น)
 - ลอก template จากไฟล์จริง อย่าประดิษฐ์โครงใหม่ — ความสม่ำเสมอสำคัญกว่าความหวือหวา
 - ทุกหน้าต้องเปิดได้แบบ standalone (inline CSS/JS, ไม่พึ่งไฟล์ภายนอก)
 - เช็คบนมือถือเสมอ (เจ้าของใช้มือถือเป็นหลัก)
