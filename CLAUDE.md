@@ -1,0 +1,116 @@
+# Ground School Quiz Site — คู่มือประจำโปรเจกต์
+
+> ไฟล์นี้ Claude อ่านอัตโนมัติทุกครั้งที่เปิดโฟลเดอร์นี้ ทำให้ไม่ต้องอธิบายเว็บใหม่ทุกครั้ง
+> เจ้าของ: ศิษย์การบิน ทอ. (เครื่อง CT-4E) กำลังเรียน Ground School — ใช้เว็บนี้ทบทวนสอบ
+
+## เว็บนี้คืออะไร
+เว็บรวม **สรุปบทเรียน + แบบทดสอบ** สำหรับ Private Pilot Ground School (อ้างอิง Jeppesen 2024 + เอกสาร ศบ.)
+- Live: https://jihyun-07.github.io/quiz/
+- Repo: https://github.com/JiHyuN-07/quiz.git (branch `main`)
+- Host: **GitHub Pages** — push ขึ้น `main` แล้วเว็บอัปเดตอัตโนมัติภายใน ~1 นาที
+- เป็นเว็บ **static HTML ล้วน** ไม่มี build step ไม่มี framework ไม่มี dependency — แต่ละหน้าคือไฟล์ `.html` เดี่ยวๆ ที่ inline CSS+JS ครบในตัว เปิดตรงๆ ในเบราว์เซอร์ได้เลย
+- ภาษาเนื้อหา: ไทย (คำศัพท์เทคนิคการบินเป็นอังกฤษ) — `<html lang="th">` เสมอ
+- ใช้บนมือถือเป็นหลัก (เปิดจาก Home Screen) → ทุกหน้าต้อง responsive
+
+## โครงสร้างไฟล์
+```
+quiz-site/
+├── index.html              ← หน้า HUB หลัก (3 คอลัมน์) จุดเริ่มของทุกอย่าง
+├── .nojekyll               ← บอก GitHub Pages ไม่ต้อง process ด้วย Jekyll (ห้ามลบ)
+├── CLAUDE.md               ← ไฟล์นี้
+│
+├── chapter2/3/4/5/6/8.html ← Quiz กดตอบ (Test Guide)
+├── quiz-met.html           ← Quiz Meteorology
+├── uprt-quiz.html          ← Quiz แบบเขียน keyword
+├── emergency-quiz*.html    ← Emergency/Limit CT-4E
+├── Quiz-Aeromed-152.html   ← โผเวชศาสตร์
+│
+├── summary-ch5a/5b/5c.html ← หน้าสรุปบท (Jeppeson Summarize)
+├── summary-ch8a/8b.html
+├── summary-rtf107.html
+├── summary-uprt.html
+└── Aviation-Medicine-Ground-School-101.html
+```
+
+## index.html = HUB (จุดสำคัญที่สุด)
+หน้าแรกจัดเป็น 3 คอลัมน์ แต่ละหน้าย่อยต้องมี "การ์ด" ลิงก์อยู่ในคอลัมน์ที่ถูกต้อง:
+| คอลัมน์ | class | สีการ์ด (tag) | ใส่อะไร |
+|---|---|---|---|
+| 📘 **Jeppeson Summarize** | `.summarize` | เหลือง-ส้ม | หน้าสรุปบทเรียน |
+| 📝 **Test Guide** | `.testguide` | เขียว | Quiz กดตอบ + เฉลย |
+| 🚨 **Emergency/Limit** | `.emergency` | แดง-ชมพู | ข้อสอบฉุกเฉิน/ข้อจำกัด CT-4E |
+
+**Test Guide เรียงการ์ดตามเลขวิชา (101 → 113)** — เพิ่มการ์ดใหม่ให้แทรกตามลำดับเลข tag เสมอ
+รูปการ์ด 1 อัน:
+```html
+<a class="card" href="ชื่อไฟล์.html">
+  <div class="tag">109</div>              <!-- เลขวิชา หรือ 5-A / AvM / E -->
+  <div class="info">
+    <div class="title">ชื่อสั้น</div>
+    <div class="sub">คำอธิบายย่อ · จำนวนข้อ</div>
+  </div>
+  <div class="arrow">›</div>
+</a>
+```
+
+## Template หน้า 3 แบบ (ลอกจากไฟล์จริงเสมอ อย่าคิดใหม่)
+
+### 1. Quiz กดตอบ — copy จาก `chapter6.html` (template ที่สะอาดที่สุด)
+- **Data-driven**: แก้แค่ array `QUESTIONS` ไม่ต้องแตะ HTML/logic
+- โครงสร้างข้อ: `{ s:"A", q:"คำถาม", o:["ตัวเลือก1","ตัวเลือก2","ตัวเลือก3"], a:0 }`
+  - `s` = section (A/B/C…), `q` = คำถาม, `o` = ตัวเลือก (2–4 ข้อ), `a` = index คำตอบถูก (เริ่มที่ 0)
+- ตั้งชื่อ section ใน object `SECTION_NAMES`
+- ฟังก์ชันหลัก: `buildQuiz()` `answer()` `updateScore()` `resetQuiz()` — ปกติไม่ต้องแก้
+- อย่าลืมอัปเดตเลขรวมข้อใน `<header>`, scorebar (`/ 69`), และ footer ให้ตรงจำนวนจริง
+- มี scorebar sticky (ตอบแล้ว/ถูก/ผิด/คะแนน %) + banner เมื่อทำครบ
+
+### 2. หน้าสรุป — copy จาก `summary-ch5a.html`
+- ใช้ CSS variables ใน `:root` (พื้นสว่าง `--bg:#f4f7fb`)
+- มี `nav.toc` (สารบัญ) → `<section>` แต่ละหัวข้อ
+- helper classes: `.term` (คำศัพท์ไทยเน้น), `.en` (อังกฤษเอียง), `.key` (กล่องจุดสำคัญ), `.warn` (กล่องเตือนแดง), `.freq`/`.squawk` (ความถี่/code), `<details>` (เฉลยซ่อน/เปิด)
+
+### 3. Quiz แบบเขียน keyword — copy จาก `uprt-quiz.html`
+- ธีม navy (`--navy:#1e2761`) + ส้ม (`--accent:#f9a826`)
+- แต่ละข้อมี `<details>` เปิดดู `.kw-box` (keyword ที่ต้องเขียนให้ติด) + `.model-ans` (คำตอบตัวอย่าง)
+
+## ธีมสี (ให้ทุกหน้าดูเป็นชุดเดียวกัน)
+- **น้ำเงินหลัก**: `#1e3a5f` → `#2c5282` (พื้นหลัง quiz กดตอบ, ปุ่ม)
+- ถูก = เขียว `#38a169` / `#2f855a` · ผิด = แดง `#e53e3e` / `#c53030`
+- Accent ส้ม-เหลือง: `#f59e0b` / `#fbbf24`
+- font stack: `"Segoe UI","Sarabun",Tahoma,sans-serif` (Sarabun รองรับไทย)
+- การ์ด/กล่อง: `border-radius:12px`, เงานุ่ม, hover ยกขึ้น `translateY(-2px)`
+
+## วิธีเพิ่มหน้าใหม่ (checklist)
+1. **สร้างไฟล์** โดย copy template ที่ตรงประเภท (ดูด้านบน) แล้วแก้เนื้อหา
+2. ตั้งชื่อไฟล์: quiz ใช้ `chapterN.html`/`ชื่อ-quiz.html`, สรุปใช้ `summary-xxx.html`
+3. **เพิ่มการ์ดใน `index.html`** ในคอลัมน์ที่ถูก (Test Guide เรียงตามเลขวิชา)
+4. อัปเดตจำนวนข้อ/ข้อความ header-footer ให้ตรง
+5. เปิดไฟล์ในเบราว์เซอร์เช็คก่อน commit (กดตอบดูว่าเฉลยถูก, นับข้อครบ, ดูบนจอมือถือ)
+6. **Deploy** (ดูด้านล่าง)
+
+## วิธี Deploy (สำคัญ — เจ้าของอยากให้ง่าย)
+เว็บอยู่บน GitHub Pages push แล้วขึ้นเอง ทำ 3 คำสั่งนี้จบ:
+```bash
+git add -A
+git commit -m "ข้อความสั้นๆ บอกว่าทำอะไร"
+git push origin main
+```
+- Commit message style ของ repo นี้: อังกฤษ, ขึ้นต้นด้วยกริยา, สั้น (เช่น `Add Chapter 8 quiz`, `Sort Test Guide cards by tag number`)
+- หลัง push บอกเจ้าของว่า "อัปแล้ว รอ ~1 นาทีแล้วรีเฟรช jihyun-07.github.io/quiz"
+- **อย่า** push โดยไม่บอก — ยืนยันกับเจ้าของก่อนทุกครั้งว่าจะ commit/push
+- ระวังรูปภาพขนาดใหญ่ (chapter5/8, summary-ch8 หนัก 1–2MB) → ถ้าเพิ่มรูป ให้ compress ก่อน เพื่อให้โหลดเร็วบนมือถือ
+
+## แปลง PDF/สไลด์ → quiz (งานที่เจ้าของทำบ่อย)
+มีไฟล์ต้นฉบับ (PDF โผข้อสอบ, PowerPoint บรรยาย) อยู่ในโฟลเดอร์วิชาแม่ `../..//<เลขวิชา ...>/`
+เช่น `../../109 Meteorology/`, `../../101 Aviation Physiology/`
+ขั้นตอน: อ่าน PDF/pptx → ดึงคำถาม-ตัวเลือก-เฉลย → แปลงเป็น array `QUESTIONS` → ใส่ใน template quiz กดตอบ
+- ถ้าเอกสารเป็นอังกฤษ (Jeppesen) เก็บคำถามอังกฤษไว้ (ตรงกับข้อสอบจริง)
+- ถ้าเป็นโผไทย/บรรยายไทย ทำเป็นภาษาไทย
+- ตรวจเฉลยให้แน่ใจก่อนเสมอ — ผิดเฉลยคือปัญหาใหญ่สำหรับคนใช้ทบทวนสอบ
+
+## กฎเหล็ก
+- **ยืนยันก่อน commit/push** ทุกครั้ง (เป็นการกระทำที่เปลี่ยนเว็บ public)
+- ลอก template จากไฟล์จริง อย่าประดิษฐ์โครงใหม่ — ความสม่ำเสมอสำคัญกว่าความหวือหวา
+- ทุกหน้าต้องเปิดได้แบบ standalone (inline CSS/JS, ไม่พึ่งไฟล์ภายนอก)
+- เช็คบนมือถือเสมอ (เจ้าของใช้มือถือเป็นหลัก)
+- ตอบเจ้าของเป็นภาษาไทย
