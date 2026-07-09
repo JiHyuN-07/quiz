@@ -104,6 +104,33 @@
   .section-score { display: inline-block; margin: 6px 12px; font-size: 0.95rem; color: #444; }
 
   footer { text-align: center; color: #6b7280; font-size: 0.85rem; margin: 30px 24px; line-height: 1.7; }
+
+  /* ---- toggle โหมด Quiz / เฉลย ---- */
+  .mode-toggle { display: flex; max-width: 520px; margin: 16px auto 4px; padding: 0 16px; }
+  .mode-toggle button {
+    flex: 1; font-family: inherit; font-size: 0.92rem; font-weight: 700; cursor: pointer;
+    padding: 11px 8px; border: 2px solid #1a3c6e; background: #fff; color: #1a3c6e; transition: .15s;
+  }
+  .mode-toggle button:first-child { border-radius: 10px 0 0 10px; border-right-width: 1px; }
+  .mode-toggle button:last-child  { border-radius: 0 10px 10px 0; border-left-width: 1px; }
+  .mode-toggle button.active { background: linear-gradient(135deg, #1a3c6e, #2d6abf); color: #fff; }
+  .mode-toggle button:hover:not(.active) { background: #eef3fb; }
+
+  /* ---- การ์ดโหมดเฉลย (คำถาม+คำตอบ ไม่มีช้อยส์) ---- */
+  .ans-card {
+    background: #fff; margin: 16px 32px; border-radius: 10px; padding: 20px 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06); border-left: 4px solid #2d6abf;
+  }
+  .ans-card .q-text { margin-bottom: 12px; }
+  .ans-answer {
+    background: #eafaf1; border: 1px solid #b6e6c6; border-radius: 8px;
+    padding: 10px 14px; font-weight: 700; color: #1b6b3a; margin-bottom: 10px; line-height: 1.55;
+  }
+  .ans-explain {
+    background: #f0f6ff; border-left: 3px solid #2d6abf; border-radius: 6px;
+    padding: 10px 14px; font-size: 0.9rem; line-height: 1.65; color: #333;
+  }
+  @media (max-width: 640px) { .ans-card { margin: 14px 16px; padding: 16px 16px; } }
 </style>
 </head>
 <body>
@@ -115,6 +142,11 @@
     <p class="note">โจทย์จากแนวทางการสอบจริง · ตัวเลือกลวงสร้างขึ้นให้ใกล้เคียงคำตอบเพื่อฝึกแยกแยะ</p>
   </div>
 </header>
+
+<div class="mode-toggle">
+  <button id="mode-quiz" class="active" onclick="setMode('quiz')">📝 Quiz (มีช้อยส์)</button>
+  <button id="mode-ans" onclick="setMode('ans')">✅ เฉลย (คำตอบ)</button>
+</div>
 
 <div id="score-bar">
   <div>ตอบแล้ว: <span id="answered-count">0</span> / <span id="total-count">40</span></div>
@@ -131,6 +163,8 @@
   <div id="section-scores"></div>
   <button id="restart-btn" onclick="restartQuiz()">เริ่มใหม่</button>
 </div>
+
+<div id="ans-view" style="display:none"></div>
 
 <footer>
   📌 อ้างอิง: Meteorology I–III (น.ท.มารุต แสงหิ่งห้อย, กองข่าวอากาศ คปอ.) + PowerPoint บทเรียน folder 109 meteorology<br>
@@ -376,6 +410,44 @@ function restartQuiz() {
 }
 
 buildQuiz();
+
+// ---- โหมดเฉลย: คำถาม + คำตอบ + คำอธิบาย (ไม่มีช้อยส์) ----
+function buildAnswers() {
+  const c = document.getElementById('ans-view');
+  c.innerHTML = '';
+  let cur = '';
+  QUESTIONS.forEach((q, idx) => {
+    if (q.s !== cur) {
+      cur = q.s;
+      const h = document.createElement('div');
+      h.className = 'section-header';
+      const count = QUESTIONS.filter(x => x.s === q.s).length;
+      h.innerHTML = (SECTIONS[q.s] || ('ส่วน ' + q.s)) + `<span>${count} ข้อ</span>`;
+      c.appendChild(h);
+    }
+    const card = document.createElement('div');
+    card.className = 'ans-card';
+    card.innerHTML = `
+      <div class="q-number">ข้อ ${idx + 1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="ans-answer">✅ คำตอบ: ${q.o[q.a]}</div>
+      ${q.e ? `<div class="ans-explain">💡 ${q.e}</div>` : ''}`;
+    c.appendChild(card);
+  });
+}
+
+function setMode(m) {
+  const isQuiz = (m === 'quiz');
+  document.getElementById('score-bar').style.display = isQuiz ? '' : 'none';
+  document.getElementById('quiz-container').style.display = isQuiz ? '' : 'none';
+  if (!isQuiz) document.getElementById('end-screen').style.display = 'none';
+  document.getElementById('ans-view').style.display = isQuiz ? 'none' : 'block';
+  document.getElementById('mode-quiz').classList.toggle('active', isQuiz);
+  document.getElementById('mode-ans').classList.toggle('active', !isQuiz);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildAnswers();
 </script>
 </body>
 </html>
