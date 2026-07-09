@@ -130,6 +130,14 @@
     background: #f0f6ff; border-left: 3px solid #2d6abf; border-radius: 6px;
     padding: 10px 14px; font-size: 0.9rem; line-height: 1.65; color: #333;
   }
+  .ans-reveal summary {
+    cursor: pointer; display: inline-block; list-style: none; user-select: none;
+    font-weight: 700; font-size: 0.9rem; color: #2d6abf;
+    border: 2px solid #2d6abf; border-radius: 999px; padding: 7px 20px; transition: .15s;
+  }
+  .ans-reveal summary::-webkit-details-marker { display: none; }
+  .ans-reveal summary:hover { background: #2d6abf; color: #fff; }
+  .ans-reveal[open] summary { background: #2d6abf; color: #fff; margin-bottom: 12px; }
   @media (max-width: 640px) { .ans-card { margin: 14px 16px; padding: 16px 16px; } }
 </style>
 </head>
@@ -430,8 +438,11 @@ function buildAnswers() {
     card.innerHTML = `
       <div class="q-number">ข้อ ${idx + 1}</div>
       <div class="q-text">${q.q}</div>
-      <div class="ans-answer">✅ คำตอบ: ${q.o[q.a]}</div>
-      ${q.e ? `<div class="ans-explain">💡 ${q.e}</div>` : ''}`;
+      <details class="ans-reveal">
+        <summary>👁️ กดดูคำตอบ</summary>
+        <div class="ans-answer">✅ คำตอบ: ${q.o[q.a]}</div>
+        ${q.e ? `<div class="ans-explain">💡 ${q.e}</div>` : ''}
+      </details>`;
     c.appendChild(card);
   });
 }
