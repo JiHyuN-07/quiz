@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ข้อสอบ CT-4E บ.ฝ.16 ก — 69-1</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'Sarabun', Tahoma, Arial, sans-serif; background: #f0f4f8; color: #222; }
+
+  header {
+    background: linear-gradient(135deg, #1a3c6e, #2d6abf);
+    color: #fff; padding: 24px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  header h1 { font-size: 1.5rem; }
+  header p { font-size: 0.9rem; opacity: 0.85; margin-top: 4px; }
+
+  #score-bar {
+    background: #fff; border-bottom: 2px solid #dde3ec;
+    padding: 12px 32px; display: flex; gap: 32px; align-items: center;
+    font-size: 0.9rem; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08); flex-wrap: wrap;
+  }
+  #score-bar span { font-weight: 700; color: #1a3c6e; }
+  #progress-bar { flex: 1; min-width: 120px; height: 8px; background: #dde3ec; border-radius: 4px; overflow: hidden; }
+  #progress-fill { height: 100%; background: #2d6abf; border-radius: 4px; transition: width .4s; }
+
+  .section-header {
+    background: #1a3c6e; color: #fff;
+    padding: 14px 32px; font-size: 1.1rem; font-weight: 700;
+    margin-top: 32px; letter-spacing: .5px;
+  }
+  .section-header span { opacity: 0.7; font-size: 0.85rem; font-weight: 400; margin-left: 12px; }
+
+  .question-card {
+    background: #fff; margin: 16px 32px;
+    border-radius: 10px; padding: 22px 26px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    border-left: 4px solid #dde3ec;
+    transition: border-color .2s;
+  }
+  .question-card.answered-correct { border-left-color: #27ae60; }
+  .question-card.answered-wrong   { border-left-color: #e74c3c; }
+
+  .q-number { font-size: 0.75rem; color: #888; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; }
+  .q-text { font-size: 1rem; font-weight: 600; line-height: 1.6; margin-bottom: 16px; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; }
+  .choice-btn {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: #f7f9fc; border: 2px solid #dde3ec;
+    border-radius: 8px; padding: 11px 16px;
+    cursor: pointer; font-size: 0.93rem; text-align: left;
+    transition: background .15s, border-color .15s; line-height: 1.5;
+  }
+  .choice-btn:hover:not(:disabled) { background: #e8eef8; border-color: #2d6abf; }
+  .choice-btn .letter { font-weight: 700; color: #2d6abf; min-width: 22px; flex-shrink: 0; }
+  .choice-btn.correct  { background: #eafaf1; border-color: #27ae60; }
+  .choice-btn.wrong    { background: #fdf0ef; border-color: #e74c3c; }
+  .choice-btn.correct .letter { color: #27ae60; }
+  .choice-btn.wrong   .letter { color: #e74c3c; }
+  .choice-btn:disabled { cursor: default; }
+
+  #end-screen {
+    display: none; text-align: center;
+    background: #fff; margin: 32px; border-radius: 12px;
+    padding: 48px 32px; box-shadow: 0 4px 20px rgba(0,0,0,.1);
+  }
+  #end-screen h2 { font-size: 2rem; color: #1a3c6e; margin-bottom: 8px; }
+  #end-screen .big-score { font-size: 4rem; font-weight: 800; color: #2d6abf; }
+  #end-screen p { color: #555; margin: 8px 0; }
+  #restart-btn {
+    margin-top: 24px; background: #2d6abf; color: #fff;
+    border: none; padding: 14px 36px; border-radius: 8px;
+    font-size: 1rem; cursor: pointer; font-weight: 600; transition: background .2s;
+  }
+  #restart-btn:hover { background: #1a3c6e; }
+
+  footer { text-align: center; color: #6b7280; font-size: 0.85rem; margin: 30px 24px; line-height: 1.7; }
+  @media (max-width: 640px) {
+    header, #score-bar, .section-header { padding-left: 16px; padding-right: 16px; }
+    .question-card { margin: 14px 16px; padding: 18px 16px; }
+    #end-screen { margin: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>ข้อสอบ CT-4E — บ.ฝ.16 ก</h1>
+    <p>ข้อทดสอบความรู้อากาศยานแบบ บ.ฝ.16 ก (69-1) &nbsp;|&nbsp; 40 ข้อ · เฉลยตามข้อสอบจริง</p>
+  </div>
+</header>
+
+<div id="score-bar">
+  <div>ตอบแล้ว: <span id="answered-count">0</span> / <span id="total-count">40</span></div>
+  <div id="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
+  <div>ถูก: <span id="correct-count">0</span></div>
+  <div>คะแนน: <span id="score-pct">0%</span></div>
+</div>
+
+<div id="quiz-container"></div>
+<div id="end-screen">
+  <h2>ทำครบแล้ว! 🎉</h2>
+  <div class="big-score" id="final-score"></div>
+  <p id="final-detail"></p>
+  <button id="restart-btn" onclick="restartQuiz()">เริ่มใหม่</button>
+</div>
+
+<footer>
+  📌 ข้อสอบความรู้อากาศยานแบบ บ.ฝ.16 ก (CT-4E) ชุด 69-1 · เฉลยอ้างอิงจากตัวเลือกที่ทำสีไว้ในข้อสอบต้นฉบับ
+</footer>
+
+<script>
+const QUESTIONS = [
+  { q:"LYCOMING MODEL CODE FOR RECIPRECHATIN ENGINE AEIO-540-L1B5 ความหมายของคำว่า AE คืออะไร ?",
+    o:["ACCESSORRY ENGINE","AEROBATIC ENGINE","AEROBATIC OIL SYSTEM","AEROBATIC INJECTION"], a:1 },
+  { q:"AEIO-540-L1B5 SERIES HAVE RATE SPEED RPM = 2700 RPM AND RATE HORSEPOWER HOW ?",
+    o:["210 HORSEPOWER","195 HORSEPOWER","310 HORSEPOWER","300 HORSEPOWER"], a:3 },
+  { q:"ชุดฐานล้อ (LANDING GEAR) ของ บ.ฝ.16 ก เป็นแบบใด ?",
+    o:["AIR – OIL ABSORBER","SPRING ABSORBER","OLEO - STRUT","RUBBER – RING ABSORBER"], a:1 },
+  { q:"โครงสร้างลำตัวของอากาศยานแบบ บ.ฝ.16 ก จัดอยู่ในโครงสร้างชนิดใด ?",
+    o:["SIMI – MONOCOQUE","MONOCOQUE COMSTRUCTION","REINFORCED SHELL","TRUSS CONTRUCTION"], a:0 },
+  { q:"ข้อใด<b>ไม่ใช่</b>ตำแหน่งการทำงาน CANOPY ของ บ.ฝ.16 ก ?",
+    o:["LOCKED","UNLOCKED","ROCKED","LATCHED"], a:2 },
+  { q:"ระบบสละ CANOPY JETTISON MECHANISM WHEN OPERATE KNOP A LOAD OF 11 LBS. OR 5 K. ตัวที่จะดึง CABLE เพื่อทำการสละ CANOPY คือ ?",
+    o:["JETTISON KNOP","JETTISON CANOPY","JETTISON STRIKER","ถูกทุกข้อ"], a:2 },
+  { q:"THE CANOPY SHOULD NOT BE OPENED WITH THE ENGINE RUNNING ABOVE …………… ON THE GROUND ?",
+    o:["900 RPM","1200 RPM","1700 RPM","2100 RPM"], a:1 },
+  { q:"SCHEDULED MAINTENANCE CHECK ตามแจ้งความวิทยาการ กรมช่างอากาศ ฉบับล่าสุดให้มีการตรวจซ่อมแบบใดบ้างสำหรับ CT-4E (CIRCLE TYPE OF INSPECTION)",
+    o:["50  100  500","25  50  100","25  50  300","50  150  300"], a:0 },
+  { q:"เมื่อต้องการเปิด MAINTENANCE MANUAL (M/M) เพื่อต้องการหาหัวข้อขัดข้อง และการปฏิบัติเกี่ยวกับหัวข้อนั้น ๆ ใน M/M เราจะเริ่มเปิดหาข้อมูลเริ่มต้นจากหัวข้ออะไร ?",
+    o:["CHAPTER ต่าง ๆ","LIST OF CONTENT","NUMBERCAL INDEX","INTRODUCTION"], a:1 },
+  { q:"ใน MAINTENANCE MANUAL CHAPTER 27 FLIGHT CONTROL SYSTEM ว่าด้วยเรื่องการ MOVEMENT AND SETTINGS FLAP องศาของ FLAP ที่กำหนดไว้มีค่าเท่าไหร่ ?",
+    o:["UP 0’ HALF 15’ DOWN 30+1-1’","UP 0’ HALF 30’ DOWN 30+1-0’","UP 0’ HALF 15’ DOWN 30+0-1’","UP 0’ HALF 15’ DOWN 30+0-0’"], a:2 },
+  { q:"CT-4E MAINTENANCE MANUAL CHAPTER 71 จะบอกรายละเอียดเกี่ยวกับเรื่องใด ?",
+    o:["ENGINE FUEL AND CONTROL","IGNITION","PROPELLER","POWER PLANT"], a:3 },
+  { q:"ในการ START ENGINE CT-4E เราสามารถใช้เวลาในการ START AND COOLING ได้กี่ครั้งและปฏิบัติอย่างไร ?",
+    o:["START 10 SEC. 20 SEC. COOL DOWN REPEAT UP TO 6 TIMES ; THEN LET STARTER COOL FOR 30 MIN.","START 10 SEC. 10 SEC. COOL DOWN REPEAT UP TO 10 TIMES ; THEN LET STARTER COOL FOR 20 MIN.","START 20 SEC. 10 SEC. COOL DOWN REPEAT UP TO 10 TIMES ; THEN LET STARTER COOL FOR 40 MIN.","START 20 SEC. 10 SEC. COOL DOWN REPEAT UP TO 10 TIMES ; THEN LET STARTER COOL FOR 20 MIN."], a:0 },
+  { q:"The Firing Order is The Textron Lycoming AEIO-540-L1B5",
+    o:["The Firing Order is 1-6-3-2-5-4","The Firing Order is 1-3-5-2-4-6","The Firing Order is 1-4-5-2-3-6","The Firing Order is 1-2-3-4-5-6"], a:2 },
+  { q:"ข้อใดกล่าวถึง MAGNETO ที่ใช้งานกับ ย.AEIO-540-L1B5 ได้ถูกต้อง ?",
+    o:["จำนวน 1 เรือน เป็นแบบชนิด SLICK START VOLTAGE","จำนวน 2 เรือน เป็นแบบชนิด IMPULSE COUPLING","จำนวน 2 เรือน เป็นแบบชนิด TWO COUPLING START","จำนวน 1 เรือน เป็นแบบชนิด CAPACITIVE DISCHARGE"], a:1 },
+  { q:"TYPE OF ENGINE USED WITH CT-4E ?",
+    o:["IN-LINE","V-TYPE","OPPOSED","RADIAL"], a:2 },
+  { q:"PROPELLER MANUFACTURER FROM HARTZELL HC-C-3YR-4BF/FC7663-2R STATION 30 INC. มีความยาว 75 - 76 นิ้ว และมีมุมต่ำและมุมสูงเท่าไหร่ (LOW PITCH AND HIGH PITCH) ?",
+    o:["LOW 13.0 HIGH 32+-1","LOW 13.4 HIGH 32+-1","LOW 13.3 HIGH 32+-1","LOW 13.5 HIGH 32+-1"], a:1 },
+  { q:"ระบบ LETERAL STABILITY AUGMENTATION SYSTEM เป็นการทำงานสัมพันธ์กันระหว่างพื้นบังคับหลักอะไรบ้าง ?",
+    o:["RUDDER-ELEVATOR","RUDDER-AILERON","RUDDER-FLAP","RUDDER-FIX TAB"], a:1 },
+  { q:"หัวข้อ ELEVATOR CONTROL RIGGING ของระบบ TRIM OPERATING SYSTEM RIGGING เมื่อเรา TRIM MOTOR ACTUATOR TO FULL EXTENSION (ELEVATOR TRIM NOSE UP) ATTACH 0-15 Lb. SPRING BALANCE เราจะใช้ LOAD เท่าไหร่ในการ REQUIRED TO PULL THE TRAILING EDGE TO NEUTRAL POSITION (SPRING BIAS) ?",
+    o:["15 lbs.","10 lbs.","14 lbs.","20 lbs."], a:2 },
+  { q:"เมื่อ บ.ฝ.16 ก จอดอยู่ที่พื้น ใบพัดจะเป็นมุม (PITCH PROP) อะไร ?",
+    o:["มุมต่ำ","มุมสูง","มุมเงย","มุมปัก"], a:0 },
+  { q:"M/M CHAPTER 28 FUEL SYSTEM FUEL MAIN TANK MAIN SPAR BETWEEN RIB 2 - 7 VALVE ASSEMBLY ใช้ PRESSURE ในการตรวจสอบการเปิดของลูกบอลในชุด VALVE ASSEMBLY เท่าไหร่ ?",
+    o:["1.0 - 2.0 PSI","0.9 - 1.1 PSI","0.9 - 2.0 PSI","1.0 - 1.9 PSI"], a:1 },
+  { q:"เครื่องวัด FUEL FLOW IND. ได้มีการต่อท่อทางการวัดค่าจากอุปกรณ์ตัวใดของระบบเชื้อเพลิง ?",
+    o:["SHADIN FUEL FLOW TRANSDUCER","ENGINE DRIVEN FUEL PUMP","ELECTRIC FUEL PUMP","FUEL MAINFOLD OR FUEL DIVIDER"], a:3 },
+  { q:"FUEL CONTROL INDICATION SYSTEM CALIBRATION WHEN AIRCRAFT LETERALLY AND LONGITRDINALLY LEVEL DRAIN ALL FUEL FROM AIRCRAFT ADD 4.5 LITRES TO EACH TANK SET ZERO — ต้องเติมเชื้อเพลิงข้างละเท่าไหร่ ถึงจะทำการ SET เครื่องวัด FUEL CONTENT ได้ถูกต้อง ?",
+    o:["เติม ชพ. ที่ปีกซ้ายและปีกขวา ข้างละ 97 ลิตร แล้ว SET GAUGES","เติม ชพ. ที่ปีกซ้ายและปีกขวา ข้างละ 79 ลิตร แล้ว SET GAUGES","เติม ชพ. ที่ปีกซ้ายและปีกขวา ข้างละ 75 ลิตร แล้ว SET GAUGES","เติม ชพ. ที่ปีกซ้ายและปีกขวา ข้างละ 57 ลิตร แล้ว SET GAUGES"], a:2 },
+  { q:"ระบบ INDUCTION SYSTEM ถ้าเกิดมีการ LEAK ในระบบท่อนำไอดี จะทำให้การอ่านค่าของ MAINFOLD PRESSURE เป็นอย่างไร ?",
+    o:["MAINFOLD สูง แต่ FUEL FLOW ปกติ","MAINFOLD ปกติ เพราะอ่านค่า ณ ความดันบรรยากาศนั้น ๆ","MAINFOLD ต่ำ FUEL FLOW ปกติ","ถูกทุกข้อ"], a:0 },
+  { q:"ข้อกำหนดในการตรวจแบตเตอรี่ บ.ฝ.16 ก รุ่น RG24-15 (LEAD ACID 24V 25A) คือข้อใด ?",
+    o:["ตรวจ 3 เดือน เปลี่ยน 1 ปี","ตรวจ 3 เดือน เปลี่ยน 2 ปี","ตรวจ 6 เดือน เปลี่ยน 1 ปี","ตรวจ 6 เดือน เปลี่ยน 2 ปี"], a:3 },
+  { q:"กรณี จนท.ช่างบนเครื่องทำการ ON BATT. แล้ว แต่มี จนท.ช่างอีกคนที่อยู่ด้านล่างทำการเสียบ EPU (EXTERNAL POWER UNIT) — จนท.ช่างบนเครื่อง บ.ฝ.16 ก จะสามารถทำการ START ENGINE ได้หรือไม่ ?",
+    o:["ได้ BATT AUTO OFF AND EPU START","ได้ BATT START แต่ EPU POP OUT","ไม่ได้ BATT OFF AND EPU POP OUT","ถูกทุกข้อ"], a:0 },
+  { q:"เครื่องวัดประกอบการบิน แบ่งออกเป็นประเภทใหญ่ ๆ ได้ 2 ประเภท คืออะไร ?",
+    o:["ตามการใช้งาน + ตามการสร้าง","ตามการใช้งาน + ตามทางการบิน","ตามการทำงาน + ตามทางการบิน","ตามการบิน + ตามการสร้าง"], a:0 },
+  { q:"เมื่อ นบ. บินลงมาและดับ อ. และได้แจ้ง จนท.ช่าง FLIGHT LINE CT-4E ว่า OIL PRESSURE ต่ำมาก แต่ OIL TEMPERATURE ปกติ — จนท.ช่างจะดำเนินการแก้ไขอย่างไร ?",
+    o:["ล้างทำความสะอาด OIL FILTER","เปลี่ยน OIL COOLER","เปลี่ยน OIL SCREEN","ปรับ OIL PRESSURE RELIEF VALVE"], a:3 },
+  { q:"อุปกรณ์ใดในระบบ OIL ทำหน้าที่บังคับให้ OIL ผ่านไปยัง OIL COOLER ก่อนนำไปใช้งาน เมื่ออุณหภูมิ OIL สูงเกิน 85 °C ขึ้นไป ?",
+    o:["OIL SEPARATOR","OIL PRESSURE RELIEF VALVE","THERMOSTAT","OIL VALVE"], a:2 },
+  { q:"ไฟ Low Oil จะติดเมื่อเปิด Master Switch และปฏิบัติตามขั้นตอนการ Start Engine — เมื่อมีการ START ไฟ Low Oil จะดับและติดเมื่อไร ?",
+    o:["Oil Pressure มากกว่า 5 PSI จะดับ และน้อยกว่า 5 PSI จะติด","Oil Pressure มากกว่า 5 PSI จะติด และน้อยกว่า 5 PSI จะดับ","Oil Pressure มากกว่า 10 PSI จะดับ และน้อยกว่า 10 PSI จะติด","Oil Pressure มากกว่า 10 PSI จะติด และน้อยกว่า 10 PSI จะดับ"], a:0 },
+  { q:"เครื่องวัดเลี้ยวเอียง TURN AND SLIP INDICATOR เป็นเครื่องวัดไจโร ทำงานด้วยไฟฟ้า แบบ 2 MINUTE TURN — ถ้า บ. ทำการเลี้ยวไปทิศทางขวา ลูกบอลจะเอียงไปทิศทางใด ?",
+    o:["ทิศทางขวา","ทิศทางซ้าย","ไม่มีการเคลื่อนตัว เพราะทำงานด้วยระบบไฟฟ้า","ไม่มีข้อถูก"], a:1 },
+  { q:"ชุด Control Column มีหน้าที่ควบคุมพื้นบังคับหลักของอากาศยานแบบ บ.ฝ.16 ก จำนวน 2 พื้นบังคับหลัก คือพื้นบังคับหลักอะไรบ้าง ?",
+    o:["Aileron ; Rudder","Aileron ; Elevator","Elevator ; Rudder","Rudder ; Flap"], a:1 },
+  { q:"คำสั่งกรมช่างอากาศ (เฉพาะ) เทคนิคที่ ๐๐-๒๐ก-๑ (ฉบับปรับปรุง พ.ศ. ๒๕๖๒) การลงสู่สนามประเภท ข. ความหมายคือ ?",
+    o:["ลงพื้นดิน (เพื่อฝึกความคุ้นเคยกับทางขับหรือทางวิ่งของสนามบินนั้น)","ลงพื้นดิน (อากาศยานลงสู่พื้นเพื่อหยุดเนื่องจากเสร็จภารกิจ หรือเป็นการแวะลงตามเส้นทางบิน เป็นต้น)","การเข้าสู่สนามของเฮลิคอปเตอร์ โดยให้โรเตอร์หมุนเอง","การเข้าสู่สนามโดยใช้ระบบควบคุมจากพื้นดินหรือเครื่องวัดประกอบการบิน"], a:1 },
+  { q:"AIRSPEED LIMITATIONS: MAXIMUM FLAP EXTENDED SPEED (FLAP HALF EXTENDED LIMIT) = 101 K.I.A.S — กรณีเปิด FLAP FULLY EXTENDED จะกำหนดความเร็วที่เท่าไหร่ ?",
+    o:["FLAP FULLY EXTENDED SPEED 80 K.I.A.S.","FLAP FULLY EXTENDED SPEED 81 K.I.A.S.","FLAP FULLY EXTENDED SPEED 90 K.I.A.S.","FLAP FULLY EXTENDED SPEED 91 K.I.A.S."], a:3 },
+  { q:"FLIGHT LOAD FACTOR LIMIT CT-4E FLAP DOWN = +2.0 g ถึง -0 g — แต่ในกรณีการบินปกติในการทำท่าทางการบินต่าง ๆ FLIGHT LOAD FACTOR LIMIT อยู่ที่เท่าไหร่ ?",
+    o:["+3 g ถึง -6 g","+4 g ถึง -9 g","+6 g ถึง -3 g","+9 g ถึง -4 g"], a:2 },
+  { q:"แบบพิมพ์ประวัติการตรวจซ่อม / ใบสั่งงาน คือข้อใด ?",
+    o:["แบบพิมพ์ ทอ.ชอ.221-1","แบบพิมพ์ ทอ.ชอ.221-2","แบบพิมพ์ ทอ.ชอ.221-3","แบบพิมพ์ ทอ.ชอ.221-4"], a:1 },
+  { q:"ระบบเครื่องช่วยอากาศใด <b>ไม่อยู่</b> ในระบบเครื่องช่วยอากาศของ บ.ฝ.16 ก (CT-4E) ?",
+    o:["ระบบ ADF (Automatic Direction Finder)","ระบบ DME (Distance Measuring Equipment)","ระบบ TACAN (Tactical Air Navigation)","ระบบ VOR (VHF Omni-directional Range)"], a:2 },
+  { q:"ให้ข้อมูลระยะทางระหว่างอากาศยานกับสถานีภาคพื้น, อัตราเร็ว (GROUND SPEED) และเวลา (TIME TO STATION) โดยระยะปฏิบัติการขึ้นอยู่กับความสูงของ บ. — เป็นความสามารถของเครื่องช่วยอากาศแบบใด ?",
+    o:["ระบบ VOR (VHF Omni-directional Range)","ระบบ ADF (Automatic Direction Finder)","ระบบ Transponder","ระบบ DME (Distance Measuring Equipment)"], a:3 },
+  { q:"ระบบวิทยุและระบบเครื่องช่วยเดินอากาศของ บ.ฝ.16 ก (CT-4E) จะใช้งานร่วมกับระบบ EFIS หรือจอ EFD1000 — อุปกรณ์ใดที่ <b>ไม่ได้</b> ใช้งานร่วมกับจอ EFD1000 ?",
+    o:["ระบบ ADF (KR-87)","ระบบ DME (KN-62A)","ระบบ COM/NAV/GPS SYSTEM (IFD440/GNS430)","ระบบ COM/NAV/GPS SYSTEM (KX-165)"], a:1 },
+  { q:"ELT (Emergency Locator Transmitter) หรือเครื่องส่งสัญญาณระบุตำแหน่งฉุกเฉิน — ตำแหน่ง Standby โดยปกติ ELT Switch จะอยู่ในตำแหน่งไหน ?",
+    o:["ON","ARMED","RESET TEST","ไม่มีข้อใดถูกต้อง"], a:1 },
+  { q:"ระบบใดเป็นระบบเพื่อพิสูจน์ให้ทราบว่าเป็นอากาศยานของมิตรหรือศัตรู ?",
+    o:["ระบบ VOR (VHF Omni-directional Range)","ระบบ ADF (Automatic Direction Finder)","ระบบ Transponder","ระบบ DME (Distance Measuring Equipment)"], a:2 }
+];
+
+const LETTERS = ["ก","ข","ค","ง"];
+let answered = 0, correct = 0;
+
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  document.getElementById('total-count').textContent = QUESTIONS.length;
+
+  const hdr = document.createElement('div');
+  hdr.className = 'section-header';
+  hdr.innerHTML = 'ข้อสอบความรู้อากาศยาน บ.ฝ.16 ก (CT-4E)' + `<span>${QUESTIONS.length} ข้อ</span>`;
+  container.appendChild(hdr);
+
+  QUESTIONS.forEach((q, idx) => {
+    q._answered = false;
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'q-' + idx;
+    const choicesHtml = q.o.map((ch, ci) =>
+      `<button class="choice-btn" onclick="answer(${idx},${ci})" id="btn-${idx}-${ci}">
+         <span class="letter">${LETTERS[ci]}.</span><span>${ch}</span>
+       </button>`
+    ).join('');
+    card.innerHTML = `
+      <div class="q-number">ข้อ ${idx + 1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="choices">${choicesHtml}</div>`;
+    container.appendChild(card);
+  });
+}
+
+function answer(qIdx, chosen) {
+  const q = QUESTIONS[qIdx];
+  if (q._answered) return;
+  q._answered = true;
+  answered++;
+
+  const card = document.getElementById('q-' + qIdx);
+  q.o.forEach((_, ci) => {
+    const btn = document.getElementById(`btn-${qIdx}-${ci}`);
+    btn.disabled = true;
+    if (ci === q.a) btn.classList.add('correct');
+    else if (ci === chosen && chosen !== q.a) btn.classList.add('wrong');
+  });
+
+  if (chosen === q.a) { correct++; card.classList.add('answered-correct'); }
+  else card.classList.add('answered-wrong');
+
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  document.getElementById('score-pct').textContent = Math.round(correct / answered * 100) + '%';
+  document.getElementById('progress-fill').style.width = (answered / QUESTIONS.length * 100) + '%';
+
+  if (answered === QUESTIONS.length) showEnd();
+}
+
+function showEnd() {
+  document.getElementById('end-screen').style.display = 'block';
+  const pct = Math.round(correct / QUESTIONS.length * 100);
+  document.getElementById('final-score').textContent = pct + '%';
+  document.getElementById('final-detail').textContent = `ตอบถูก ${correct} จาก ${QUESTIONS.length} ข้อ`;
+  document.getElementById('end-screen').scrollIntoView({ behavior: 'smooth' });
+}
+
+function restartQuiz() {
+  answered = 0; correct = 0;
+  document.getElementById('answered-count').textContent = 0;
+  document.getElementById('correct-count').textContent = 0;
+  document.getElementById('score-pct').textContent = '0%';
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('end-screen').style.display = 'none';
+  buildQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildQuiz();
+</script>
+</body>
+</html>
