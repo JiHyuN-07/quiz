@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ข้อสอบ Air Law — กฎหมายการบิน</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'Sarabun', Tahoma, Arial, sans-serif; background: #f0f4f8; color: #222; }
+
+  header {
+    background: linear-gradient(135deg, #1a3c6e, #2d6abf);
+    color: #fff; padding: 24px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  header h1 { font-size: 1.5rem; }
+  header p { font-size: 0.9rem; opacity: 0.85; margin-top: 4px; }
+
+  #score-bar {
+    background: #fff; border-bottom: 2px solid #dde3ec;
+    padding: 12px 32px; display: flex; gap: 32px; align-items: center;
+    font-size: 0.9rem; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08); flex-wrap: wrap;
+  }
+  #score-bar span { font-weight: 700; color: #1a3c6e; }
+  #progress-bar { flex: 1; min-width: 120px; height: 8px; background: #dde3ec; border-radius: 4px; overflow: hidden; }
+  #progress-fill { height: 100%; background: #2d6abf; border-radius: 4px; transition: width .4s; }
+
+  .section-header {
+    background: #1a3c6e; color: #fff;
+    padding: 14px 32px; font-size: 1.1rem; font-weight: 700;
+    margin-top: 32px; letter-spacing: .5px;
+  }
+  .section-header span { opacity: 0.7; font-size: 0.85rem; font-weight: 400; margin-left: 12px; }
+
+  .question-card {
+    background: #fff; margin: 16px 32px;
+    border-radius: 10px; padding: 22px 26px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    border-left: 4px solid #dde3ec;
+    transition: border-color .2s;
+  }
+  .question-card.answered-correct { border-left-color: #27ae60; }
+  .question-card.answered-wrong   { border-left-color: #e74c3c; }
+
+  .q-number { font-size: 0.75rem; color: #888; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; }
+  .q-text { font-size: 1rem; font-weight: 600; line-height: 1.6; margin-bottom: 16px; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; }
+  .choice-btn {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: #f7f9fc; border: 2px solid #dde3ec;
+    border-radius: 8px; padding: 11px 16px;
+    cursor: pointer; font-size: 0.93rem; text-align: left;
+    transition: background .15s, border-color .15s; line-height: 1.5;
+  }
+  .choice-btn:hover:not(:disabled) { background: #e8eef8; border-color: #2d6abf; }
+  .choice-btn .letter { font-weight: 700; color: #2d6abf; min-width: 22px; flex-shrink: 0; }
+  .choice-btn.correct  { background: #eafaf1; border-color: #27ae60; }
+  .choice-btn.wrong    { background: #fdf0ef; border-color: #e74c3c; }
+  .choice-btn.correct .letter { color: #27ae60; }
+  .choice-btn.wrong   .letter { color: #e74c3c; }
+  .choice-btn:disabled { cursor: default; }
+
+  #end-screen {
+    display: none; text-align: center;
+    background: #fff; margin: 32px; border-radius: 12px;
+    padding: 48px 32px; box-shadow: 0 4px 20px rgba(0,0,0,.1);
+  }
+  #end-screen h2 { font-size: 2rem; color: #1a3c6e; margin-bottom: 8px; }
+  #end-screen .big-score { font-size: 4rem; font-weight: 800; color: #2d6abf; }
+  #end-screen p { color: #555; margin: 8px 0; }
+  #restart-btn {
+    margin-top: 24px; background: #2d6abf; color: #fff;
+    border: none; padding: 14px 36px; border-radius: 8px;
+    font-size: 1rem; cursor: pointer; font-weight: 600; transition: background .2s;
+  }
+  #restart-btn:hover { background: #1a3c6e; }
+
+  footer { text-align: center; color: #6b7280; font-size: 0.85rem; margin: 30px 24px; line-height: 1.7; }
+  @media (max-width: 640px) {
+    header, #score-bar, .section-header { padding-left: 16px; padding-right: 16px; }
+    .question-card { margin: 14px 16px; padding: 18px 16px; }
+    #end-screen { margin: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>ข้อสอบ Air Law — กฎหมายการบิน</h1>
+    <p>ICAO Annexes &amp; ระเบียบการบิน &nbsp;|&nbsp; 25 ข้อ · เฉลยตามข้อสอบจริง</p>
+  </div>
+</header>
+
+<div id="score-bar">
+  <div>ตอบแล้ว: <span id="answered-count">0</span> / <span id="total-count">25</span></div>
+  <div id="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
+  <div>ถูก: <span id="correct-count">0</span></div>
+  <div>คะแนน: <span id="score-pct">0%</span></div>
+</div>
+
+<div id="quiz-container"></div>
+<div id="end-screen">
+  <h2>ทำครบแล้ว! 🎉</h2>
+  <div class="big-score" id="final-score"></div>
+  <p id="final-detail"></p>
+  <button id="restart-btn" onclick="restartQuiz()">เริ่มใหม่</button>
+</div>
+
+<footer>
+  📌 ข้อสอบวิชา Air Law (กฎหมายการบิน) · อ้างอิง ICAO Annex 2/8/13 และระเบียบการบิน · เฉลยจากตัวเลือกที่ไฮไลท์ไว้ในข้อสอบต้นฉบับ
+</footer>
+
+<script>
+const QUESTIONS = [
+  { q:"According to ICAO Annex 2, who is responsible for the operation of an aircraft during flight?",
+    o:["Air Traffic Control (ATC)","Airport Authority","Pilot-in-command","Aircraft Owner"], a:2 },
+  { q:"ใน ICAO (Annex 2) ข้อใด<b>ไม่</b>ถูกกล่าวถึง ?",
+    o:["General Rules","Instrument Flight Rules","Visual Flight Rules","Doc 7101"], a:3 },
+  { q:"ตามกฎการบินทั่วไป ผู้บังคับอากาศยานสามารถเบี่ยงเบนจากกฎการบินได้ในกรณีใด ?",
+    o:["เมื่อนักบินต้องการประหยัดเชื้อเพลิง","เมื่อเกิดสถานการณ์ฉุกเฉินที่จำเป็นต่อความปลอดภัยของอากาศยาน","เมื่อผู้โดยสารร้องขอ","เมื่อสภาพอากาศดี"], a:1 },
+  { q:"What Annex that every pilot should understand first to fly safely in the air ?",
+    o:["Annex 2 Rules of the Air","Annex 6 Operation of Aircraft","Annex 17 Security","Annex 19 Safety Management"], a:0 },
+  { q:"ข้อกำหนดเกี่ยวกับเชื้อเพลิง ต้องมีเชื้อเพลิงสำรอง (Fuel Reserve) อย่างน้อย …… นาที สำหรับอากาศยานปีกตรึง และ …… นาที สำหรับเฮลิคอปเตอร์",
+    o:["30, 30","30, 45","45, 30","45, 45"], a:2 },
+  { q:"According to ICAO Annex 13, what is the primary objective of an aircraft accident investigation?",
+    o:["To determine who is responsible for the accident","To improve aviation safety","To provide evidence for legal proceedings","To compensate the victims"], a:1 },
+  { q:"หากอากาศยานกำลังทำการบินอยู่ (Aircraft in flight) และได้รับสัญญาณไฟสีแดงนิ่ง (Steady red) จากหอบังคับการบิน สัญญาณไฟนี้มีความหมายว่าอย่างไร ?",
+    o:["บินกลับไปยังจุดเริ่มต้นบนสนามบิน","ให้ทางแก่อากาศยานลำอื่นและบินวนต่อไป","สนามบินไม่ปลอดภัย ห้ามลงจอด","อนุญาตให้ลงจอดได้"], a:1 },
+  { q:"What does a steady green light from the control tower mean to an aircraft in flight?",
+    o:["Return for landing","Cleared to land","Cleared for takeoff","Give way to other aircraft"], a:1 },
+  { q:"According to ICAO Annex 13, what is the primary purpose of an aircraft accident investigation?",
+    o:["To determine who is legally responsible for the accident","To prevent future accidents and incidents","To punish the pilot or airline involved"], a:1 },
+  { q:"How many languages that Annex 2 has been published by ICAO?",
+    o:["5","6","7","8"], a:1 },
+  { q:"รายงาน Airprox หรือ Airmiss report มีวัตถุประสงค์หลักเพื่ออะไร ?",
+    o:["รายงานกรณีเครื่องบินเฉียดกันในระยะอันตราย","รายงานสภาพอากาศไม่ดีระหว่างการบิน","รายงานการขัดข้องของเครื่องยนต์","รายงานการสูญหายของอากาศยาน"], a:0 },
+  { q:"Under ICAO Annex 13, which of the following States must be notified by the State of Occurrence after an aircraft accident or serious incident?",
+    o:["State of Registry, State of the Operator, State of Design, and State of Manufacture","Only the State of Registry and the aircraft manufacturer","Only the State of the Operator","Only the State where the aircraft was last maintained"], a:0 },
+  { q:"ขณะบินแบบ VFR นักบินต้องใช้หลักการใดเป็นสำคัญเพื่อป้องกันการชนกับอากาศยานอื่น ?",
+    o:["ใช้เรดาร์จาก ATC เท่านั้น","ใช้เครื่องวัดในห้องนักบินเป็นหลัก","หลักการ “See and Avoid”","บินตามเครื่องบินลำหน้าเสมอ"], a:2 },
+  { q:"เครื่องบินสองลำบินเข้าหากัน (Head-On) ที่ระดับความสูงเดียวกัน นักบินทั้งสองลำควรทำอย่างไร ?",
+    o:["ทั้งสองลำเลี้ยวซ้าย","ทั้งสองลำเลี้ยวขวา","เครื่องที่เร็วกว่าเลี้ยวซ้าย","เครื่องที่ต่ำกว่าเลี้ยวขวา"], a:1 },
+  { q:"An aircraft blows a tire during taxi. There are zero injuries and no structural damage. This event is classified as an:",
+    o:["Accident","Incident","Emergency","Hazard"], a:1 },
+  { q:"According to ICAO, what is the minimum flight visibility required for an IFR flight in Class G airspace below 10,000 ft AMSL?",
+    o:["1,500 m","3,000 m","5,000 m","No minimum visibility required"], a:2 },
+  { q:"หลังการสิ้นสุดการบินที่สนามบินทหาร นักบินต้องแน่ใจว่าหน่วยที่เกี่ยวข้องได้รับแจ้งการสิ้นสุดของการบิน นักบินสามารถปฏิบัติได้ดังนี้ <b>ยกเว้น</b>ข้อใด ?",
+    o:["นบ. แจ้งกับหอบังคับการบินผ่านความถี่วิทยุ","นบ. เดินไปแจ้งกับเจ้าหน้าที่ยุทธการฐานบิน","นบ. โทรศัพท์แจ้งกับเจ้าหน้าที่ยุทธการฐานบิน","นบ. ลงนามในสมุดสั่งการบิน"], a:3 },
+  { q:"เครื่องหมาย Runway Threshold Markings มีหน้าที่หลักเพื่ออะไร ?",
+    o:["แสดงตำแหน่งเริ่มต้นของพื้นที่ที่สามารถใช้ลงจอดได้","แสดงพื้นที่สำหรับจอดเครื่องบิน","แสดงตำแหน่ง Taxiway","แสดงทิศทางลม"], a:0 },
+  { q:"The Five Freedoms of the Air เกี่ยวกับอะไร ?",
+    o:["สิทธิการบินของสายการบินระหว่างประเทศ","สิทธิของนักบิน","สิทธิของสนามบิน","สิทธิของผู้โดยสาร"], a:0 },
+  { q:"สิทธิการบินข้อใดใน Five Freedoms of the Air ที่หมายถึงสิทธิในการขนส่งผู้โดยสารหรือสินค้าจากประเทศของตนไปยังอีกประเทศหนึ่ง และรับผู้โดยสารหรือสินค้าจากประเทศนั้นกลับมายังประเทศของตน ?",
+    o:["First Freedom of the Air","Second Freedom of the Air","Third Freedom of the Air","Fourth Freedom of the Air"], a:3 },
+  { q:"Light Signals จากหอควบคุมมีไว้เพื่ออะไรเป็นหลัก ?",
+    o:["ใช้แทนวิทยุเมื่อสื่อสารวิทยุขัดข้อง หรือใช้เสริมการควบคุมในสนามบิน","ใช้บอกความเร็วลมเท่านั้น","ใช้แทน NOTAM","ใช้สำหรับการสอบสวนอุบัติเหตุ"], a:0 },
+  { q:"According to ICAO Annex 13, what type of information should be included in the initial notification of an aircraft accident or serious incident sent by the State of Occurrence?",
+    o:["The pilot’s personal medical history","Basic factual information such as aircraft identification, location, date and time of the occurrence","The final cause of the accident","The full investigation report"], a:1 },
+  { q:"According to ICAO Annex 2, when must position lights be displayed by aircraft in flight?",
+    o:["Only during takeoff and landing","At all times between sunset and sunrise","Only when flying in controlled airspace","Only during poor visibility"], a:1 },
+  { q:"ก่อนเข้าสู่ Controlled Airspace นักบินต้องปฏิบัติอย่างไร ?",
+    o:["เข้าพื้นที่ได้ทันทีหากมองเห็นสนามบิน","เปิดไฟลงจอดและบินต่อได้เลย","ติดต่อและได้รับอนุญาตจากหน่วยควบคุมจราจรทางอากาศ (ATC) ก่อน","ลดความเร็วต่ำกว่า 100 knots เท่านั้นก็เพียงพอ"], a:2 },
+  { q:"Restricted Area คือพื้นที่แบบใด ?",
+    o:["พื้นที่ที่ห้ามบินทุกกรณี","พื้นที่ที่อนุญาตให้บินได้เฉพาะเครื่องบินพาณิชย์","พื้นที่ที่การบินถูกจำกัดตามเงื่อนไขที่กำหนด","พื้นที่สำหรับการบินระหว่างประเทศเท่านั้น"], a:2 }
+];
+
+const LETTERS = ["ก","ข","ค","ง"];
+let answered = 0, correct = 0;
+
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  document.getElementById('total-count').textContent = QUESTIONS.length;
+
+  const hdr = document.createElement('div');
+  hdr.className = 'section-header';
+  hdr.innerHTML = 'ข้อสอบ Air Law (กฎหมายการบิน)' + `<span>${QUESTIONS.length} ข้อ</span>`;
+  container.appendChild(hdr);
+
+  QUESTIONS.forEach((q, idx) => {
+    q._answered = false;
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'q-' + idx;
+    const choicesHtml = q.o.map((ch, ci) =>
+      `<button class="choice-btn" onclick="answer(${idx},${ci})" id="btn-${idx}-${ci}">
+         <span class="letter">${LETTERS[ci]}.</span><span>${ch}</span>
+       </button>`
+    ).join('');
+    card.innerHTML = `
+      <div class="q-number">ข้อ ${idx + 1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="choices">${choicesHtml}</div>`;
+    container.appendChild(card);
+  });
+}
+
+function answer(qIdx, chosen) {
+  const q = QUESTIONS[qIdx];
+  if (q._answered) return;
+  q._answered = true;
+  answered++;
+
+  const card = document.getElementById('q-' + qIdx);
+  q.o.forEach((_, ci) => {
+    const btn = document.getElementById(`btn-${qIdx}-${ci}`);
+    btn.disabled = true;
+    if (ci === q.a) btn.classList.add('correct');
+    else if (ci === chosen && chosen !== q.a) btn.classList.add('wrong');
+  });
+
+  if (chosen === q.a) { correct++; card.classList.add('answered-correct'); }
+  else card.classList.add('answered-wrong');
+
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  document.getElementById('score-pct').textContent = Math.round(correct / answered * 100) + '%';
+  document.getElementById('progress-fill').style.width = (answered / QUESTIONS.length * 100) + '%';
+
+  if (answered === QUESTIONS.length) showEnd();
+}
+
+function showEnd() {
+  document.getElementById('end-screen').style.display = 'block';
+  const pct = Math.round(correct / QUESTIONS.length * 100);
+  document.getElementById('final-score').textContent = pct + '%';
+  document.getElementById('final-detail').textContent = `ตอบถูก ${correct} จาก ${QUESTIONS.length} ข้อ`;
+  document.getElementById('end-screen').scrollIntoView({ behavior: 'smooth' });
+}
+
+function restartQuiz() {
+  answered = 0; correct = 0;
+  document.getElementById('answered-count').textContent = 0;
+  document.getElementById('correct-count').textContent = 0;
+  document.getElementById('score-pct').textContent = '0%';
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('end-screen').style.display = 'none';
+  buildQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildQuiz();
+</script>
+</body>
+</html>
