@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ข้อสอบ G01 - G08</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'Sarabun', Tahoma, Arial, sans-serif; background: #f0f4f8; color: #222; }
+
+  header {
+    background: linear-gradient(135deg, #1a3c6e, #2d6abf);
+    color: #fff; padding: 24px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  header h1 { font-size: 1.5rem; }
+  header p { font-size: 0.9rem; opacity: 0.85; margin-top: 4px; }
+
+  #score-bar {
+    background: #fff; border-bottom: 2px solid #dde3ec;
+    padding: 12px 32px; display: flex; gap: 32px; align-items: center;
+    font-size: 0.9rem; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08); flex-wrap: wrap;
+  }
+  #score-bar span { font-weight: 700; color: #1a3c6e; }
+  #progress-bar { flex: 1; min-width: 120px; height: 8px; background: #dde3ec; border-radius: 4px; overflow: hidden; }
+  #progress-fill { height: 100%; background: #2d6abf; border-radius: 4px; transition: width .4s; }
+
+  .section-header {
+    background: #1a3c6e; color: #fff;
+    padding: 14px 32px; font-size: 1.1rem; font-weight: 700;
+    margin-top: 32px; letter-spacing: .5px;
+  }
+  .section-header span { opacity: 0.7; font-size: 0.85rem; font-weight: 400; margin-left: 12px; }
+
+  .question-card {
+    background: #fff; margin: 16px 32px;
+    border-radius: 10px; padding: 22px 26px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    border-left: 4px solid #dde3ec;
+    transition: border-color .2s;
+  }
+  .question-card.answered-correct { border-left-color: #27ae60; }
+  .question-card.answered-wrong   { border-left-color: #e74c3c; }
+
+  .q-number { font-size: 0.75rem; color: #888; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; }
+  .q-text { font-size: 1rem; font-weight: 600; line-height: 1.6; margin-bottom: 16px; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; }
+  .choice-btn {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: #f7f9fc; border: 2px solid #dde3ec;
+    border-radius: 8px; padding: 11px 16px;
+    cursor: pointer; font-size: 0.93rem; text-align: left;
+    transition: background .15s, border-color .15s; line-height: 1.5;
+  }
+  .choice-btn:hover:not(:disabled) { background: #e8eef8; border-color: #2d6abf; }
+  .choice-btn .letter { font-weight: 700; color: #2d6abf; min-width: 22px; flex-shrink: 0; }
+  .choice-btn.correct  { background: #eafaf1; border-color: #27ae60; }
+  .choice-btn.wrong    { background: #fdf0ef; border-color: #e74c3c; }
+  .choice-btn.correct .letter { color: #27ae60; }
+  .choice-btn.wrong   .letter { color: #e74c3c; }
+  .choice-btn:disabled { cursor: default; }
+
+  #end-screen {
+    display: none; text-align: center;
+    background: #fff; margin: 32px; border-radius: 12px;
+    padding: 48px 32px; box-shadow: 0 4px 20px rgba(0,0,0,.1);
+  }
+  #end-screen h2 { font-size: 2rem; color: #1a3c6e; margin-bottom: 8px; }
+  #end-screen .big-score { font-size: 4rem; font-weight: 800; color: #2d6abf; }
+  #end-screen p { color: #555; margin: 8px 0; }
+  #restart-btn {
+    margin-top: 24px; background: #2d6abf; color: #fff;
+    border: none; padding: 14px 36px; border-radius: 8px;
+    font-size: 1rem; cursor: pointer; font-weight: 600; transition: background .2s;
+  }
+  #restart-btn:hover { background: #1a3c6e; }
+
+  footer { text-align: center; color: #6b7280; font-size: 0.85rem; margin: 30px 24px; line-height: 1.7; }
+  @media (max-width: 640px) {
+    header, #score-bar, .section-header { padding-left: 16px; padding-right: 16px; }
+    .question-card { margin: 14px 16px; padding: 18px 16px; }
+    #end-screen { margin: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>ข้อสอบ G01 - G08</h1>
+    <p>หลักสูตรการฝึกบิน · บ.ฝ.16 ก (CT-4E) &nbsp;|&nbsp; 50 ข้อ · เฉลยตามข้อสอบจริง</p>
+  </div>
+</header>
+
+<div id="score-bar">
+  <div>ตอบแล้ว: <span id="answered-count">0</span> / <span id="total-count">50</span></div>
+  <div id="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
+  <div>ถูก: <span id="correct-count">0</span></div>
+  <div>คะแนน: <span id="score-pct">0%</span></div>
+</div>
+
+<div id="quiz-container"></div>
+<div id="end-screen">
+  <h2>ทำครบแล้ว! 🎉</h2>
+  <div class="big-score" id="final-score"></div>
+  <p id="final-detail"></p>
+  <button id="restart-btn" onclick="restartQuiz()">เริ่มใหม่</button>
+</div>
+
+<footer>
+  📌 ข้อสอบ G01 - G08 · หลักสูตรการฝึกบิน โรงเรียนการบิน · เฉลยจากข้อที่ทำเครื่องหมายไว้ในข้อสอบต้นฉบับ
+</footer>
+
+<script>
+const QUESTIONS = [
+  { q:"เที่ยวบิน C110 คือเที่ยวบินประเภทใด",
+    o:["เที่ยวบินเดี่ยวครั้งแรก","เที่ยวบินตรวจสอบมาตรฐานการบินเกาะภูมิประเทศก่อนปล่อยเดี่ยว","เที่ยวบินฝึกลงฉุกเฉิน","เที่ยวบินเดินทาง"], a:1 },
+  { q:"ก่อนเข้ารับการตรวจสอบเที่ยวบิน C110 ศิษย์การบินต้องมีการฝึกขึ้น-ลงสนามมาแล้วอย่างน้อยกี่ครั้ง",
+    o:["๒๐ ครั้ง","๒๕ ครั้ง","๓๐ ครั้ง","๓๕ ครั้ง"], a:3 },
+  { q:"หากศิษย์การบินไม่ผ่านการตรวจสอบในเที่ยวบิน C110 จะต้องทำอย่างไร",
+    o:["ยุติการฝึกทันที","บินทบทวนกับครูการบินในเที่ยวบิน C110A แล้วตรวจสอบใหม่ในเที่ยวบินสำรอง C110B วันถัดไป","ข้ามไปฝึก C111 เลย","รอสอบใหม่อีก ๗ วัน"], a:1 },
+  { q:"ในเที่ยวบิน C204 (บินเดี่ยว) ข้อใด <b>ห้าม</b> ศิษย์การบินปฏิบัติ",
+    o:["Chandelle และ Lazy Eight","การเลี้ยวระดับด้วยมุมเอียงปีก ๔๕ และ ๖๐ องศา","Power Off Stall Series (ห้ามฝึก) และห้ามลงสนามแบบ No Flap ยกเว้นกรณีฉุกเฉิน","การลงสนามโดยใช้ Flaps"], a:2 },
+  { q:"ท่าบินใดที่ศิษย์การบินจะได้รับ \"การสาธิต\" เท่านั้น (ไม่ต้องฝึกปฏิบัติเอง) ในเที่ยวบิน C202",
+    o:["Crosswind Landing","Aileron Roll, Barrel Roll, Loop","SFL","Traffic Pattern"], a:1 },
+  { q:"ตามมาตรฐานการฝึกบิน (Training Standard) ข้อใดต่อไปนี้<b>ไม่ถูกต้อง</b>",
+    o:["ระดับความสามารถ ๑ หมายถึง รู้ถึงวิธีการทั่วไปของการปฏิบัติและนำเอาความรู้ไปประกอบในการบินได้โดยต้องการความช่วยเหลือและแนะนำ","ระดับความสามารถ ๒ หมายถึง มีความคุ้นเคยกับหลักการ เทคนิค วิธีปฏิบัติที่เกี่ยวข้อง และสามารถปฏิบัติหรือใช้อุปกรณ์ได้โดยต้องการความช่วยเหลือและแนะนำ","ระดับความสามารถ ๓ หมายถึง มีความเข้าใจโดยตลอดในหลักการ เทคนิคและวิธีปฏิบัติที่เกี่ยวข้อง และสามารถปฏิบัติหรือใช้อุปกรณ์ได้โดยอาจจะได้รับคำแนะนำบ้าง","ระดับความสามารถ ๔ หมายถึง สามารถปฏิบัติได้อย่างถูกต้อง รวดเร็ว และมีประสิทธิภาพ โดยไม่ต้องการความช่วยเหลือ และสามารถนำเอาหลักการ เทคนิค และการปฏิบัติที่เกี่ยวข้องกับการปฏิบัติการบินไปประยุกต์"], a:0 },
+  { q:"ข้อใดกล่าว<b>ไม่ถูกต้อง</b>เกี่ยวกับการตรวจสอบผลการฝึกภาคอากาศ",
+    o:["ศิษย์การบินต้องบินคู่กับครูการบิน ๑ เที่ยวบินก่อนเข้ารับการตรวจสอบการฝึกภาคอากาศในวันบินถัดไปเท่านั้น ไม่สามารถเข้ารับการตรวจสอบภายในวันเดียวกันได้ทุกกรณี","หากศิษย์การบินไม่สามารถเข้ารับการตรวจสอบการฝึกภาคอากาศในวันที่กำหนดได้ เนื่องจากอุปสรรคการฝึกบิน เช่น สภาพอากาศ ฯลฯ ให้เพิ่มเติมเที่ยวบินฝึกทบทวนอีก ๑ เที่ยวบิน","หากมีความจำเป็น ศิษย์การบินสามารถเข้ารับการตรวจสอบการฝึกภาคอากาศในวันเดียวกับที่ทำการบินคู่กับครูการบินได้","ไม่มีข้อใดถูกต้อง"], a:0 },
+  { q:"ศิษย์การบินจะต้องถูกตรวจสอบแบบกะทันหัน (Spot Check) โดย นตฐ.รร.การบิน เมื่อเกิดเหตุใดต่อไปนี้",
+    o:["ได้รับการประเมินค่า U (Unsatisfied) ๒ เที่ยวบินติดต่อกัน หรือ F (FAIR) ๓ เที่ยวบินติดต่อกัน","ไม่สามารถทำการบินเดี่ยวในเที่ยวบินที่กำหนดตามหลักสูตร","มีการกระทำการโดยประมาท และ/หรือ ผิดวินัยการบิน จนเป็นเหตุให้ทรัพย์สินของทางราชการเสียหาย","ถูกทุกข้อ"], a:3 },
+  { q:"ขณะ บ. ทำการวิ่งขึ้น ห้ามทำการวิ่งขึ้นหากมีลมขวางสนามเกินกี่น็อต และไม่เกินกี่น็อตในกรณีทางวิ่งเปียก",
+    o:["30 และ 20 ในกรณีทางวิ่งเปียก","20 และ 20 ในกรณีทางวิ่งเปียก","20 และ 15 ในกรณีทางวิ่งเปียก","15 และ 20 ในกรณีทางวิ่งเปียก"], a:2 },
+  { q:"สภาพอากาศสำหรับการฝึกบินในข้อใด <b>ไม่สามารถ</b>ทำการวิ่งขึ้นตามกฎการบินด้วยทัศนวิสัย (VFR) ที่ ศบ. นบ. คบ. ต้องปฏิบัติตาม",
+    o:["เพดานเมฆต่ำกว่า 2,000 ฟุต หรือทัศนวิสัยต่ำกว่า 8,000 เมตร","เพดานเมฆต่ำกว่า 2,000 ฟุต หรือทัศนวิสัยต่ำกว่า 5,000 เมตร","เพดานเมฆต่ำกว่า 2,500 ฟุต หรือทัศนวิสัยต่ำกว่า 5,000 ฟุต","เพดานเมฆต่ำกว่า 2,000 เมตร หรือทัศนวิสัยต่ำกว่า 5,000 ฟุต"], a:1 },
+  { q:"การฝึกทำ Stall ต้องเริ่มที่ระยะความสูงไม่ต่ำกว่ากี่ฟุตในกรณีบินเดี่ยว",
+    o:["1,500 ฟุต","2,000 ฟุต","2,500 ฟุต","3,000 ฟุต"], a:3 },
+  { q:"ความสูงต่ำสุดในการตัดสินใจออกจาก บ. ในอากาศ (Bale-out) คือข้อใด",
+    o:["1,500 ฟุต","1,500 ฟุต AGL","3,000 ฟุต","3,000 ฟุต AGL"], a:1 },
+  { q:"Rotate speed ตอน Take off และตำแหน่ง Flap ที่ถูกต้องตาม Phase manual คือข้อใด",
+    o:["55-60 KIAS, Flaps Up","90-95 KIAS, Flaps Half","80-85 KIAS, Flaps Up","55-60 KIAS, Flaps Full"], a:0 },
+  { q:"Best Rate of Climb ที่ระดับน้ำทะเล (Sea Level) คือเท่าใด (Flaps Up)",
+    o:["82 KIAS","92 KIAS","95 KIAS","145 KIAS"], a:2 },
+  { q:"Normal Cruise Speed ของ CT/4E คือเท่าใด",
+    o:["95 KIAS","120 KIAS","145 KIAS","160 KIAS"], a:2 },
+  { q:"Stall speed Flaps Full คือเท่าใด",
+    o:["54 KIAS","67 KIAS","72 KIAS","75 KIAS"], a:0 },
+  { q:"ห้ามทำการ Start เครื่องยนต์หากแรงดันไฟแบตเตอรี่ต่ำกว่ากี่โวลต์",
+    o:["๑๘ โวลต์","๒๐ โวลต์","๒๒ โวลต์","๒๔ โวลต์"], a:2 },
+  { q:"ในการติดเครื่องยนต์ของ บ.ฝ.๑๖ก ถ้าบิด Ignition Switch เป็นเวลา __ วินาที แล้วเครื่องยนต์ไม่ติด ให้ปล่อย Ignition Switch แล้วรอเป็นเวลา __ วินาที ก่อนทำการติดเครื่องยนต์ครั้งต่อไป ถ้าหากยังไม่ติดภายใน __ ครั้ง ให้รอเป็นเวลา __ นาที เพื่อระบายความร้อนของ Starter",
+    o:["15/20/5/30","10/20/6/40","10/20/6/30","5/10/6/15"], a:2 },
+  { q:"หลัง Start เครื่องยนต์ (After Start Checks) ห้ามให้รอบเครื่องยนต์เกิน ๑,๒๐๐ RPM จนกว่า C.H.T. จะถึงอุณหภูมิเท่าใด",
+    o:["๖๐ °C","๘๐ °C","๑๐๐ °C","๑๒๐ °C"], a:2 },
+  { q:"หากไม่มี Oil Pressure ขึ้นบนเกจภายในกี่วินาทีหลัง Start ต้องดับเครื่องยนต์ทันที",
+    o:["๑๕ วินาที","๓๐ วินาที","๔๕ วินาที","๖๐ วินาที"], a:1 },
+  { q:"ขณะ Cruise ตั้งค่า Manifold Pressure และ Propeller RPM ไว้เท่าใด",
+    o:["21 in.Hg / 2700 RPM","23.0 in.Hg / 2400 RPM","25 in.Hg / 2700 RPM","21 in.Hg / 2400 RPM"], a:3 },
+  { q:"เมื่อเครื่องยนต์ขัดข้องขณะ Take-off (During Take-Off) ขั้นตอนแรกที่ต้องทำคือข้อใด",
+    o:["Fuel Selector – Off","Mixture Lever – IDLE CUT OFF","Master Switch – Off","Brakes – Apply"], a:1 },
+  { q:"เครื่องยนต์ขัดข้องขณะบิน (During Flight) ขั้นตอนแรกหลังพบว่าเครื่องดับคือข้อใด",
+    o:["Trouble check หาสาเหตุทันที","Convert excess speed to height","Mayday call ทันที","Bale-out ทันที"], a:1 },
+  { q:"หากใบพัด \"Windmills\" โดยไม่มีกำลัง (no power) ต้องทำ Airload Start ที่ความเร็วขั้นต่ำเท่าใด และคาดว่าจะเสียความสูงประมาณเท่าใด",
+    o:["100 KIAS / เสีย 500 ฟุต","120 KIAS / เสีย 1,000 ฟุต","140 KIAS / เสีย 1,500 ฟุต","160 KIAS / เสีย 2,000 ฟุต"], a:2 },
+  { q:"Fuselage Fire in the Air (ไฟไหม้จากอุปกรณ์ไฟฟ้า) ขั้นตอนแรกคือข้อใด",
+    o:["Bale-out ทันที","Cockpit Air – Full open และ Non-essential Electrics – Off","Master Switch – On ค้างไว้","Canopy – Jettison ทันที"], a:1 },
+  { q:"เมื่อเกิด Total Electrical Failure จะสังเกตได้จากข้อใด",
+    o:["รอบเครื่องยนต์ลดลงทันที","เกจ Oil, CHT, RPM, Fuel Quantity, Trim เบนไป \"off scale\" ทันที และ Voltmeter อ่านค่า \"zero\"","Canopy เปิดเองอัตโนมัติ","เครื่องยนต์ดับทันที"], a:1 },
+  { q:"เมื่อเกิด Electric Trim Runaway แบบ Nose Down ต้องปฏิบัติอย่างไร",
+    o:["เลือก Flaps Up และลดความเร็วไม่ต่ำกว่า 70 นอต","เลือก HALF Flaps และเพิ่มความเร็วไม่เกิน 100 นอต","ปิด Master Switch ทันที","Bale-out ทันที"], a:1 },
+  { q:"ก่อนทำ Canopy Jettison ควรรักษาความเร็วเท่าใด (ถ้าเป็นไปได้) และตั้ง Flap เท่าใด",
+    o:["70 KIAS, Flap Up","85 KIAS, 50% Flap","95 KIAS, Flap Full","140 KIAS, Flap Up"], a:1 },
+  { q:"ก่อน Abandoning Aircraft หลัง Master Switch – Off แล้ว ต้อง Trim เครื่องบินไว้ที่ความเร็วใด",
+    o:["60 KIAS","70 KIAS","85 KIAS","95 KIAS"], a:1 },
+  { q:"อุปกรณ์ประจำตัวนักบินในข้อใด <b>ไม่มี</b>ใช้งานกับ บ.ฝ.๑๖ก",
+    o:["หมวกนักบินแบบ Gentex HGU-55/P","ร่มชูชีพแบบ B-20","ชุดชูชีพแบบ LPU-9/P","ชุดชูชีพแบบ LPU-10/P"], a:2 },
+  { q:"ข้อใดถูกต้อง",
+    o:["ร่มชูชีพแบบ B-20 สามารถใช้งานได้ทุกระดับความสูง","การเก็บรักษาร่มชูชีพ ควรเก็บไว้ในพื้นที่แห้งและหลีกเลี่ยงแดด","การขึ้นทำการบินกับ บ.ฝ.๑๖ก นักบินจะต้องสวมหน้ากากออกซิเจนทุกครั้ง","ระบบสละอากาศยาน (Ejection Seat) ของ บ.ฝ.๑๖ก เป็นแบบ Zero/Zero สามารถทำงานได้ทุกความเร็วและความสูง"], a:1 },
+  { q:"พื้นที่การฝึกของโรงเรียนการบิน ได้แก่พื้นที่ต่อไปนี้ <b>ยกเว้น</b>ข้อใด",
+    o:["VTD-16","VTD-17","VTD-18","VTD-72"], a:3 },
+  { q:"ตามคำสั่งการบินฝูงฝึกขั้นต้น การฝึกในวงจรขึ้น-ลงสนาม หากผู้ทำการบินตั้งใจจะไม่ลงสนามจนสัมผัสพื้น (Low Approach) ให้แจ้งความต้องการขณะรายงานตำแหน่งในขา __ และให้ทำการ Low Approach ที่ระยะสูงไม่ต่ำกว่า __",
+    o:["Downwind/๓๐๐ เมตร","Downwind/๓๐๐ ฟุต","Base/๓๐๐ เมตร","Base/๓๐๐ ฟุต"], a:3 },
+  { q:"สนามบินกำแพงแสน มีระยะสูงจากน้ำทะเล",
+    o:["๓๐ ฟุต","๓๒ ฟุต","๓๐ เมตร","๓๒ เมตร"], a:1 },
+  { q:"ในการกลับสนามบินกำแพงแสน หากศิษย์การบินกลับมาจากพื้นที่การฝึกด้านตะวันออก (Area 3, 5) ด้วยวิธี VFR Recovery จะต้องเข้ามาที่บริเวณจุดรายงาน __ Point ระยะ __ ไมล์จากสนามบิน ที่ระยะสูง __ ฟุต ก่อนต่อเข้าวงจรการลงสนาม",
+    o:["Charlie/๔.๔/๑,๐๐๐","Papa/๔.๔/๘๐๐","Charlie/๔.๔/๘๐๐","Papa/๔.๔/๑,๐๐๐"], a:1 },
+  { q:"บ.ฝ.๑๖ก ใช้ระยะสูงใดในวงจรการขึ้น-ลงสนามของสนามบินกำแพงแสน",
+    o:["๘๐๐ ฟุต","๑,๐๐๐ ฟุต","๑,๕๐๐ ฟุต","๒,๕๐๐ ฟุต"], a:0 },
+  { q:"เกณฑ์เชื้อเพลิงต่ำสุดในวงจรสำหรับ บ.ฝ.๑๖ก เมื่อเชื้อเพลิง __ ลิตร ที่ขาตามลม (Downwind) จะต้องนำเครื่องลงสนามแบบ Full Stop Landing ทันที",
+    o:["๓๐","๓๕","๔๐","๔๕"], a:0 },
+  { q:"เมื่อเกิดเหตุฉุกเฉินในหัวข้อ Engine Failure การปฏิบัติใด ส่งผลให้ระยะในการร่อนเพิ่มขึ้น",
+    o:["Throttle  Set 1/2\" open","Cockpit Air  Full Cold","Propeller Full Increase","Propeller Full Decrease"], a:3 },
+  { q:"ในกรณีวิทยุเสีย ให้ตั้งค่า Transponder รหัสอะไร",
+    o:["7500","7600","7700","7800"], a:1 },
+  { q:"The rate of descent, engine off, propeller ‘windmilling’. Flaps up and 70 K.I.A.S is _____ per _____ at zero wind velocity.",
+    o:["1.1 Statute Mile/1,000 Feet","1.1 Kilometer/1,000 Meter","1.1 Nautical Mile/1,000 Feet","1.1 Nautical Mile/1,000 Meter"], a:2 },
+  { q:"For all emergencies the glide speed will be in the range __ to __ K.I.A.S dependent on flap setting.",
+    o:["68/80","64/85","70/85","80/85"], a:0 },
+  { q:"ข้อใดคือความถี่วิทยุของสนามบินกำแพงแสน คลื่นความถี่ Ground, Tower, Approach และคลื่นความถี่ฉุกเฉิน",
+    o:["121.75/123.30/127.75/121.50","123.30/121.75/127.75/114.50","114.50/121.75/123.30/251","121.75/123.30/114.50/251"], a:0 },
+  { q:"ก่อนทำการบิน ศิษย์การบินจะต้องได้คะแนนไม่ต่ำกว่าร้อยละเท่าใด ในการทดสอบความรู้เกี่ยวกับการบินและระเบียบปฏิบัติทั่วไปเกี่ยวกับการบิน",
+    o:["๗๕%","๘๐%","๘๕%","๙๐%"], a:2 },
+  { q:"ก่อนทำการบิน ศิษย์การบินจะต้องได้คะแนนไม่ต่ำกว่าร้อยละเท่าใด ในการตรวจสอบการปฏิบัติตามขั้นตอนฉุกเฉินในหัวข้อสำคัญ (Emergency Boldface)",
+    o:["๑๐๐%","๙๕%","๙๐%","๘๕%"], a:0 },
+  { q:"ศิษย์การบินที่ไม่ผ่านการตรวจสอบการฝึกอบรมก่อนทำการบิน ให้สอบแก้ตัวได้อีก __ ครั้ง ถ้าสอบแก้ตัวไม่ผ่าน ให้ส่งรายชื่อให้คณะกรรมการคัดออกจากสภาวะความเป็นศิษย์การบิน",
+    o:["๑","๒","๓","๔"], a:0 },
+  { q:"กรณีเกิดข้อขัดข้องกับเครื่องยนต์ ให้กลับมาลงสนามแบบใด",
+    o:["90 Side Approach","360 Overhead","Straight In","Forced Landing"], a:3 },
+  { q:"เมื่อเห็นเหตุการณ์หรือทราบข่าวอากาศยานเกิดเหตุฉุกเฉินหรืออุบัติเหตุในเขตการบินของสนามบินกำแพงแสน สิ่งแรกที่ควรปฏิบัติคือข้อใด ?",
+    o:["รีบวิ่งเข้าไปช่วยเหลือนักบินออกจากเครื่องด้วยตนเองทันที","ถ่ายภาพที่เกิดเหตุและแชร์ลงกลุ่มไลน์เพื่อแจ้งให้ทุกคนทราบ","แจ้ง ผบช., คบ., SOF หอควบคุมการจราจรทางอากาศทราบเพื่อดำเนินการต่อไป","รีบโทรศัพท์แจ้งโรงพยาบาลจันทรุเบกษาโดยตรง"], a:2 },
+  { q:"เมื่อเกิดเหตุฉุกเฉินหรืออุบัติเหตุ โรงพยาบาลหลักที่ให้การสนับสนุนและรับผู้บาดเจ็บคือโรงพยาบาลใด ?",
+    o:["โรงพยาบาลกำแพงแสน","โรงพยาบาลนครปฐม","โรงพยาบาลจันทรุเบกษา","โรงพยาบาลภูมิพลอดุลยเดช"], a:2 },
+  { q:"ในกรณีที่ศิษย์การบินติดอยู่ในอากาศยานและไม่สามารถออกมาเองได้ เจ้าหน้าที่ช่วยเหลือสามารถดำเนินการอย่างไรได้บ้าง ?",
+    o:["ต้องรอให้ผู้บัญชาการโรงเรียนการบินมาถึงก่อน จึงจะเข้าไปช่วยได้","ห้ามแตะต้องซากอากาศยานโดยเด็ดขาดจนกว่าเจ้าหน้าที่จะตรวจสอบเสร็จ","ต้องรอวิศวกรอากาศยานมาปลดล็อคประทุนเท่านั้น","เจ้าหน้าที่สามารถเคลื่อนย้าย ทุบ งัด หรือตัดซากอากาศยาน เพื่อช่วยเหลือได้ทันที"], a:3 },
+  { q:"ในการปฏิบัติเมื่อเกิดอากาศยานอุบัติเหตุ การรักษาสภาพซากอากาศยานและร่องรอยต่าง ๆ มีวัตถุประสงค์หลักเพื่อสิ่งใด ?",
+    o:["เพื่อนำไปแสดงในพิพิธภัณฑ์การบิน","เพื่อประโยชน์ในการวิเคราะห์หาสาเหตุของอากาศยานอุบัติเหตุ","เพื่อประเมินความเสียหายสำหรับเรียกเก็บค่าซ่อมแซม","เพื่อให้สื่อมวลชนบันทึกภาพได้อย่างชัดเจน"], a:1 }
+];
+
+const LETTERS = ["ก","ข","ค","ง"];
+let answered = 0, correct = 0;
+
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  document.getElementById('total-count').textContent = QUESTIONS.length;
+
+  const hdr = document.createElement('div');
+  hdr.className = 'section-header';
+  hdr.innerHTML = 'ข้อสอบ G01 - G08' + `<span>${QUESTIONS.length} ข้อ</span>`;
+  container.appendChild(hdr);
+
+  QUESTIONS.forEach((q, idx) => {
+    q._answered = false;
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'q-' + idx;
+    const choicesHtml = q.o.map((ch, ci) =>
+      `<button class="choice-btn" onclick="answer(${idx},${ci})" id="btn-${idx}-${ci}">
+         <span class="letter">${LETTERS[ci]}.</span><span>${ch}</span>
+       </button>`
+    ).join('');
+    card.innerHTML = `
+      <div class="q-number">ข้อ ${idx + 1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="choices">${choicesHtml}</div>`;
+    container.appendChild(card);
+  });
+}
+
+function answer(qIdx, chosen) {
+  const q = QUESTIONS[qIdx];
+  if (q._answered) return;
+  q._answered = true;
+  answered++;
+
+  const card = document.getElementById('q-' + qIdx);
+  q.o.forEach((_, ci) => {
+    const btn = document.getElementById(`btn-${qIdx}-${ci}`);
+    btn.disabled = true;
+    if (ci === q.a) btn.classList.add('correct');
+    else if (ci === chosen && chosen !== q.a) btn.classList.add('wrong');
+  });
+
+  if (chosen === q.a) { correct++; card.classList.add('answered-correct'); }
+  else card.classList.add('answered-wrong');
+
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  document.getElementById('score-pct').textContent = Math.round(correct / answered * 100) + '%';
+  document.getElementById('progress-fill').style.width = (answered / QUESTIONS.length * 100) + '%';
+
+  if (answered === QUESTIONS.length) showEnd();
+}
+
+function showEnd() {
+  document.getElementById('end-screen').style.display = 'block';
+  const pct = Math.round(correct / QUESTIONS.length * 100);
+  document.getElementById('final-score').textContent = pct + '%';
+  document.getElementById('final-detail').textContent = `ตอบถูก ${correct} จาก ${QUESTIONS.length} ข้อ`;
+  document.getElementById('end-screen').scrollIntoView({ behavior: 'smooth' });
+}
+
+function restartQuiz() {
+  answered = 0; correct = 0;
+  document.getElementById('answered-count').textContent = 0;
+  document.getElementById('correct-count').textContent = 0;
+  document.getElementById('score-pct').textContent = '0%';
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('end-screen').style.display = 'none';
+  buildQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildQuiz();
+</script>
+</body>
+</html>
