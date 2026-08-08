@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สรุปวิชา 114 — Flying Safety & ARM</title>
+<style>
+  :root{
+    --bg:#f4f7fb; --card:#ffffff; --card2:#eef3f9; --accent:#1769c0; --accent2:#d97706;
+    --red:#dc2626; --green:#16a34a; --text:#1f2a37; --muted:#5c6b7a; --line:#d7e0ea;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; font-family:"Segoe UI","Sarabun",Tahoma,sans-serif; background:var(--bg);
+    color:var(--text); line-height:1.7; font-size:16px;
+  }
+  header{
+    background:linear-gradient(135deg,#2c7fd0,#1769c0); padding:34px 24px; border-bottom:3px solid var(--accent2);
+    color:#fff;
+  }
+  header h1{margin:0; font-size:28px; letter-spacing:.5px; color:#fff;}
+  header .sub{color:#ffe9c9; font-size:15px; margin-top:6px;}
+  header .meta{color:#d6e6f7; font-size:13px; margin-top:10px;}
+  .wrap{max-width:980px; margin:0 auto; padding:24px;}
+  nav.toc{
+    background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 22px; margin-bottom:26px;
+  }
+  nav.toc h2{margin:0 0 10px; font-size:16px; color:var(--accent);}
+  nav.toc ol{margin:0; padding-left:20px; columns:2; column-gap:30px;}
+  nav.toc a{color:var(--text); text-decoration:none; font-size:14px;}
+  nav.toc a:hover{color:var(--accent2); text-decoration:underline;}
+  section{
+    background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px 24px; margin-bottom:22px;
+    scroll-margin-top:14px; box-shadow:0 1px 3px rgba(20,40,70,.06);
+  }
+  h2.sec{
+    margin:0 0 16px; font-size:21px; color:var(--accent); border-left:4px solid var(--accent);
+    padding-left:12px; scroll-margin-top:14px;
+  }
+  h3{font-size:17px; color:var(--accent2); margin:18px 0 8px;}
+  p{margin:8px 0;}
+  ul{margin:8px 0; padding-left:22px;}
+  li{margin:5px 0;}
+  .term{color:var(--accent); font-weight:700;}
+  .en{color:var(--muted); font-style:italic;}
+  .key{
+    background:var(--card2); border-left:3px solid var(--accent2); padding:10px 14px; border-radius:6px;
+    margin:12px 0; font-size:14.5px;
+  }
+  .warn{border-left-color:var(--red);}
+  .num{color:var(--accent2); font-weight:700;}
+  table{width:100%; border-collapse:collapse; margin:12px 0; font-size:14px;}
+  th,td{border:1px solid var(--line); padding:7px 10px; text-align:left; vertical-align:top;}
+  th{background:var(--card2); color:var(--accent);}
+  td.code{font-family:"Consolas",monospace; color:#b45309; letter-spacing:1px;}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:0;}
+  .freq{
+    display:inline-block; background:#fdecd2; color:#b45309; font-family:"Consolas",monospace;
+    padding:1px 7px; border-radius:4px; font-size:13.5px;
+  }
+  .squawk{
+    display:inline-block; background:#fde0e0; color:var(--red); font-family:"Consolas",monospace;
+    padding:1px 7px; border-radius:4px; font-weight:700;
+  }
+  details{background:var(--card2); border:1px solid var(--line); border-radius:8px; padding:10px 14px; margin:10px 0;}
+  summary{cursor:pointer; font-weight:600; color:var(--accent);}
+  details[open] summary{margin-bottom:8px;}
+  .ans{color:var(--green); font-weight:700;}
+  .dot{display:inline-block; width:42px; height:13px; border-radius:3px; vertical-align:middle; margin-right:6px;}
+  .callout-quote{font-style:italic; color:#b45309; background:#fdecd2; padding:8px 12px; border-radius:6px; display:inline-block;}
+  .qa{border-top:1px solid var(--line); padding-top:16px; margin-top:16px;}
+  .qa:first-of-type{border-top:none; padding-top:0; margin-top:0;}
+  .qq{font-weight:700; margin:0 0 10px; color:var(--text);}
+  .qq .n{color:var(--accent2); margin-right:4px;}
+  .qc{background:var(--card2); border-radius:6px; padding:10px 14px; margin:0 0 10px; font-size:14.5px; line-height:1.9;}
+  .qa details{margin:0; background:#effaf1; border-color:#c7e8cd;}
+  .qa summary{color:var(--green); font-weight:700; list-style:none;}
+  .qa summary::-webkit-details-marker{display:none;}
+  .qa summary::before{content:"▼ "; font-size:11px;}
+  .qa details[open] summary::before{content:"▲ ";}
+  .note{background:#eef6fd; border:1px solid #cfe3f6; border-radius:6px; padding:8px 12px; margin:10px 0; font-size:13.5px; color:var(--muted);}
+
+  footer{text-align:center; color:var(--muted); font-size:13px; padding:20px;}
+  th,td{word-break:break-word; overflow-wrap:anywhere;}
+  .table-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:12px 0;}
+  .table-scroll table{margin:0;}
+  .table-scroll table td,.table-scroll table th{white-space:nowrap; word-break:normal;}
+  @media(max-width:640px){
+    nav.toc ol{columns:1;} .grid3{grid-template-columns:1fr;}
+    .wrap{padding:16px;} section{padding:18px 15px;}
+    table{font-size:13px;} th,td{padding:6px 8px;}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>สรุปวิชา 114 — Flying Safety &amp; Aviation Resource Management</h1>
+  <div class="sub">การอบรมนิรภัยการบิน &amp; Initial CRM · ศบ.รุ่น 159 (สนภ.ทอ.)</div>
+  <div class="meta">Aviation Safety · SMS · Human Factors · CRM · ADM · Situation Awareness · Workload &amp; Leadership</div>
+</header>
+
+<div class="wrap">
+
+<nav class="toc">
+  <h2>สารบัญ</h2>
+  <ol>
+    <li><a href="#safety">1. Aviation Safety — พื้นฐานนิรภัยการบิน</a></li>
+    <li><a href="#causation">2. Accident Causation — สาเหตุอุบัติเหตุ (โมเดล)</a></li>
+    <li><a href="#airmanship">3. Airmanship Model &amp; ทักษะ 4 ขั้น</a></li>
+    <li><a href="#sms">4. SMS — ระบบการจัดการความปลอดภัย</a></li>
+    <li><a href="#risk">5. Hazard, Risk &amp; Risk Matrix</a></li>
+    <li><a href="#culture">6. Safety Culture &amp; Just Culture</a></li>
+    <li><a href="#hf">7. Human Factors &amp; บุคลิกภาพ</a></li>
+    <li><a href="#info">8. Information Processing (Attention/Perception/Memory)</a></li>
+    <li><a href="#error">9. Human Error — Slip/Lapse/Mistake/Violation</a></li>
+    <li><a href="#sa">10. Situation Awareness (Endsley) &amp; Startle</a></li>
+    <li><a href="#adm">11. ADM — Aeronautical Decision Making</a></li>
+    <li><a href="#crm">12. CRM — Crew Resource Management</a></li>
+    <li><a href="#lead">13. Leadership &amp; Teamwork</a></li>
+    <li><a href="#workload">14. Workload Management</a></li>
+    <li><a href="#cases">15. Case Studies (กรณีศึกษา)</a></li>
+  </ol>
+</nav>
+
+<section id="safety">
+  <h2 class="sec">1. Aviation Safety — พื้นฐานนิรภัยการบิน</h2>
+  <div class="key"><span class="term">Safety (นิรภัย)</span> = สภาวะที่ความเสี่ยงต่อการบาดเจ็บของบุคคล/ความเสียหายของทรัพย์สิน ถูกลด และคงไว้ที่ระดับ<b>ยอมรับได้</b> ผ่านกระบวนการ<b>ระบุอันตราย + จัดการความเสี่ยง</b>อย่างต่อเนื่อง (ICAO)</div>
+  <ul>
+    <li><b>ระเบียบ ทอ. ว่าด้วยนิรภัยการบิน พ.ศ.๒๕๖๕:</b> การดำเนินกิจกรรมเพื่อความปลอดภัยในภารกิจการบิน พิทักษ์ชีวิต+ทรัพย์สิน ไม่ทำลายสิ่งแวดล้อม</li>
+    <li><span class="term">Hazard</span> (อันตราย) = แหล่งพลังงาน/วัสดุ/สภาวะที่อาจทำให้ภารกิจล้มเหลวหรือเกิดการบาดเจ็บ · <span class="term">Risk</span> (ความเสี่ยง) = การคาดการณ์ <b>โอกาสเกิด (Likelihood) × ความรุนแรง (Severity)</b></li>
+  </ul>
+  <h3>Safety vs Security vs Mission</h3>
+  <table>
+    <tr><th>Safety</th><th>Security</th><th>Mission</th></tr>
+    <tr><td>ปลอดภัยจากอันตราย/อุบัติเหตุ (ไม่ตั้งใจ)</td><td>ปลอดภัยจากภัยคุกคาม (ตั้งใจ เช่น การก่อการร้าย)</td><td>ความสำเร็จของภารกิจ — Safety สนับสนุน Mission ไม่ใช่ขัดกัน</td></tr>
+  </table>
+  <div class="key warn">💰 <b>Iceberg Effect (ต้นทุนอุบัติเหตุ):</b> ค่าใช้จ่ายทางตรง (เครื่องบิน, บาดเจ็บ/เสียชีวิต, ประกัน) เป็นแค่ยอดภูเขาน้ำแข็ง — ต้นทุนทางอ้อม (เสียเวลาใช้อุปกรณ์, สอบสวน, คดี, ค่าปรับ, ภาพลักษณ์เสีย) ซ่อนอยู่มากกว่า 3.5 เท่า · "เจ็บตัว เสียตังค์ โดนด่า"</div>
+  <h3>Safety Evolution (วิวัฒนาการความปลอดภัย)</h3>
+  <p>Technology/Engineering → <b>CRM / MRM / Human Performance</b> → <b>SMS / Organizational Performance</b></p>
+  <div class="key">📊 <b>80/20:</b> ~80% ของอุบัติเหตุการบินมาจาก <b>Human Factors</b> (นักบิน+ช่าง) · อีก ~20% จากตัวเครื่อง (ขัดข้อง/ออกแบบ) และธรรมชาติ (นก/อากาศ)</div>
+</section>
+
+<section id="causation">
+  <h2 class="sec">2. Accident Causation — สาเหตุอุบัติเหตุ (โมเดลสำคัญ)</h2>
+  <table>
+    <tr><th>โมเดล</th><th>สาระสำคัญ</th></tr>
+    <tr><td><b>Domino</b> (Heinrich, 1931)</td><td>อุบัติเหตุเกิดจากลำดับเหตุการณ์ต่อเนื่องเหมือนโดมิโนล้ม — เอาตัวใดตัวหนึ่งออก ก็หยุดลำดับได้</td></tr>
+    <tr><td><b>SHELL Model</b></td><td>วิเคราะห์รอยต่อระหว่าง <b>L</b>iveware (คนตรงกลาง) กับ <b>S</b>oftware (ขั้นตอน/เอกสาร), <b>H</b>ardware (อุปกรณ์), <b>E</b>nvironment (สภาพแวดล้อม), <b>L</b>iveware (คนอื่น) — ความไม่พอดีของรอยต่อ = จุดเกิดข้อผิดพลาด</td></tr>
+    <tr><td><b>Reason's Swiss Cheese</b> (1990)</td><td>ระบบมีชั้นป้องกันหลายชั้น แต่ละชั้นมี "รู" (Latent + Active failures) · เมื่อรูเรียงตรงกัน อันตรายทะลุถึงอุบัติเหตุ · 4 ชั้น: Organizational → Unsafe Supervision → Preconditions → Unsafe Acts</td></tr>
+    <tr><td><b>HFACS</b></td><td>Human Factors Analysis &amp; Classification System — ต่อยอด Swiss Cheese เป็น 4 ระดับ: (1) Organizational Influences (2) Unsafe Supervision (3) Preconditions for Unsafe Acts (4) Unsafe Acts (Errors + Violations)</td></tr>
+    <tr><td><b>Practical Drift</b> (Snook, 1994)</td><td>การปฏิบัติจริงค่อยๆ "เบี่ยงเบน" ออกจากมาตรฐานที่กำหนดไว้ทีละน้อยจนกลายเป็นเรื่องปกติ (normalization of deviance)</td></tr>
+  </table>
+  <div class="key">💡 <b>Latent vs Active failure:</b> Active = ความผิดพลาดของผู้ปฏิบัติที่ปลายสุด (เห็นผลทันที) · Latent = จุดอ่อนที่ซ่อนในระบบ/องค์กร (ฝังตัวรอวันปะทุ)</div>
+</section>
+
+<section id="airmanship">
+  <h2 class="sec">3. Airmanship Model (Kern) &amp; ทักษะ 4 ขั้น</h2>
+  <p>โมเดล Airmanship ของ Tony Kern เปรียบเป็น "วิหาร":</p>
+  <table>
+    <tr><th>ส่วน</th><th>องค์ประกอบ</th></tr>
+    <tr><td><b>Cornerstone (ฐานราก)</b></td><td><b>Discipline</b> (วินัย) → <b>Skill</b> (ทักษะ) → <b>Proficiency</b> (ความชำนาญ)</td></tr>
+    <tr><td><b>Pillars (เสา 6 ต้น — ความรู้)</b></td><td>รู้จัก <b>ตนเอง (Self), เครื่องบิน (Aircraft), ทีม (Team), สภาพแวดล้อม (Environment), ความเสี่ยง (Risk), ภารกิจ (Mission)</b></td></tr>
+    <tr><td><b>Capstones (ยอด)</b></td><td><b>Situational Awareness</b> → <b>Judgment</b> (การตัดสินใจ)</td></tr>
+  </table>
+  <h3>ทักษะฝีมือ 4 ขั้น (นักบินพร้อมรบ)</h3>
+  <div class="key"><b>SAFETY → EFFECTIVENESS → EFFICIENCY → PRECISION</b> · "ขั้นของทักษะมิอาจอยู่ได้อย่างมั่นคงถาวร หากปราศจากความเอาใจใส่และการประเมินอย่างต่อเนื่อง"</div>
+  <p class="callout-quote">"A superior pilot uses his superior judgment to avoid situations which require the use of his superior skill."</p>
+  <h3>Expertise Method — Expert vs Competent Pilot (งานวิจัย FAA)</h3>
+  <table>
+    <tr><th>ด้าน</th><th>Competent Pilot (ทั่วไป)</th><th>Expert Pilot (ผู้เชี่ยวชาญ)</th></tr>
+    <tr><td>ความรู้/ทักษะ</td><td>พอที่จะสอบผ่าน</td><td>รู้ลึก รู้จักตนเอง/สภาพแวดล้อม/ระบบ · ทักษะสูงสุด</td></tr>
+    <tr><td>พฤติกรรม</td><td>ทำตามกฎ (FARs), สอบตามวงรอบ</td><td>หลีกเลี่ยงสถานการณ์เกินทักษะ, สังเกตดีเยี่ยม, มีแผนสำรองเสมอ</td></tr>
+    <tr><td>แรงจูงใจ</td><td>อาจโฟกัสเรื่องอื่น</td><td>เรียนรู้ตลอดเวลา, สงสัยในสิ่งที่ดู "ปกติ"</td></tr>
+  </table>
+  <div class="key">Expert เด่น 3 อย่าง: (1) หาข้อมูลคุณภาพในเวลาที่เหมาะสม (2) ตัดสินใจแบบก้าวหน้า (3) สื่อสารกับทรัพยากรทั้งหมดคล่องแคล่ว · ความเชี่ยวชาญสัมพันธ์กับชั่วโมงบิน<b>น้อยมาก</b>หลังผ่านจุดหนึ่ง (~2,000 ชม.)</div>
+</section>
+
+<section id="sms">
+  <h2 class="sec">4. SMS — Safety Management System (ระบบการจัดการความปลอดภัย)</h2>
+  <div class="key">📜 <b>จุดกำเนิด:</b> ปฏิบัติการ "The Hump" (WWII บินขนส่งข้ามหิมาลัยสู่จีน) — Gen. William Tunner สร้างทีมนิรภัย + ติดตามสถิติ + PLM maintenance ทำให้อัตราอุบัติเหตุลดลงมหาศาล → เป็นรากฐานของ <b>USAF Flying Safety Program</b></div>
+  <h3>ICAO SMS Framework — 4 องค์ประกอบ (เสาหลัก)</h3>
+  <table>
+    <tr><th>#</th><th>องค์ประกอบ</th><th>สาระ</th></tr>
+    <tr><td>1</td><td><b>Safety Policy &amp; Objectives</b> (นโยบาย)</td><td>ความมุ่งมั่นของผู้บริหาร, โครงสร้าง, ความรับผิดชอบ, แผนฉุกเฉิน, เอกสาร</td></tr>
+    <tr><td>2</td><td><b>Safety Risk Management</b> (จัดการความเสี่ยง)</td><td>ระบุอันตราย + ประเมิน + ลดความเสี่ยง</td></tr>
+    <tr><td>3</td><td><b>Safety Assurance</b> (ประกันความปลอดภัย)</td><td>วัด/เฝ้าติดตามสมรรถนะ, บริหารความเปลี่ยนแปลง, ปรับปรุงต่อเนื่อง</td></tr>
+    <tr><td>4</td><td><b>Safety Promotion</b> (ส่งเสริม)</td><td>ฝึกอบรม + สื่อสารความปลอดภัย เพื่อสร้างวัฒนธรรม</td></tr>
+  </table>
+  <p class="note">อ้างอิง: ICAO SMM (Safety Management Manual) Doc 9859 · ระเบียบ ทอ. ว่าด้วยนิรภัยการบิน พ.ศ.๒๕๖๕</p>
+  <h3>ประโยชน์ของ SMS</h3>
+  <ul>
+    <li>วัฒนธรรมความปลอดภัยเข้มแข็ง · ตรวจจับอันตรายได้แต่เนิ่นๆ · ตัดสินใจบนฐานข้อมูล · ประหยัดต้นทุน/เพิ่มประสิทธิภาพ</li>
+  </ul>
+</section>
+
+<section id="risk">
+  <h2 class="sec">5. Hazard, Risk &amp; Risk Matrix (ทอ.)</h2>
+  <h3>Safety Risk Management Process</h3>
+  <p>ระบุอันตราย (Hazard ID) → วิเคราะห์<b>โอกาสเกิด</b> (Probability) → วิเคราะห์<b>ความรุนแรง</b> (Severity) → ประเมิน/ยอมรับได้ไหม (Tolerability) → <b>ควบคุม/ลดความเสี่ยง</b> (Control/Mitigation)</p>
+  <h3>ตารางประเมินความเสี่ยง (Risk Matrix ทอ. 5×5) — Risk = ผลกระทบ × โอกาส</h3>
+  <div class="table-scroll">
+  <table>
+    <tr><th>ผลกระทบ (Impact) ↓ / โอกาส →</th><th>1 Unlikely<br>ไม่น่าเกิด</th><th>2 Seldom<br>นานๆครั้ง</th><th>3 Occasional<br>ครั้งคราว</th><th>4 Likely<br>บ่อย</th><th>5 Frequent<br>ประจำ</th></tr>
+    <tr><td><b>5 หายนะ</b> (Catastrophic)</td><td>5</td><td>10</td><td>15</td><td>20</td><td>25</td></tr>
+    <tr><td><b>4 วิกฤต</b> (High)</td><td>4</td><td>8</td><td>12</td><td>16</td><td>20</td></tr>
+    <tr><td><b>3 ปานกลาง</b> (Medium)</td><td>3</td><td>6</td><td>9</td><td>12</td><td>15</td></tr>
+    <tr><td><b>2 เล็กน้อย</b> (Low)</td><td>2</td><td>4</td><td>6</td><td>8</td><td>10</td></tr>
+    <tr><td><b>1 ต่ำกว่าเล็กน้อย</b> (Negligible)</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+  </table>
+  </div>
+  <div class="key">🟥 แดง = เสี่ยงสูงสุด (ต้องแก้ไขทันที/ยอมรับไม่ได้) · 🟧 ส้ม = สูง · 🟨 เหลือง = ปานกลาง · 🟩 เขียว = ต่ำ (ยอมรับได้) · ค่ายิ่งมากยิ่งเสี่ยง</div>
+  <p class="note">ที่มา: คู่มือการจัดการความเสี่ยงด้านนิรภัยภาคพื้น (ระเบียบ ทอ. ว่าด้วยนิรภัยภาคพื้น พ.ศ.๒๕๖๔)</p>
+</section>
+
+<section id="culture">
+  <h2 class="sec">6. Safety Culture &amp; Just Culture</h2>
+  <p>"Culture: the way we do things around here."</p>
+  <h3>วิวัฒนาการวัฒนธรรมความปลอดภัย (5 ระดับ — บันได)</h3>
+  <table>
+    <tr><th>ระดับ</th><th>ลักษณะ</th></tr>
+    <tr><td><b>1. Pathological</b> (ปิดบัง/เจ็บป่วย)</td><td>ปกปิดความผิดพลาด องค์กรไม่เรียนรู้</td></tr>
+    <tr><td><b>2. Reactive</b> (ตั้งรับ)</td><td>ต้องมีเหตุก่อนจึงป้องกัน ("วัวหายล้อมคอก") ตำหนิคนผิด</td></tr>
+    <tr><td><b>3. Calculative</b> (คาดการณ์/ราชการ)</td><td>บริหารบนลงล่างอย่างเดียว ยึดรูปแบบเดิม</td></tr>
+    <tr><td><b>4. Proactive</b> (ป้องกันเชิงรุก)</td><td>ทุกคนแสวงหาโอกาสปรับปรุงความปลอดภัย</td></tr>
+    <tr><td><b>5. Generative</b> (ก่อกำเนิด)</td><td>ความปลอดภัยเป็นค่านิยมหลัก ทุกคนกระตือรือร้น</td></tr>
+  </table>
+  <h3>Reason's 5 องค์ประกอบวัฒนธรรมความปลอดภัย</h3>
+  <ul>
+    <li><b>Informed</b> (รอบรู้) · <b>Reporting</b> (กล้ารายงานโดยสมัครใจ) · <b>Just</b> (ยุติธรรม) · <b>Flexible</b> (ยืดหยุ่น) · <b>Learning</b> (เรียนรู้)</li>
+  </ul>
+  <div class="key"><span class="term">Just Culture</span> = บรรยากาศไว้เนื้อเชื่อใจ ที่ทุกคนได้รับการส่งเสริม/รางวัลเมื่อให้ข้อมูลนิรภัยสำคัญ และรู้ชัดถึง<b>เส้นแบ่งระหว่างพฤติกรรมที่ยอมรับได้/ไม่ได้</b> · อยู่ตรงกลางระหว่าง <b>Blame Culture</b> (โทษทุกอย่าง) กับ <b>No-Blame Culture</b> (ไม่โทษเลย)</div>
+</section>
+
+<section id="hf">
+  <h2 class="sec">7. Human Factors &amp; บุคลิกภาพ</h2>
+  <ul>
+    <li><span class="term">Anthropometry</span> = การวัดสัดส่วนร่างกาย · <span class="term">Ergonomics (การยศาสตร์)</span> = ออกแบบงาน/อุปกรณ์ให้เหมาะกับคน</li>
+    <li>ปัจจัยต่อสมรรถภาพมนุษย์: ความแข็งแรง, สรีรวิทยา, บุคลิกภาพ, ทัศนคติ, แรงจูงใจ, ความเครียด/ตื่นตัว, ความล้า, การนอน, นาฬิกาชีวิต, สมาธิ, SA, ความจำ, ประสบการณ์, วัฒนธรรม</li>
+  </ul>
+  <h3>บุคลิกภาพ — Big Five (OCEAN)</h3>
+  <table>
+    <tr><th>ปัจจัย</th><th>ความหมาย</th></tr>
+    <tr><td><b>O</b>penness</td><td>การเปิดรับประสบการณ์ — จินตนาการ ชอบสิ่งใหม่</td></tr>
+    <tr><td><b>C</b>onscientiousness</td><td>การมีจิตสำนึก — มีวินัย รับผิดชอบ วางแผน</td></tr>
+    <tr><td><b>E</b>xtraversion</td><td>การเปิดตัว — ชอบเข้าสังคม (ตรงข้าม = Introvert)</td></tr>
+    <tr><td><b>A</b>greeableness</td><td>ความเป็นมิตร — ร่วมมือ เห็นแก่ผู้อื่น</td></tr>
+    <tr><td><b>N</b>euroticism</td><td>ความไม่มั่นคงทางอารมณ์ — วิตกกังวล เครียดง่าย (ต่ำ = มั่นคง/สงบ)</td></tr>
+  </table>
+  <p><b>MBTI</b> (16 personalities) — 4 คู่: E/I (สังคม/เก็บตัว) · S/N (ความจริง/วิสัยทัศน์) · T/F (คิด/รู้สึก) · J/P (ระเบียบ/ยืดหยุ่น) · ใช้ในการคัดเลือกและประเมิน (เช่น 16PF ของ Cattell)</p>
+</section>
+
+<section id="info">
+  <h2 class="sec">8. Information Processing — การประมวลผลข้อมูล</h2>
+  <p>สมองรับข้อมูล (ผ่านประสาทสัมผัส) → ประมวลผล → ตอบสนอง · <span class="term">KSA</span> = Knowledge (รู้) / Skill (ทำได้) / Attitude (ทัศนคติ)</p>
+  <h3>Attention (ความสนใจ) — 4 แบบ</h3>
+  <table>
+    <tr><th>ประเภท</th><th>ลักษณะ · ด้านลบ</th></tr>
+    <tr><td><b>Selective</b> (เลือกสนใจ)</td><td>สนใจข้อมูลได้ทีละเรื่อง · <b>Cocktail Party Effect</b> (ได้ยินชื่อตัวเอง/ATC เรียก call sign แล้วเบนความสนใจ) · ด้านลบ = <b>Distraction</b></td></tr>
+    <tr><td><b>Focused</b> (จดจ่อ)</td><td>มุ่งเรื่องเดียว · ด้านลบ = <b>Cognitive "blackholing"</b> (พลาดข้อมูลสำคัญอื่น)</td></tr>
+    <tr><td><b>Divided</b> (แบ่งความสนใจ)</td><td>ทำหลายงานพร้อมกัน (Time Sharing)</td></tr>
+    <tr><td><b>Sustained</b> (คงสมาธิ)</td><td>มีสมาธิต่อเนื่อง (เช่น เฝ้าจอเรดาร์) · ขึ้นกับสภาพแวดล้อม+ความเครียด</td></tr>
+  </table>
+  <div class="key warn">⚠️ ความบกพร่องด้าน <b>สมาธิ + การรับรู้ (Perception)</b> → รับรู้คลาดเคลื่อน → ตัดสินใจผิด → กระทำผิด · ระวัง <b>The Effects of Expectation</b> (เห็นในสิ่งที่คาดว่าจะเห็น)</div>
+  <h3>Memory (ความจำ) — 3 ขั้น</h3>
+  <p><b>Registration</b> (เข้ารหัส) → <b>Storage</b> (จัดเก็บ) → <b>Retrieval</b> (เรียกคืน) · "การลืม" = ข้อมูลไม่มีอยู่ (unavailable) หรือเข้าถึงไม่ได้ (inaccessible)</p>
+  <h3>Rasmussen — พฤติกรรม 3 ระดับ (S-R-K)</h3>
+  <table>
+    <tr><th>ระดับ</th><th>ลักษณะ</th></tr>
+    <tr><td><b>Skill-based</b> (ทักษะ/อัตโนมัติ)</td><td>ทำได้อัตโนมัติแม้ภายใต้ข้อจำกัด รับภาระหนักได้ · ผลข้างเคียง: อาจข้ามขั้นตอนโดยไม่รู้ตัว, เชื่อประสบการณ์เดิมเกินไป</td></tr>
+    <tr><td><b>Rule-based</b> (กฎ/เข้าใจ)</td><td>ใช้สมองจัดลำดับขั้นตอน + ตัดสินใจ · <b>ความกดดันเวลา</b>ทำให้ใช้กฎที่คุ้นแต่ไม่เหมาะ</td></tr>
+    <tr><td><b>Knowledge-based</b> (ความรู้/เรียนใหม่)</td><td>ทำความรู้จักสิ่งใหม่ ต้องใช้สมองมาก เกิดผิดพลาดง่าย</td></tr>
+  </table>
+</section>
+
+<section id="error">
+  <h2 class="sec">9. Human Error — Slip / Lapse / Mistake / Violation</h2>
+  <table>
+    <tr><th>ประเภท</th><th>เจตนา</th><th>สาเหตุ</th></tr>
+    <tr><td><b>Slip</b> (พลั้งเผลอ)</td><td>ไม่ตั้งใจ (Unintended)</td><td>Attentional Failure — ถูกรบกวน/ละเลย/ผิดจังหวะ · พบใน Skill-based</td></tr>
+    <tr><td><b>Lapse</b> (หลงลืม)</td><td>ไม่ตั้งใจ (Unintended)</td><td>Memory Failure — ลืม/ตกหล่น · พบใน Skill-based</td></tr>
+    <tr><td><b>Mistake</b> (ทำผิด)</td><td>ตั้งใจ (Intended)</td><td>Rule-based (ใช้กฎผิด) หรือ Knowledge-based (ความรู้ไม่พอ)</td></tr>
+    <tr><td><b>Violation</b> (ฝ่าฝืน)</td><td>ตั้งใจ (Intended)</td><td>ฝ่าฝืนกฎ — Routine (ประจำ) หรือ Exceptional (รุนแรง)</td></tr>
+  </table>
+  <div class="key">ทั้งหมดนำไปสู่ <b>Unsafe Act</b> (การกระทำไม่ปลอดภัย) — ฐานล่างสุดของ Reason's Swiss Cheese · <b>Error</b> = ไม่ตั้งใจให้ผลลัพธ์นั้น · <b>Violation</b> = ตั้งใจไม่ทำตามกฎ</div>
+</section>
+
+<section id="sa">
+  <h2 class="sec">10. Situation Awareness (SA) &amp; Startle Factor</h2>
+  <div class="key"><span class="term">Situation Awareness</span> (Endsley, 1995) = การรับรู้องค์ประกอบในสภาพแวดล้อม ในห้วงเวลา/พื้นที่หนึ่ง, เข้าใจความหมาย, และคาดการณ์สถานะในอนาคตอันใกล้ · สำนวนไทย "หูไวตาไว"</div>
+  <h3>SA 3 ระดับ (Endsley Model)</h3>
+  <table>
+    <tr><th>Level</th><th>ความหมาย</th></tr>
+    <tr><td><b>Level 1 — Perception</b></td><td>รับรู้ข้อมูล/องค์ประกอบในสภาพแวดล้อม (What happened?)</td></tr>
+    <tr><td><b>Level 2 — Comprehension</b></td><td>เข้าใจความหมาย/นัยสำคัญ (What's happening?)</td></tr>
+    <tr><td><b>Level 3 — Projection</b></td><td>คาดการณ์สถานะ/เหตุการณ์อนาคต (What will happen?)</td></tr>
+  </table>
+  <p>SA → <b>Decision</b> → <b>Performance of Action</b> → ป้อนกลับสู่สภาพแวดล้อม (loop) · ได้รับอิทธิพลจาก Task/Environmental Factors (Workload, Stressors, System design, Complexity) และ Individual Factors (Goals, Experience, Training)</p>
+  <h3>Loss of SA — จัดการ/กู้คืน</h3>
+  <p>อาการ: สับสน, หลงลืม, เหนื่อยล้า · การกู้คืน: ระบุขั้นตอนวิกฤต, ซื้อเวลา (Buy time), สื่อสาร, ประเมินสภาพแวดล้อมสม่ำเสมอ, กำหนดจุดสนใจ, ลดสิ่งรบกวน, ทำงานภายในขีดจำกัด, สงบสติ (Remain calm)</p>
+  <h3>Startle &amp; Surprise Factor</h3>
+  <div class="key warn">😱 <b>Startle reflex</b> (Landis &amp; Hunt, 1939): ปฏิกิริยาสะดุ้งอัตโนมัติ (กระพริบตา+สะดุ้งทั้งตัว) · รบกวน motor task 5–10 วินาที · แต่กระทบ <b>การประมวลผลข้อมูล (attention, perception, SA, decision) นานถึง 30 วินาที</b> · ทางแก้ = การตอบสนองแบบ rule-based ง่ายๆ ที่เตรียมไว้ → <b>"Aviate, Navigate, Communicate"</b></div>
+</section>
+
+<section id="adm">
+  <h2 class="sec">11. ADM — Aeronautical Decision Making</h2>
+  <p>ความเชื่อมโยง: <b>Situation Awareness</b> → <b>Pilot Judgement &amp; Decision Making</b> → (+ Surprise &amp; Startle) · Decision Making = กระบวนการเลือกทางเลือกที่ดีที่สุดในการรับมือสถานการณ์ · สำนวนไทย "ทางหนีทีไล่"</p>
+  <h3>ADM Concept — 3P &amp; OODA Loop</h3>
+  <table>
+    <tr><th>3P</th><th>OODA Loop</th></tr>
+    <tr><td><b>PERCEIVE</b> สถานการณ์<br><b>PROCESS</b> ประเมินผลต่อความปลอดภัย<br><b>PERFORM</b> ลงมือทางเลือกที่ดีที่สุด</td><td><b>OBSERVE</b> รวบรวมข้อมูล<br><b>ORIENT</b> วิเคราะห์บริบท/นัย<br><b>DECIDE</b> เลือกทางที่ได้ผลที่สุด<br><b>ACT</b> ลงมือ + ติดตามผลปรับแก้</td></tr>
+  </table>
+  <h3>องค์ประกอบการตัดสินใจ</h3>
+  <ul>
+    <li><b>Circumstances — 5M / 6A:</b> Aircrew, Aircraft, Airport, Armament, Ambient (สภาพแวดล้อม)</li>
+    <li><b>Course of Action — TEAM:</b> <b>T</b>ransfer (โอน/กระจาย), <b>E</b>liminate (เลิก), <b>A</b>ccept (รับ), <b>M</b>itigate (ลด) · "ลด ละ เลิก เลี่ยง แลก/กระจาย รับ"</li>
+  </ul>
+  <div class="key warn"><b>Decision-making traps (กับดัก):</b> Impulsivity (หุนหัน) · Unwilling to challenge (ไม่กล้าคัดค้าน) · Time pressure · Failing to communicate · Complacency (ชะล่าใจ) · Ignoring feedback</div>
+</section>
+
+<section id="crm">
+  <h2 class="sec">12. CRM — Crew Resource Management</h2>
+  <div class="key"><span class="term">CRM</span> (Dr. John Lauber, NTSB 1984) = "การใช้<b>ทรัพยากรทั้งหมดที่มีอยู่</b> — ข้อมูล เครื่องมือ และบุคลากร — เพื่อการปฏิบัติการบินที่ปลอดภัยและมีประสิทธิภาพ" · <b>TECH Skills + NOTECH Skills</b> = สมรรถนะที่แท้จริง</div>
+  <h3>CRM Evolution</h3>
+  <ul>
+    <li>เริ่มจาก <b>NASA Workshop 1979</b> ("Resource Management on the Flight deck") — พบว่าสาเหตุหลักอุบัติเหตุคือ <b>human error</b> (การสื่อสาร, ภาวะผู้นำ, การตัดสินใจ)</li>
+    <li>จุดพลิก: <b>Tenerife 1977</b> (2 × B747 ชนกันบนพื้น เสียชีวิต 583 คน — มากสุดในประวัติศาสตร์การบิน) · โปรแกรม CRM แรกโดย <b>United Airlines 1981</b></li>
+    <li><b>6 Generations:</b> (1) Cockpit RM → (2) Crew RM → (3) Advanced CRM → (4) Integrated CRM → (5) Error Management → (6) Threat &amp; Error Management (TEM)</li>
+  </ul>
+  <h3>Skills ใน CRM</h3>
+  <table>
+    <tr><th>Cognitive Skills (ปัญญา)</th><th>Interpersonal Skills (ระหว่างบุคคล)</th></tr>
+    <tr><td>Problem solving · Decision making · Situation Awareness · Stress &amp; Fatigue management</td><td>Communication · Leadership/Followership · Crew Coordination · Conflict Resolution</td></tr>
+  </table>
+  <p><b>ICAO 6 หัวข้อ CRM:</b> Communication · Situational Awareness · Problem-solving/Decision-making · Leadership/Followership · Stress Management · Critique</p>
+  <p class="note">💀 "How to Kill a good CRM" (10 ข้อ) — เช่น ไม่ผสาน CRM เข้ากับงานจริง, ปล่อยให้พวกคลั่ง (Zealots) คุม, ทำครั้งเดียวจบ, ใช้ศัพท์จิตวิทยาเยอะเกิน, เปลี่ยน "C" เป็น Charismatic</p>
+</section>
+
+<section id="lead">
+  <h2 class="sec">13. Leadership &amp; Teamwork</h2>
+  <h3>Group vs Team</h3>
+  <p><b>Group</b> = คนมารวมกัน · <b>Team</b> = ทำงานร่วมกันสู่เป้าหมายเดียว เกิด <b>Synergy</b></p>
+  <h3>องค์ประกอบ Teamwork ที่มีประสิทธิภาพ</h3>
+  <ul>
+    <li><b>Mutual performance monitoring</b> (ดูแลกัน) · <b>Adaptability</b> (ปรับแผนได้) · <b>Team orientation</b> · <b>Backup behaviour</b> (ช่วยเหลือ) · <b>Leadership</b></li>
+    <li>สื่อสาร: <b>3Cs</b> = Clear, Concise, Confirm · <b>Speak Up</b> (กล้าพูด)</li>
+  </ul>
+  <table>
+    <tr><th>Leadership</th><th>Followership</th></tr>
+    <tr><td>กระบวนการชักนำ/อำนวยให้สมาชิกมุ่งสู่เป้าหมายร่วม · ใช้ authority+assertiveness, รักษามาตรฐาน, วางแผน/จัดลำดับ, บริหาร workload, brief งานชัด, ให้ feedback</td><td>การสนับสนุนสู่เป้าหมายร่วม (ไม่ใช่แค่รับคำสั่ง) · จัดการตนเองลดภาระหัวหน้า, <b>กล้ารายงานเมื่อเห็นสิ่งกระทบความปลอดภัย</b>, เป็นแบบอย่าง</td></tr>
+  </table>
+  <div class="key">Shared SA ต่ำ → ทีมปกปิดจุดอ่อน, ลังเลขอ/ให้ความช่วยเหลือ, ด่วนสรุปเจตนาผู้อื่น, ไม่ใช้ทักษะของกันและกัน</div>
+</section>
+
+<section id="workload">
+  <h2 class="sec">14. Workload Management (การจัดการภาระงาน)</h2>
+  <h3>สาเหตุ Workload สูง (4 ปัจจัยงาน — Jarvis 2010)</h3>
+  <ul>
+    <li>(1) ความยากของงาน · (2) จำนวนงานที่ทำ<b>ควบคู่</b>กัน · (3) จำนวนงานที่ต้อง<b>สลับ</b>ไปมา · (4) เวลาที่มี</li>
+  </ul>
+  <p class="note"><b>10 Workload Factors (FAR 25 App.D):</b> การเข้าถึง/ใช้ Controls, การมองเห็น Instruments, จำนวน/ความซับซ้อนของ Procedures, ความพยายามกาย/ใจ, การเฝ้าระวัง, ความไม่พร้อมของลูกเรือ, ระดับ Automation, การสื่อสาร, ภาวะฉุกเฉิน, การสูญเสียความสามารถ (Incapacitation)</p>
+  <div class="key warn">ผลของ Workload สูง: สมาธิเสีย, ละทิ้งงาน/ไม่จัดลำดับ, <b>SA ลดลง</b>, ลัดขั้นตอน/ไม่ทบทวน, ล้า+ผิดพลาดมากขึ้น · ในกรณีรุนแรงคน<b>หมกมุ่นแก้ปัญหาเล็กจนละเลยงานวิกฤต</b></div>
+  <h3>วัด Workload</h3>
+  <p>Task/Time-Line Analysis (TLA) · Modified Cooper/Harper · SWAT · <b>NASA-TLX</b> (6 มิติ: Mental / Physical / Temporal demand, Performance, Effort, Frustration) · Bedford Scale · Dynamic Workload Scale</p>
+  <h3>บริหารเวลา — "Eat That Frog!" / ABCDE</h3>
+  <ul>
+    <li>วางแผนล่วงหน้า · กฎ 80/20 (20% ของงานให้ผล 80%) · ทำงานสำคัญช่วงพลังสูงสุด</li>
+    <li><b>A</b> สำคัญสุดๆ · <b>B</b> ควรทำ · <b>C</b> ทำได้ก็ดี · <b>D</b> มอบให้คนอื่น (Delegate) · <b>E</b> กำจัดทิ้ง (Eliminate)</li>
+  </ul>
+</section>
+
+<section id="cases">
+  <h2 class="sec">15. Case Studies (กรณีศึกษา)</h2>
+  <table>
+    <tr><th>เหตุการณ์</th><th>บทเรียน</th></tr>
+    <tr><td><b>Tenerife (1977)</b><br>2×B747 ชนบนพื้น · เสียชีวิต 583</td><td>อุบัติเหตุร้ายแรงสุด · ทัศนวิสัยต่ำ + สื่อสารผิดพลาด + ความกดดัน → จุดกำเนิด CRM</td></tr>
+    <tr><td><b>US Airways 1549 (2009)</b><br>ลงแม่น้ำ Hudson · รอด 155 คน</td><td>"Miracle on the Hudson" (Sully) — ตัวอย่าง ADM/SA/การตัดสินใจภายใต้ภาวะฉุกเฉินที่ดีเยี่ยม</td></tr>
+    <tr><td><b>Air France 447 (2009)</b><br>A330 ตก · เสียชีวิต 228</td><td>Pitot น้ำแข็งเกาะ → autopilot หลุด → นักบินสูญเสีย SA, เพิกเฉยสัญญาณ Stall (ดัง 75 ครั้ง) · Startle + Loss of SA</td></tr>
+    <tr><td><b>Thunderbirds F-16 (2003)</b><br>ตกขณะแสดง (นักบินดีดตัวรอด)</td><td>SLIP/LAPSE ใน skilled pilot — ลืมชดเชยความสูงสนาม (AGL vs MSL) ก่อนทำ Split-S · แก้: เรียก MSL + เผื่อ +1,000 ฟุต</td></tr>
+    <tr><td><b>A-6E Intruder (1991)</b><br>จนท.ถูกดูดเข้า Intake</td><td>อันตรายภาคพื้น (Ground safety) รอบเครื่องยนต์ · ความสำคัญของ SA รอบตัวเครื่อง</td></tr>
+  </table>
+</section>
+
+<footer>
+  📌 สรุปวิชา 114 Flying Safety &amp; Aviation Resource Management · การอบรมนิรภัยการบิน &amp; Initial CRM (ศบ.รุ่น 159) · เรียบเรียงจากเอกสารบรรยาย สนภ.ทอ. 9 หัวข้อ
+</footer>
+
+</div>
+</body>
+</html>
