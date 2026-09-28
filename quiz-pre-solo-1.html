@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONTACT (PRE SOLO) — ชุดที่ 1</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'Sarabun', Tahoma, Arial, sans-serif; background: #f0f4f8; color: #222; }
+
+  header {
+    background: linear-gradient(135deg, #1a3c6e, #2d6abf);
+    color: #fff; padding: 24px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  header h1 { font-size: 1.5rem; }
+  header p { font-size: 0.9rem; opacity: 0.85; margin-top: 4px; }
+
+  #score-bar {
+    background: #fff; border-bottom: 2px solid #dde3ec;
+    padding: 12px 32px; display: flex; gap: 32px; align-items: center;
+    font-size: 0.9rem; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08); flex-wrap: wrap;
+  }
+  #score-bar span { font-weight: 700; color: #1a3c6e; }
+  #progress-bar { flex: 1; min-width: 120px; height: 8px; background: #dde3ec; border-radius: 4px; overflow: hidden; }
+  #progress-fill { height: 100%; background: #2d6abf; border-radius: 4px; transition: width .4s; }
+
+  .section-header {
+    background: #1a3c6e; color: #fff;
+    padding: 14px 32px; font-size: 1.1rem; font-weight: 700;
+    margin-top: 32px; letter-spacing: .5px;
+  }
+  .section-header span { opacity: 0.7; font-size: 0.85rem; font-weight: 400; margin-left: 12px; }
+
+  .question-card {
+    background: #fff; margin: 16px 32px;
+    border-radius: 10px; padding: 22px 26px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    border-left: 4px solid #dde3ec;
+    transition: border-color .2s;
+  }
+  .question-card.answered-correct { border-left-color: #27ae60; }
+  .question-card.answered-wrong   { border-left-color: #e74c3c; }
+
+  .q-number { font-size: 0.75rem; color: #888; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; }
+  .q-text { font-size: 1rem; font-weight: 600; line-height: 1.6; margin-bottom: 16px; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; }
+  .choice-btn {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: #f7f9fc; border: 2px solid #dde3ec;
+    border-radius: 8px; padding: 11px 16px;
+    cursor: pointer; font-size: 0.93rem; text-align: left;
+    transition: background .15s, border-color .15s; line-height: 1.5;
+  }
+  .choice-btn:hover:not(:disabled) { background: #e8eef8; border-color: #2d6abf; }
+  .choice-btn .letter { font-weight: 700; color: #2d6abf; min-width: 22px; flex-shrink: 0; }
+  .choice-btn.correct  { background: #eafaf1; border-color: #27ae60; }
+  .choice-btn.wrong    { background: #fdf0ef; border-color: #e74c3c; }
+  .choice-btn.correct .letter { color: #27ae60; }
+  .choice-btn.wrong   .letter { color: #e74c3c; }
+  .choice-btn:disabled { cursor: default; }
+
+  #end-screen {
+    display: none; text-align: center;
+    background: #fff; margin: 32px; border-radius: 12px;
+    padding: 48px 32px; box-shadow: 0 4px 20px rgba(0,0,0,.1);
+  }
+  #end-screen h2 { font-size: 2rem; color: #1a3c6e; margin-bottom: 8px; }
+  #end-screen .big-score { font-size: 4rem; font-weight: 800; color: #2d6abf; }
+  #end-screen p { color: #555; margin: 8px 0; }
+  #restart-btn {
+    margin-top: 24px; background: #2d6abf; color: #fff;
+    border: none; padding: 14px 36px; border-radius: 8px;
+    font-size: 1rem; cursor: pointer; font-weight: 600; transition: background .2s;
+  }
+  #restart-btn:hover { background: #1a3c6e; }
+
+  footer { text-align: center; color: #6b7280; font-size: 0.85rem; margin: 30px 24px; line-height: 1.7; }
+  @media (max-width: 640px) {
+    header, #score-bar, .section-header { padding-left: 16px; padding-right: 16px; }
+    .question-card { margin: 14px 16px; padding: 18px 16px; }
+    #end-screen { margin: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>CONTACT (PRE SOLO) — ชุดที่ 1</h1>
+    <p>แบบทดสอบก่อนบินเดี่ยว &nbsp;|&nbsp; 40 ข้อ · เฉลยตามท้าย PDF ต้นฉบับ</p>
+  </div>
+</header>
+
+<div id="score-bar">
+  <div>ตอบแล้ว: <span id="answered-count">0</span> / <span id="total-count">40</span></div>
+  <div id="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
+  <div>ถูก: <span id="correct-count">0</span></div>
+  <div>คะแนน: <span id="score-pct">0%</span></div>
+</div>
+
+<div id="quiz-container"></div>
+<div id="end-screen">
+  <h2>ทำครบแล้ว! 🎉</h2>
+  <div class="big-score" id="final-score"></div>
+  <p id="final-detail"></p>
+  <button id="restart-btn" onclick="restartQuiz()">เริ่มใหม่</button>
+</div>
+
+<footer>
+  📌 CONTACT (PRE SOLO) — ชุดที่ 1 · 40 ข้อ · เฉลยจากท้าย PDF “CONTACT (PRE SOLO) ชุดที่ 1”
+</footer>
+
+<script>
+const QUESTIONS = [
+  { q: "ระบบ FLAPS ของ บ.ฝ.16 ก ทำงานด้วยไฟฟ้า ซึ่งเราสามารถปรับได้ตำแหน่งสูงสุด (FULL DOWN) คือกี่องศา", o: ["30 องศา","15 องศา","10 องศา","20 องศา"], a: 0 },
+  { q: "ความดันลมยางล้อ NOSE", o: ["19–25 PSI","19–35 PSI","22–25 PSI","25–35 PSI"], a: 1 },
+  { q: "ความดันลมยางล้อ MAIN", o: ["25–27 PSI","21–23 PSI","27–29 PSI","23–25 PSI"], a: 0 },
+  { q: "ขณะ TAKE OFF เราจะเริ่มเตือนคันบังคับ (Lift off) เมื่อ บ. มีความเร็ว ......... นอต", o: ["65–70","50–55","55–60","60–65"], a: 2 },
+  { q: "ความเร็วไต่ที่ดีที่สุด (Best rate of climb) ของ บ.ฝ.16 ก อยู่ในช่วง ......... นอต", o: ["90–95","95–100","80–85","85–90"], a: 0 },
+  { q: "STALL SPEED WITH FLAPS UP FOR CT-4E", o: ["60 KIAS","54 KIAS","65 KIAS","63 KIAS"], a: 3 },
+  { q: "STALL SPEED WITH FLAPS HALF FOR CT-4E", o: ["63 KIAS","65 KIAS","60 KIAS","54 KIAS"], a: 2 },
+  { q: "STALL SPEED WITH FLAPS FULL FOR CT-4E", o: ["60 KIAS","63 KIAS","65 KIAS","54 KIAS"], a: 3 },
+  { q: "ความจุเชื้อเพลิง (FUEL) ของ บ.ฝ.16 ก ทั้งหมด คือ", o: ["382 lbs.","207 lbs.","382 liters","207 liters"], a: 3 },
+  { q: "เมื่อ ย. ติดแล้วจะต้องไม่ให้รอบเกิน 1500 RPM และ OIL PRESSURE จะต้องขึ้นภายใน 30 วินาที และไฟ LOW PRESSURE WARNING LIGHT จะต้องดับ แต่ถ้า OIL PRESSURE ไม่ขึ้น และไฟยังคงติดอยู่จะต้อง", o: ["ระบบไฟเตือนและเครื่องวัด OIL PRESSURE อาจเสีย","ดับ ย. และตรวจหาสาเหตุ","เร่งรอบ ย. เพื่อให้ OIL หล่อลื่นเร็วขึ้น","ปฏิบัติตามขั้นตอนต่อไป สักครู่ OIL PRESSURE จะขึ้นมาเอง"], a: 1 },
+  { q: "การ GO AROUND ขณะเปิด FLAPS ต้องมีความสูงอย่างน้อย ......... ฟุต จึงจะเก็บ FLAPS ได้", o: ["200","500","100","300"], a: 3 },
+  { q: "ห้ามเปิด CANOPY เมื่อรอบ ย. เกิน ......... RPM หรือความเร็วลมเกิน ......... นอต", o: ["1500, 40","1600, 40","1600, 30","1500, 30"], a: 3 },
+  { q: "OIL PRESSURE MINIMUM IDLING", o: ["30 PSI","20 PSI","15 PSI","25 PSI"], a: 3 },
+  { q: "กำลัง ย. สูงสุดที่รอบ 2700 RPM คือ ......... BHP", o: ["350","400","250","300"], a: 3 },
+  { q: "รอบ ย. ต่ำสุดขณะ IDLE", o: ["LESS THAN 800 RPM","LESS THAN 900 RPM","MORE THAN 900 RPM","MORE THAN 800 RPM"], a: 1 },
+  { q: "ความเร็วที่ใช้ในการร่อนของ บ.ฝ.16 ก คือ", o: ["130–150 KIAS","110–130 KIAS","120–140 KIAS","100–120 KIAS"], a: 2 },
+  { q: "เราจะเริ่มใช้ HALF FLAPS ได้เมื่อความเร็วลดลงผ่าน ......... KIAS ลงมา", o: ["110","120","90","100"], a: 3 },
+  { q: "การพิจารณาในการ Forced Landing จะไม่พิจารณาทำการ Forced Landing ถ้าฐานเมฆต่ำกว่าเท่าใด", o: ["1,000 ฟุต","2,000 ฟุต","1,500 ฟุต","2,500 ฟุต"], a: 1 },
+  { q: "ไฟ LOW VOLT CAUTION LIGHT จะติดเมื่อ ALTERNATOR จ่ายไฟต่ำกว่า ......... VOLT", o: ["24","25","28","22"], a: 1 },
+  { q: "ไฟ LOW OIL PRESSURE WARNING LIGHT จะเปิดเมื่อ OIL PRESSURE ต่ำกว่า ......... PSI", o: ["15","20","10","5"], a: 3 },
+  { q: "เมื่อจะดับ ย. หลังจากเสร็จสิ้นภารกิจแล้ว เราต้องตั้งรอบ ......... เป็นเวลา .........", o: ["1500, 10–15","1800, 15–20","1800, 10–15","1500, 15–20"], a: 1 },
+  { q: "ข้อใดกล่าวถูกต้องเกี่ยวกับขนาดของ บ.ฝ.16 ก", o: ["ความกว้าง (Wing Span) 26 ฟุต","ความยาว (Length) 23 ฟุต","ความกว้างแพนหาง (Tailplane) 11 ฟุต","ความสูง (Height) 8 ฟุต"], a: 0 },
+  { q: "ตาม รปป.รร.การบิน ก่อนทำการลงสนาม บ.ฝ.16 ก ต้องมี ชพ. เหลืออยู่อย่างน้อย", o: ["60 ลิตร","65 ลิตร","63 ลิตร","67 ลิตร"], a: 2 },
+  { q: "เมื่อ ศบ. บินคู่กับ คบ. การบินคืนจากท่าผาดแผลงทุกท่า ระยะสูงต้องไม่ต่ำกว่า ......... ฟุต", o: ["3,000","1,500","2,500","2,000"], a: 3 },
+  { q: "พื้นที่การฝึกบินของสนามบินกำแพงแสน ประกอบด้วย", o: ["VTD 15, VTD 16, VTD 17","ผิดทุกข้อ","VTD 17, VTD 18, VTD 19","VTD 16, VTD 17, VTD 18"], a: 3 },
+  { q: "คลื่นวิทยุความถี่ฉุกเฉิน", o: ["VHF 125.1 MHz, UHF 234.0 MHz","VHF 126.2 MHz, UHF 328.0 MHz","VHF 121.5 MHz, UHF 243.0 MHz","VHF 127.5 MHz, UHF 251.0 MHz"], a: 2 },
+  { q: "ความสูงเหนือระดับน้ำทะเลของสนามบินกำแพงแสน (FIELD ELEVATION) ……… FEET", o: ["30","10","40","20"], a: 0 },
+  { q: "ความสูงในวงจรของ AIRTRAINER ……… FEET, PC-9 ……… FEET", o: ["1000, 800","1200, 1000","800, 1000","1000, 1200"], a: 2 },
+  { q: "การบินกลับมาที่สนามบินจากพื้นที่การฝึกจะต้องบินมาอยู่เหนือจุด REPORTING POINT (CHARLIE OR PAPA) ที่ระยะสูงเท่าไหร่", o: ["800 ฟุต","1,000 ฟุต","600 ฟุต","1,500 ฟุต"], a: 0 },
+  { q: "ขั้นตอนการตั้งค่าความกดอากาศ (QNH) ของสนามบิน อนุญาตให้ความผิดพลาด (Error) ต่างจาก Airport Elevation เท่าใด", o: ["PFD error ±75 ฟุต","Altimeter error ±75 ฟุต","PFD error ±60 ฟุต","Altimeter error ±30 ฟุต"], a: 0 },
+  { q: "ตาม รปป.รร.การบิน เรื่องการปฏิบัติเมื่อวิทยุเสีย ให้บินโคลงปีกผ่านสนามบินตามทิศทางของวงจรขณะนั้น โดยรักษาแนวบินระหว่างทางวิ่งกับทางขับ สำหรับ บ.ใบพัด, บ.ใบพัดขนาดเล็ก และ ฮ. ให้รักษาระยะห่างเหนือพื้นกี่ฟุต", o: ["800","500","300","1000"], a: 1 },
+  { q: "การ LEAVE TRAFFIC เพื่อไปเข้าพื้นที่การฝึกด้านตะวันออก จะต้องทำการ CROSS AIRFIELD ที่ความสูง ......... ฟุต", o: ["2,500","2,000","1,200","3,000"], a: 1 },
+  { q: "ตาม รปป.รร.การบิน เรื่องการลงแบบพิมพ์ ทอ.ชอ.221-1 รายงานการบิน การนับชั่วโมงบิน ให้เริ่มนับตั้งแต่เครื่องบินเริ่มทำการวิ่งขึ้นหรือปล่อยเบรกวิ่งขึ้น และสิ้นสุดลงเมื่อ", o: ["เครื่องยนต์ดับ และอากาศยานได้วางตัวกับพื้นเรียบร้อยแล้ว","อากาศยานได้วางตัวกับพื้นเรียบร้อยแล้ว 5 นาที","ถูกทุกข้อ","อากาศยานได้วางตัวกับพื้นและ TAXI มาที่โรงเก็บเรียบร้อยแล้ว"], a: 0 },
+  { q: "ความถี่วิทยุ GROUND CONTROL ของสนามบินกำแพงแสน", o: ["121.75 MHz","123.3 MHz","123.45 MHz","127.75 MHz"], a: 0 },
+  { q: "ความถี่วิทยุของหอบังคับการบินกำแพงแสน TOWER CONTROL", o: ["123.45 MHz","121.75 MHz","127.75 MHz","123.3 MHz"], a: 3 },
+  { q: "Which weather phenomenon is always associated with a thunderstorm?", o: ["Hail.","Lightning.","Heavy rain."], a: 1 },
+  { q: "What are characteristics of a moist, unstable air mass?", o: ["Cumuliform clouds and showery precipitation.","Stratiform clouds and showery precipitation.","Poor visibility and smooth air."], a: 0 },
+  { q: "What is a characteristic of stable air?", o: ["Cumulus clouds.","Unlimited clouds.","Stratiform clouds."], a: 2 },
+  { q: "What is meant by the term “dew point”?", o: ["The temperature to which air must be cooled to become saturated.","The temperature at which condensation and evaporation are equal.","The temperature at which dew will always form."], a: 0 },
+  { q: "The correct method of stating 10,500 feet MSL to ATC is", o: ["“TEN POINT FIVE.”","“ONE ZERO THOUSAND, FIVE HUNDRED.”","“TEN THOUSAND, FIVE HUNDRED FEET.”"], a: 1 }
+];
+
+const LETTERS = ["ก","ข","ค","ง"];
+let answered = 0, correct = 0;
+
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  document.getElementById('total-count').textContent = QUESTIONS.length;
+
+  const hdr = document.createElement('div');
+  hdr.className = 'section-header';
+  hdr.innerHTML = 'CONTACT (PRE SOLO) — ชุดที่ 1' + `<span>${QUESTIONS.length} ข้อ</span>`;
+  container.appendChild(hdr);
+
+  QUESTIONS.forEach((q, idx) => {
+    q._answered = false;
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'q-' + idx;
+    const choicesHtml = q.o.map((ch, ci) =>
+      `<button class="choice-btn" onclick="answer(${idx},${ci})" id="btn-${idx}-${ci}">
+         <span class="letter">${LETTERS[ci]}.</span><span>${ch}</span>
+       </button>`
+    ).join('');
+    card.innerHTML = `
+      <div class="q-number">ข้อ ${idx + 1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="choices">${choicesHtml}</div>`;
+    container.appendChild(card);
+  });
+}
+
+function answer(qIdx, chosen) {
+  const q = QUESTIONS[qIdx];
+  if (q._answered) return;
+  q._answered = true;
+  answered++;
+
+  const card = document.getElementById('q-' + qIdx);
+  q.o.forEach((_, ci) => {
+    const btn = document.getElementById(`btn-${qIdx}-${ci}`);
+    btn.disabled = true;
+    if (ci === q.a) btn.classList.add('correct');
+    else if (ci === chosen && chosen !== q.a) btn.classList.add('wrong');
+  });
+
+  if (chosen === q.a) { correct++; card.classList.add('answered-correct'); }
+  else card.classList.add('answered-wrong');
+
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  document.getElementById('score-pct').textContent = Math.round(correct / answered * 100) + '%';
+  document.getElementById('progress-fill').style.width = (answered / QUESTIONS.length * 100) + '%';
+
+  if (answered === QUESTIONS.length) showEnd();
+}
+
+function showEnd() {
+  document.getElementById('end-screen').style.display = 'block';
+  const pct = Math.round(correct / QUESTIONS.length * 100);
+  document.getElementById('final-score').textContent = pct + '%';
+  document.getElementById('final-detail').textContent = `ตอบถูก ${correct} จาก ${QUESTIONS.length} ข้อ`;
+  document.getElementById('end-screen').scrollIntoView({ behavior: 'smooth' });
+}
+
+function restartQuiz() {
+  answered = 0; correct = 0;
+  document.getElementById('answered-count').textContent = 0;
+  document.getElementById('correct-count').textContent = 0;
+  document.getElementById('score-pct').textContent = '0%';
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('end-screen').style.display = 'none';
+  buildQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildQuiz();
+</script>
+</body>
+</html>

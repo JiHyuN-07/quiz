@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONTACT (PRE SOLO) — ชุดที่ 2</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'Sarabun', Tahoma, Arial, sans-serif; background: #f0f4f8; color: #222; }
+
+  header {
+    background: linear-gradient(135deg, #1a3c6e, #2d6abf);
+    color: #fff; padding: 24px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  header h1 { font-size: 1.5rem; }
+  header p { font-size: 0.9rem; opacity: 0.85; margin-top: 4px; }
+
+  #score-bar {
+    background: #fff; border-bottom: 2px solid #dde3ec;
+    padding: 12px 32px; display: flex; gap: 32px; align-items: center;
+    font-size: 0.9rem; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08); flex-wrap: wrap;
+  }
+  #score-bar span { font-weight: 700; color: #1a3c6e; }
+  #progress-bar { flex: 1; min-width: 120px; height: 8px; background: #dde3ec; border-radius: 4px; overflow: hidden; }
+  #progress-fill { height: 100%; background: #2d6abf; border-radius: 4px; transition: width .4s; }
+
+  .section-header {
+    background: #1a3c6e; color: #fff;
+    padding: 14px 32px; font-size: 1.1rem; font-weight: 700;
+    margin-top: 32px; letter-spacing: .5px;
+  }
+  .section-header span { opacity: 0.7; font-size: 0.85rem; font-weight: 400; margin-left: 12px; }
+
+  .question-card {
+    background: #fff; margin: 16px 32px;
+    border-radius: 10px; padding: 22px 26px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    border-left: 4px solid #dde3ec;
+    transition: border-color .2s;
+  }
+  .question-card.answered-correct { border-left-color: #27ae60; }
+  .question-card.answered-wrong   { border-left-color: #e74c3c; }
+
+  .q-number { font-size: 0.75rem; color: #888; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; }
+  .q-text { font-size: 1rem; font-weight: 600; line-height: 1.6; margin-bottom: 16px; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; }
+  .choice-btn {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: #f7f9fc; border: 2px solid #dde3ec;
+    border-radius: 8px; padding: 11px 16px;
+    cursor: pointer; font-size: 0.93rem; text-align: left;
+    transition: background .15s, border-color .15s; line-height: 1.5;
+  }
+  .choice-btn:hover:not(:disabled) { background: #e8eef8; border-color: #2d6abf; }
+  .choice-btn .letter { font-weight: 700; color: #2d6abf; min-width: 22px; flex-shrink: 0; }
+  .choice-btn.correct  { background: #eafaf1; border-color: #27ae60; }
+  .choice-btn.wrong    { background: #fdf0ef; border-color: #e74c3c; }
+  .choice-btn.correct .letter { color: #27ae60; }
+  .choice-btn.wrong   .letter { color: #e74c3c; }
+  .choice-btn:disabled { cursor: default; }
+
+  #end-screen {
+    display: none; text-align: center;
+    background: #fff; margin: 32px; border-radius: 12px;
+    padding: 48px 32px; box-shadow: 0 4px 20px rgba(0,0,0,.1);
+  }
+  #end-screen h2 { font-size: 2rem; color: #1a3c6e; margin-bottom: 8px; }
+  #end-screen .big-score { font-size: 4rem; font-weight: 800; color: #2d6abf; }
+  #end-screen p { color: #555; margin: 8px 0; }
+  #restart-btn {
+    margin-top: 24px; background: #2d6abf; color: #fff;
+    border: none; padding: 14px 36px; border-radius: 8px;
+    font-size: 1rem; cursor: pointer; font-weight: 600; transition: background .2s;
+  }
+  #restart-btn:hover { background: #1a3c6e; }
+
+  footer { text-align: center; color: #6b7280; font-size: 0.85rem; margin: 30px 24px; line-height: 1.7; }
+  @media (max-width: 640px) {
+    header, #score-bar, .section-header { padding-left: 16px; padding-right: 16px; }
+    .question-card { margin: 14px 16px; padding: 18px 16px; }
+    #end-screen { margin: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>CONTACT (PRE SOLO) — ชุดที่ 2</h1>
+    <p>แบบทดสอบก่อนบินเดี่ยว &nbsp;|&nbsp; 40 ข้อ · เฉลยตามท้าย PDF ต้นฉบับ</p>
+  </div>
+</header>
+
+<div id="score-bar">
+  <div>ตอบแล้ว: <span id="answered-count">0</span> / <span id="total-count">40</span></div>
+  <div id="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
+  <div>ถูก: <span id="correct-count">0</span></div>
+  <div>คะแนน: <span id="score-pct">0%</span></div>
+</div>
+
+<div id="quiz-container"></div>
+<div id="end-screen">
+  <h2>ทำครบแล้ว! 🎉</h2>
+  <div class="big-score" id="final-score"></div>
+  <p id="final-detail"></p>
+  <button id="restart-btn" onclick="restartQuiz()">เริ่มใหม่</button>
+</div>
+
+<footer>
+  📌 CONTACT (PRE SOLO) — ชุดที่ 2 · 40 ข้อ · เฉลยจากท้าย PDF “CONTACT (PRE SOLO) ชุดที่ 2”
+</footer>
+
+<script>
+const QUESTIONS = [
+  { q: "เครื่องยนต์ของ บ.ฝ.16 ก เป็นแบบ", o: ["AEIO-540-L1B5, 6 cylinder, horizontally in lined, air cooled, with fuel injection.","AEIO-540-L1B5, 6 cylinder, horizontally opposed, oil cooled, with fuel injection.","AEIO-540-L1B5, 6 cylinder, horizontally opposed, air cooled, with fuel injection.","AEIO-540-L1B5, 6 cylinder, horizontally in lined, oil cooled, with fuel injection."], a: 2 },
+  { q: "ในการติด ย. ควรสังเกตอย่าให้รอบ ย. เกิน ......... RPM", o: ["1600","1400","1500","1700"], a: 2 },
+  { q: "การ CHECK MAGNETO ทั้งซ้ายและขวาที่รอบ 1800 RPM แต่ละข้างรอบจะตกลงได้ไม่เกิน ......... RPM และทั้งสองข้างต้องต่างกันไม่เกิน ......... RPM", o: ["170, 50","150, 100","175, 50","150, 50"], a: 2 },
+  { q: "ELECTRIC FUEL PUMP ช่วยเพิ่ม FUEL PRESSURE ให้กับ ย. เราจะเปิดเมื่อใดบ้าง", o: ["ถูกทั้ง ข. และ ค.","ค. ก่อนบินผาดแผลง","ข. ก่อนทำการวิ่งขึ้นและก่อนลงสนาม","ก. หลังติด ย. แล้ว"], a: 0 },
+  { q: "STALL WARNING ที่อยู่ที่ปีกขวาของเครื่องบินจะเชื่อมต่อกับเสียงเตือนภายในห้องนักบิน โดยเสียงเตือนนั้นจะดังก่อนการ STALL ประมาณ ……… knots", o: ["5–10","3–5","7–10","5–7"], a: 0 },
+  { q: "ใบพัด (Propeller) ของ บ.ฝ.16 ก เป็นระบบใด", o: ["Variable Pitch Propeller","Fixed Pitch Propeller","Adjustable Pitch Propeller","Constant Speed Propeller"], a: 3 },
+  { q: "The engine is lubricated by …………..", o: ["A gravity feed wet sump","A gravity feed dry sump","A forced feed dry sump","A forced feed wet sump"], a: 3 },
+  { q: "ALTERNATOR ของ บ.ฝ.16 ก ให้กระแสไฟฟ้า", o: ["28 volts DC, 70 amps","26 volts DC, 60 amps","26 volts AC, 60 amps","28 volts AC, 70 amps"], a: 0 },
+  { q: "RED LINE ของ FUEL FLOW เมื่อเร่ง POWER หน้าสุด", o: ["106","104","103","105"], a: 1 },
+  { q: "ห้ามทำการ TAXI เมื่อความเร็วลมเกิน ......... นอต", o: ["40","50","20","30"], a: 0 },
+  { q: "การวิ่งขึ้นเมื่อมีลมขวางสนาม ซึ่งความเร็วขวางสนามต้องไม่เกิน ......... นอต", o: ["20","30","40","50"], a: 0 },
+  { q: "Which instruments require pitot-static system to determine the measurement?", o: ["A/S Indicator, VVI","Manifold Gauge","All above","Suction Gauge, HDG Indicator"], a: 0 },
+  { q: "ข้อกำหนดเพื่อลดภาระกรรมของเครื่องยนต์ Manifold pressure ในขณะที่รอบต่ำกว่า 2200 RPM ไม่ควรเกินเท่าใด (LIMIT)", o: ["24 inches Hg","23 inches Hg","26 inches Hg","21 inches Hg"], a: 1 },
+  { q: "อุปกรณ์ห้ามล้อ (Brake) ของ บ.ฝ.16 ก แบบใด", o: ["Electric Disc Brakes, Mechanically operated","Electric Disc Brakes, Hydraulic operated","Hydraulic Disc Brakes, Electrically operated","Hydraulic Disc Brakes, Mechanically operated"], a: 3 },
+  { q: "แผนการบินจะต้องยื่นต่อเจ้าหน้าที่บริการข่าวสารการบิน ก่อนที่จะถึงกำหนดเวลาที่จะคาดว่าทำการวิ่งขึ้นอย่างน้อย ......... นาที สำหรับอากาศยานที่บินเดินทาง และอย่างน้อย ......... นาที สำหรับอากาศยานที่ทำการฝึกบินในพื้นที่การฝึก", o: ["60, 15","30, 15","60, 30","30, 10"], a: 0 },
+  { q: "ในขั้นตอนการปฏิบัติ Run Up Check เพื่อป้องกันอาการ ย. สั่น ไม่ควรเร่งรอบก่อนที่อุณหภูมิกระบอกสูบ (C.H.T.) จะถึงค่าใด (NORMAL)", o: ["ไม่ต่ำกว่า 25 °C","ไม่ต่ำกว่า 100 °C","ไม่ต่ำกว่า 24 °C","ไม่ต่ำกว่า 75 °C"], a: 1 },
+  { q: "CHARLIE POINT อยู่ที่ Radial ……… , ……… DME จากเครื่องช่วยเดินอากาศ TACAN", o: ["108, 4.4","304, 8.4","108, 8.4","304, 4.4"], a: 1 },
+  { q: "PAPA POINT อยู่ที่ Radial ……… , ……… DME จากเครื่องช่วยเดินอากาศ TACAN", o: ["304, 8.4","108, 8.4","108, 4.4","304, 4.4"], a: 2 },
+  { q: "ข้อใดไม่ใช่พื้นบังคับหลัก", o: ["ELEVATOR","HORIZONTAL STABILIZER","RUDDER","AILERON"], a: 1 },
+  { q: "ขณะขับเคลื่อน บ. หากได้รับทัศนะสัญญาณไฟสีแดงนิ่งจากหอบังคับการบินหมายความว่า", o: ["ให้ขับเคลื่อนออกจากทางวิ่ง","ให้ขับเคลื่อนต่อไปได้","ให้ขับเคลื่อนไปที่จุดติดเครื่องยนต์","ให้หยุด"], a: 3 },
+  { q: "เกณฑ์การรับฟังวิทยุแบ่งออกเป็น 5 ลำดับ เมื่อ นบ. รับฟังได้ขาด ๆ หาย ๆ (Readable now and then) จะ Report ว่าอย่างไร", o: ["I READ YOU ONE","I READ YOU THREE","I READ YOU FOUR","I READ YOU TWO"], a: 3 },
+  { q: "ในขั้นตอนการปฏิบัติ Run Up Check ข้อควรระวังการเร่งรอบใบพัดที่พื้นกำหนดไว้อย่างไร (NORMAL)", o: ["ไม่เกิน 2300 RPM","ไม่เกิน 2100 RPM","ไม่เกิน 2200 RPM","ไม่เกิน 1800 RPM"], a: 3 },
+  { q: "FLIGHT LOAD FACTOR LIMITS OF FLAPS UP", o: ["+2.0 g to -1.0 g","+2.0 g to 0 g","+6.0 g to -3.0 g","+5.0 g to -2.0 g"], a: 2 },
+  { q: "FLIGHT LOAD FACTOR LIMITS OF FLAPS DOWN", o: ["+2.0 g to -1.0 g","+2.0 g to 0 g","+5.0 g to -2.0 g","+6.0 g to -3.0 g"], a: 1 },
+  { q: "การทำการไปใหม่ (GO AROUND) เมื่อไม่สามารถทำการลงสนามได้ จะต้องไต่ไปที่ความสูงไม่น้อยกว่า ......... ฟุต แล้วจึงทำการวางระดับได้", o: ["100","800","300","500"], a: 3 },
+  { q: "Do Not Attempt An Engine Start If Less Than ……… Volts Is Indicated.", o: ["24","26","28","22"], a: 3 },
+  { q: "The Engine Speed Do Not Exceed ……… RPM On The Ground.", o: ["2,400","2,100","2,300","2,200"], a: 3 },
+  { q: "การปฏิบัติเมื่อ บ.ชนนก เมื่อตรวจพบว่า Structural Damaged ให้ทำ Controllability Check ที่ความสูงไม่ต่ำกว่าเท่าไร", o: ["3,500 ฟุต","4,500 ฟุต","4,000 ฟุต","3,000 ฟุต"], a: 2 },
+  { q: "อากาศยาน 2 เครื่องกำลังบินเข้าหากันในระยะสูงเดียวกัน อากาศยานทั้งสองต้องปฏิบัติอย่างไร", o: ["เลี้ยวซ้ายออกจากกัน","เลี้ยวขวาออกจากกัน","เลี้ยวข้างไหนก็ได้","เครื่องที่เห็นก่อนลดระยะสูง"], a: 1 },
+  { q: "Which V-speed represents maneuvering speed?", o: ["Vₐ","Vₙₑ","Vₗₒ"], a: 0 },
+  { q: "Prior to takeoff, the altimeter should be set to which altitude or altimeter setting?", o: ["The corrected pressure altitude for the departure airport.","The corrected density altitude of the departure airport.","The current local altimeter setting, if available, or the departure airport elevation."], a: 2 },
+  { q: "As altitude increases, the indicated airspeed at which a given airplane stall in a particular configuration will", o: ["remain the same regardless of altitude.","decrease as the true altitude increases.","decrease as the true altitude decreases."], a: 0 },
+  { q: "Which basic flight maneuver increases the load factor on an airplane as airplane as compared to", o: ["Climbs","Stalls","Turns"], a: 2 },
+  { q: "During an approach to a stall, an increased load factor will cause the airplane to", o: ["be more difficult to control.","have a tendency to spin.","stall at a higher airspeed."], a: 2 },
+  { q: "The minimum distance from clouds required for VFR operations on an airway below 10,000 feet MSL?", o: ["500 feet above, 1,000 feet below, and 2,000 feet horizontally.","500 feet below, 1,000 feet above, and 2,000 feet horizontally.","remain clear of clouds."], a: 1 },
+  { q: "Where does wind shear occur?", o: ["Only at lower altitudes.","Only at higher altitudes.","At all altitudes, in all directions."], a: 2 },
+  { q: "What clouds have the greatest turbulence?", o: ["Nimbostratus.","Cumulonimbus.","Towering cumulus."], a: 1 },
+  { q: "เมื่อ บ. ที่ท่านบินอยู่เกิด RADIO FAILURE ควรเปิด TRANSPONDER CODE อะไรไว้", o: ["7700","7500","6700","7600"], a: 3 },
+  { q: "เมื่อ บ. ที่ท่านบินอยู่เกิด EMERGENCY ควรเปิด TRANSPONDER CODE อะไรไว้", o: ["6700","7600","7700","7500"], a: 2 },
+  { q: "ความถี่วิทยุของหอบังคับการบินกำแพงแสน TOWER CONTROL", o: ["123.45 MHz","123.3 MHz","121.75 MHz","127.75 MHz"], a: 1 }
+];
+
+const LETTERS = ["ก","ข","ค","ง"];
+let answered = 0, correct = 0;
+
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  document.getElementById('total-count').textContent = QUESTIONS.length;
+
+  const hdr = document.createElement('div');
+  hdr.className = 'section-header';
+  hdr.innerHTML = 'CONTACT (PRE SOLO) — ชุดที่ 2' + `<span>${QUESTIONS.length} ข้อ</span>`;
+  container.appendChild(hdr);
+
+  QUESTIONS.forEach((q, idx) => {
+    q._answered = false;
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'q-' + idx;
+    const choicesHtml = q.o.map((ch, ci) =>
+      `<button class="choice-btn" onclick="answer(${idx},${ci})" id="btn-${idx}-${ci}">
+         <span class="letter">${LETTERS[ci]}.</span><span>${ch}</span>
+       </button>`
+    ).join('');
+    card.innerHTML = `
+      <div class="q-number">ข้อ ${idx + 1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="choices">${choicesHtml}</div>`;
+    container.appendChild(card);
+  });
+}
+
+function answer(qIdx, chosen) {
+  const q = QUESTIONS[qIdx];
+  if (q._answered) return;
+  q._answered = true;
+  answered++;
+
+  const card = document.getElementById('q-' + qIdx);
+  q.o.forEach((_, ci) => {
+    const btn = document.getElementById(`btn-${qIdx}-${ci}`);
+    btn.disabled = true;
+    if (ci === q.a) btn.classList.add('correct');
+    else if (ci === chosen && chosen !== q.a) btn.classList.add('wrong');
+  });
+
+  if (chosen === q.a) { correct++; card.classList.add('answered-correct'); }
+  else card.classList.add('answered-wrong');
+
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  document.getElementById('score-pct').textContent = Math.round(correct / answered * 100) + '%';
+  document.getElementById('progress-fill').style.width = (answered / QUESTIONS.length * 100) + '%';
+
+  if (answered === QUESTIONS.length) showEnd();
+}
+
+function showEnd() {
+  document.getElementById('end-screen').style.display = 'block';
+  const pct = Math.round(correct / QUESTIONS.length * 100);
+  document.getElementById('final-score').textContent = pct + '%';
+  document.getElementById('final-detail').textContent = `ตอบถูก ${correct} จาก ${QUESTIONS.length} ข้อ`;
+  document.getElementById('end-screen').scrollIntoView({ behavior: 'smooth' });
+}
+
+function restartQuiz() {
+  answered = 0; correct = 0;
+  document.getElementById('answered-count').textContent = 0;
+  document.getElementById('correct-count').textContent = 0;
+  document.getElementById('score-pct').textContent = '0%';
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('end-screen').style.display = 'none';
+  buildQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildQuiz();
+</script>
+</body>
+</html>

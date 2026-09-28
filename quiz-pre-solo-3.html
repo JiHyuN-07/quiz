@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONTACT (PRE SOLO) — ชุดที่ 3</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'Sarabun', Tahoma, Arial, sans-serif; background: #f0f4f8; color: #222; }
+
+  header {
+    background: linear-gradient(135deg, #1a3c6e, #2d6abf);
+    color: #fff; padding: 24px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  header h1 { font-size: 1.5rem; }
+  header p { font-size: 0.9rem; opacity: 0.85; margin-top: 4px; }
+
+  #score-bar {
+    background: #fff; border-bottom: 2px solid #dde3ec;
+    padding: 12px 32px; display: flex; gap: 32px; align-items: center;
+    font-size: 0.9rem; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08); flex-wrap: wrap;
+  }
+  #score-bar span { font-weight: 700; color: #1a3c6e; }
+  #progress-bar { flex: 1; min-width: 120px; height: 8px; background: #dde3ec; border-radius: 4px; overflow: hidden; }
+  #progress-fill { height: 100%; background: #2d6abf; border-radius: 4px; transition: width .4s; }
+
+  .section-header {
+    background: #1a3c6e; color: #fff;
+    padding: 14px 32px; font-size: 1.1rem; font-weight: 700;
+    margin-top: 32px; letter-spacing: .5px;
+  }
+  .section-header span { opacity: 0.7; font-size: 0.85rem; font-weight: 400; margin-left: 12px; }
+
+  .question-card {
+    background: #fff; margin: 16px 32px;
+    border-radius: 10px; padding: 22px 26px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    border-left: 4px solid #dde3ec;
+    transition: border-color .2s;
+  }
+  .question-card.answered-correct { border-left-color: #27ae60; }
+  .question-card.answered-wrong   { border-left-color: #e74c3c; }
+
+  .q-number { font-size: 0.75rem; color: #888; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; }
+  .q-text { font-size: 1rem; font-weight: 600; line-height: 1.6; margin-bottom: 16px; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; }
+  .choice-btn {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: #f7f9fc; border: 2px solid #dde3ec;
+    border-radius: 8px; padding: 11px 16px;
+    cursor: pointer; font-size: 0.93rem; text-align: left;
+    transition: background .15s, border-color .15s; line-height: 1.5;
+  }
+  .choice-btn:hover:not(:disabled) { background: #e8eef8; border-color: #2d6abf; }
+  .choice-btn .letter { font-weight: 700; color: #2d6abf; min-width: 22px; flex-shrink: 0; }
+  .choice-btn.correct  { background: #eafaf1; border-color: #27ae60; }
+  .choice-btn.wrong    { background: #fdf0ef; border-color: #e74c3c; }
+  .choice-btn.correct .letter { color: #27ae60; }
+  .choice-btn.wrong   .letter { color: #e74c3c; }
+  .choice-btn:disabled { cursor: default; }
+
+  #end-screen {
+    display: none; text-align: center;
+    background: #fff; margin: 32px; border-radius: 12px;
+    padding: 48px 32px; box-shadow: 0 4px 20px rgba(0,0,0,.1);
+  }
+  #end-screen h2 { font-size: 2rem; color: #1a3c6e; margin-bottom: 8px; }
+  #end-screen .big-score { font-size: 4rem; font-weight: 800; color: #2d6abf; }
+  #end-screen p { color: #555; margin: 8px 0; }
+  #restart-btn {
+    margin-top: 24px; background: #2d6abf; color: #fff;
+    border: none; padding: 14px 36px; border-radius: 8px;
+    font-size: 1rem; cursor: pointer; font-weight: 600; transition: background .2s;
+  }
+  #restart-btn:hover { background: #1a3c6e; }
+
+  footer { text-align: center; color: #6b7280; font-size: 0.85rem; margin: 30px 24px; line-height: 1.7; }
+  @media (max-width: 640px) {
+    header, #score-bar, .section-header { padding-left: 16px; padding-right: 16px; }
+    .question-card { margin: 14px 16px; padding: 18px 16px; }
+    #end-screen { margin: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>CONTACT (PRE SOLO) — ชุดที่ 3</h1>
+    <p>แบบทดสอบก่อนบินเดี่ยว &nbsp;|&nbsp; 20 ข้อ · เฉลยตามท้าย PDF ต้นฉบับ</p>
+  </div>
+</header>
+
+<div id="score-bar">
+  <div>ตอบแล้ว: <span id="answered-count">0</span> / <span id="total-count">20</span></div>
+  <div id="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
+  <div>ถูก: <span id="correct-count">0</span></div>
+  <div>คะแนน: <span id="score-pct">0%</span></div>
+</div>
+
+<div id="quiz-container"></div>
+<div id="end-screen">
+  <h2>ทำครบแล้ว! 🎉</h2>
+  <div class="big-score" id="final-score"></div>
+  <p id="final-detail"></p>
+  <button id="restart-btn" onclick="restartQuiz()">เริ่มใหม่</button>
+</div>
+
+<footer>
+  📌 CONTACT (PRE SOLO) — ชุดที่ 3 · 20 ข้อ · เฉลยจากท้าย PDF “CONTACT (PRE SOLO) ชุดที่ 3”
+</footer>
+
+<script>
+const QUESTIONS = [
+  { q: "ปริมาณ OIL ของ บ.ฝ.16 ก ขั้นต่ำสุดสำหรับทำการฝึกบิน คือ", o: ["14 US Qts.","16 US Qts.","12 US Qts.","10 US Qts."], a: 3 },
+  { q: "ระหว่างที่ บ. จอดอยู่กับที่บนพื้น เราสามารถตรวจสอบ FLIGHT CONTROL ได้ ยกเว้น", o: ["ELEVATOR","AILERON","ได้ทุกข้อ","RUDDER"], a: 3 },
+  { q: "คำแนะนำหรือขีดจำกัดที่กำหนดขึ้นใน PILOT OPERATION HANDBOOK เพื่อให้เกิดความปลอดภัยต่อชีวิตเรียกว่า", o: ["WARNING","NOTE","CAUTION"], a: 0 },
+  { q: "อุปกรณ์วัดค่าอุณหภูมิกระบอกสูบ (C.H.T.) ติดตั้งไว้ที่ตำแหน่งใด (SYSTEM)", o: ["ใต้กระบอกสูบที่ 5","ใต้กระบอกสูบที่ 1","ใต้กระบอกสูบที่ 2","ใต้กระบอกสูบที่ 4"], a: 3 },
+  { q: "To minimize the side loads placed on the landing gear during touchdown, the pilot should keep the", o: ["longitudinal axis of the aircraft parallel to the direction of its motion.","direction of motion of the aircraft parallel to the runway.","downwind wing lowered sufficiently to eliminate the tendency for the aircraft to drift."], a: 0 },
+  { q: "What should be the first action after starting an aircraft engine?", o: ["Place the magneto or ignition switch momentarily in the OFF position to check for proper grounding.","Adjust for proper RPM and check for desired indications on the engine gauges.","Test each brake and the parking brake."], a: 1 },
+  { q: "What is ground effect?", o: ["The result of the disruption of the airflow patterns about the wings of an airplane to the point where the wings will no longer support the airplane in flight.","The result of the interference of the surface of the Earth with the airflow patterns about an airplane.","The result of an alteration in airflow patterns increasing induced drag about the wings of an airplane."], a: 1 },
+  { q: "What must a pilot be aware of as a result of ground effect?", o: ["A full stall landing will require less up elevator deflection than would a full stall when done free of ground effect.","Induced drag increases; any excess speed at the point of flare may cause considerable floating.","Wingtip vortices increase creating wake turbulence problem for arriving and departing aircraft."], a: 1 },
+  { q: "The left turn tendency of an airplane caused by P-factor is the result of the", o: ["propeller blade descending on the right, producing more thrust than the ascending blade on the left.","clockwise rotation of the engine and the propeller turning the aircraft counter-clockwise.","gyroscopic forces applied to the rotating propeller blades acting 90° in advance of the point the force was applied."], a: 0 },
+  { q: "Prior to starting each maneuver, pilot should", o: ["visually scan the entire area for collision avoidance.","announce their intentions on the nearest CTAF.","check altitude, airspeed, and heading indications."], a: 0 },
+  { q: "When approaching taxiway holding lines from the side with the continuous lines, the pilot", o: ["should continue taxiing until all parts of the aircraft have crossed the lines.","should not cross the line without ATC clearance.","may continue taxiing."], a: 1 },
+  { q: "An ATC radar facility issues the following advisory to a pilot flying on a heading 090°: “TRAFFIC 3 O’CLOCK, 2 MILES, WESTBOUND…” Where should the pilot look for this traffic?", o: ["South.","West.","East."], a: 0 },
+  { q: "Every physical process of weather is accompanied by, or is the result of, a", o: ["heat exchange.","movement of air.","pressure differential."], a: 0 },
+  { q: "If the temperature/dewpoint spread is small and decreasing, what type weather is most likely to develop?", o: ["Freezing precipitation.","Thunderstorms.","Fog or low clouds."], a: 2 },
+  { q: "When may hazardous wind shear be expected?", o: ["When stable air crosses a mountain barrier where it tends to flow in layers forming lenticular clouds.","Following frontal passage when stratocumulus clouds from indicating mechanical mixture.","In area of low-level temperature inversion, frontal zones, and clear air turbulence."], a: 2 },
+  { q: "Which would provide the greatest gain in altitude in the shortest distance during climb after takeoff?", o: ["Vᵧ","Vₐ","Vₓ"], a: 2 },
+  { q: "After takeoff, which airspeed would the pilot use to gain the most altitude in a given period of time?", o: ["Vₓ","Vᵧ","Vₐ"], a: 1 },
+  { q: "When taking off or landing at an airport where heavy aircraft are operating, one should be particularly alert to the hazards of wingtip vortices because this turbulence tends to", o: ["rise into the traffic pattern area surrounding the airport.","sink into the flight path of aircraft operating below the aircraft generating the turbulence.","rise from a crossing runway into the takeoff or landing path."], a: 1 },
+  { q: "Which items are included in the empty weight of an aircraft?", o: ["Unusable fuel and undrainable oil.","Full fuel tanks and engine oil to capacity.","Only the airframe, power plant, and optional equipment."], a: 0 },
+  { q: "If an emergency situation requires a downwind landing, pilot should expect a faster", o: ["airspeed at touchdown, a longer ground roll, and better control throughout the landing roll.","groundspeed at touchdown point, a shorter ground roll, and the likelihood of undershooting the desired touchdown point.","groundspeed at touchdown point, a longer ground roll, and the likelihood of overshooting the desired touchdown point."], a: 2 }
+];
+
+const LETTERS = ["ก","ข","ค","ง"];
+let answered = 0, correct = 0;
+
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  document.getElementById('total-count').textContent = QUESTIONS.length;
+
+  const hdr = document.createElement('div');
+  hdr.className = 'section-header';
+  hdr.innerHTML = 'CONTACT (PRE SOLO) — ชุดที่ 3' + `<span>${QUESTIONS.length} ข้อ</span>`;
+  container.appendChild(hdr);
+
+  QUESTIONS.forEach((q, idx) => {
+    q._answered = false;
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'q-' + idx;
+    const choicesHtml = q.o.map((ch, ci) =>
+      `<button class="choice-btn" onclick="answer(${idx},${ci})" id="btn-${idx}-${ci}">
+         <span class="letter">${LETTERS[ci]}.</span><span>${ch}</span>
+       </button>`
+    ).join('');
+    card.innerHTML = `
+      <div class="q-number">ข้อ ${idx + 1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="choices">${choicesHtml}</div>`;
+    container.appendChild(card);
+  });
+}
+
+function answer(qIdx, chosen) {
+  const q = QUESTIONS[qIdx];
+  if (q._answered) return;
+  q._answered = true;
+  answered++;
+
+  const card = document.getElementById('q-' + qIdx);
+  q.o.forEach((_, ci) => {
+    const btn = document.getElementById(`btn-${qIdx}-${ci}`);
+    btn.disabled = true;
+    if (ci === q.a) btn.classList.add('correct');
+    else if (ci === chosen && chosen !== q.a) btn.classList.add('wrong');
+  });
+
+  if (chosen === q.a) { correct++; card.classList.add('answered-correct'); }
+  else card.classList.add('answered-wrong');
+
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  document.getElementById('score-pct').textContent = Math.round(correct / answered * 100) + '%';
+  document.getElementById('progress-fill').style.width = (answered / QUESTIONS.length * 100) + '%';
+
+  if (answered === QUESTIONS.length) showEnd();
+}
+
+function showEnd() {
+  document.getElementById('end-screen').style.display = 'block';
+  const pct = Math.round(correct / QUESTIONS.length * 100);
+  document.getElementById('final-score').textContent = pct + '%';
+  document.getElementById('final-detail').textContent = `ตอบถูก ${correct} จาก ${QUESTIONS.length} ข้อ`;
+  document.getElementById('end-screen').scrollIntoView({ behavior: 'smooth' });
+}
+
+function restartQuiz() {
+  answered = 0; correct = 0;
+  document.getElementById('answered-count').textContent = 0;
+  document.getElementById('correct-count').textContent = 0;
+  document.getElementById('score-pct').textContent = '0%';
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('end-screen').style.display = 'none';
+  buildQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildQuiz();
+</script>
+</body>
+</html>
