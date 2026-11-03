@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ข้อสอบ Air Law — กฎหมายการบิน</title>
+<title>ข้อสอบ Air Laws — 3 Parts</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Segoe UI', 'Sarabun', Tahoma, Arial, sans-serif; background: #f0f4f8; color: #222; }
@@ -77,11 +77,17 @@
   }
   #restart-btn:hover { background: #1a3c6e; }
 
+  .part-nav { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 32px 8px; }
+  .part-nav a { color: #1a3c6e; background: #fff; border: 2px solid #dde3ec; border-radius: 8px; padding: 11px 14px; text-decoration: none; font-size: 0.9rem; font-weight: 700; }
+  .part-nav a:hover, .part-nav a:focus-visible { border-color: #2d6abf; background: #e8eef8; }
+  .section-header { scroll-margin-top: 100px; }
+
   footer { text-align: center; color: #6b7280; font-size: 0.85rem; margin: 30px 24px; line-height: 1.7; }
   @media (max-width: 640px) {
     header, #score-bar, .section-header { padding-left: 16px; padding-right: 16px; }
     .question-card { margin: 14px 16px; padding: 18px 16px; }
     #end-screen { margin: 16px; }
+    .part-nav { margin: 16px; }
   }
 </style>
 </head>
@@ -89,13 +95,13 @@
 
 <header>
   <div>
-    <h1>ข้อสอบ Air Law — กฎหมายการบิน</h1>
-    <p>ICAO Annexes &amp; ระเบียบการบิน &nbsp;|&nbsp; 25 ข้อ · เฉลยตามข้อสอบจริง</p>
+    <h1>ข้อสอบ Air Laws — 3 Parts</h1>
+    <p>Part 1: 25 ข้อ &nbsp;·&nbsp; Part 2: 50 ข้อ &nbsp;·&nbsp; Part 3: 24 ข้อ</p>
   </div>
 </header>
 
 <div id="score-bar">
-  <div>ตอบแล้ว: <span id="answered-count">0</span> / <span id="total-count">25</span></div>
+  <div>ตอบแล้ว: <span id="answered-count">0</span> / <span id="total-count">99</span></div>
   <div id="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
   <div>ถูก: <span id="correct-count">0</span></div>
   <div>คะแนน: <span id="score-pct">0%</span></div>
@@ -106,65 +112,122 @@
   <h2>ทำครบแล้ว! 🎉</h2>
   <div class="big-score" id="final-score"></div>
   <p id="final-detail"></p>
+  <p id="part-detail"></p>
   <button id="restart-btn" onclick="restartQuiz()">เริ่มใหม่</button>
 </div>
 
 <footer>
-  📌 ข้อสอบวิชา Air Law (กฎหมายการบิน) · อ้างอิง ICAO Annex 2/8/13 และระเบียบการบิน · เฉลยจากตัวเลือกที่ไฮไลท์ไว้ในข้อสอบต้นฉบับ
+  📌 Air Laws · 3 Parts · 99 ข้อ · เฉลยตามเอกสารต้นฉบับ<br>
+  Part 3 ข้อ 62 ใช้คำตอบ ค ตามวงแก้ไขในโผจริง
 </footer>
 
 <script>
 const QUESTIONS = [
-  { q:"According to ICAO Annex 2, who is responsible for the operation of an aircraft during flight?",
-    o:["Air Traffic Control (ATC)","Airport Authority","Pilot-in-command","Aircraft Owner"], a:2 },
-  { q:"ใน ICAO (Annex 2) ข้อใด<b>ไม่</b>ถูกกล่าวถึง ?",
-    o:["General Rules","Instrument Flight Rules","Visual Flight Rules","Doc 7101"], a:3 },
-  { q:"ตามกฎการบินทั่วไป ผู้บังคับอากาศยานสามารถเบี่ยงเบนจากกฎการบินได้ในกรณีใด ?",
-    o:["เมื่อนักบินต้องการประหยัดเชื้อเพลิง","เมื่อเกิดสถานการณ์ฉุกเฉินที่จำเป็นต่อความปลอดภัยของอากาศยาน","เมื่อผู้โดยสารร้องขอ","เมื่อสภาพอากาศดี"], a:1 },
-  { q:"What Annex that every pilot should understand first to fly safely in the air ?",
-    o:["Annex 2 Rules of the Air","Annex 6 Operation of Aircraft","Annex 17 Security","Annex 19 Safety Management"], a:0 },
-  { q:"ข้อกำหนดเกี่ยวกับเชื้อเพลิง ต้องมีเชื้อเพลิงสำรอง (Fuel Reserve) อย่างน้อย …… นาที สำหรับอากาศยานปีกตรึง และ …… นาที สำหรับเฮลิคอปเตอร์",
-    o:["30, 30","30, 45","45, 30","45, 45"], a:2 },
-  { q:"According to ICAO Annex 13, what is the primary objective of an aircraft accident investigation?",
-    o:["To determine who is responsible for the accident","To improve aviation safety","To provide evidence for legal proceedings","To compensate the victims"], a:1 },
-  { q:"หากอากาศยานกำลังทำการบินอยู่ (Aircraft in flight) และได้รับสัญญาณไฟสีแดงนิ่ง (Steady red) จากหอบังคับการบิน สัญญาณไฟนี้มีความหมายว่าอย่างไร ?",
-    o:["บินกลับไปยังจุดเริ่มต้นบนสนามบิน","ให้ทางแก่อากาศยานลำอื่นและบินวนต่อไป","สนามบินไม่ปลอดภัย ห้ามลงจอด","อนุญาตให้ลงจอดได้"], a:1 },
-  { q:"What does a steady green light from the control tower mean to an aircraft in flight?",
-    o:["Return for landing","Cleared to land","Cleared for takeoff","Give way to other aircraft"], a:1 },
-  { q:"According to ICAO Annex 13, what is the primary purpose of an aircraft accident investigation?",
-    o:["To determine who is legally responsible for the accident","To prevent future accidents and incidents","To punish the pilot or airline involved"], a:1 },
-  { q:"How many languages that Annex 2 has been published by ICAO?",
-    o:["5","6","7","8"], a:1 },
-  { q:"รายงาน Airprox หรือ Airmiss report มีวัตถุประสงค์หลักเพื่ออะไร ?",
-    o:["รายงานกรณีเครื่องบินเฉียดกันในระยะอันตราย","รายงานสภาพอากาศไม่ดีระหว่างการบิน","รายงานการขัดข้องของเครื่องยนต์","รายงานการสูญหายของอากาศยาน"], a:0 },
-  { q:"Under ICAO Annex 13, which of the following States must be notified by the State of Occurrence after an aircraft accident or serious incident?",
-    o:["State of Registry, State of the Operator, State of Design, and State of Manufacture","Only the State of Registry and the aircraft manufacturer","Only the State of the Operator","Only the State where the aircraft was last maintained"], a:0 },
-  { q:"ขณะบินแบบ VFR นักบินต้องใช้หลักการใดเป็นสำคัญเพื่อป้องกันการชนกับอากาศยานอื่น ?",
-    o:["ใช้เรดาร์จาก ATC เท่านั้น","ใช้เครื่องวัดในห้องนักบินเป็นหลัก","หลักการ “See and Avoid”","บินตามเครื่องบินลำหน้าเสมอ"], a:2 },
-  { q:"เครื่องบินสองลำบินเข้าหากัน (Head-On) ที่ระดับความสูงเดียวกัน นักบินทั้งสองลำควรทำอย่างไร ?",
-    o:["ทั้งสองลำเลี้ยวซ้าย","ทั้งสองลำเลี้ยวขวา","เครื่องที่เร็วกว่าเลี้ยวซ้าย","เครื่องที่ต่ำกว่าเลี้ยวขวา"], a:1 },
-  { q:"An aircraft blows a tire during taxi. There are zero injuries and no structural damage. This event is classified as an:",
-    o:["Accident","Incident","Emergency","Hazard"], a:1 },
-  { q:"According to ICAO, what is the minimum flight visibility required for an IFR flight in Class G airspace below 10,000 ft AMSL?",
-    o:["1,500 m","3,000 m","5,000 m","No minimum visibility required"], a:2 },
-  { q:"หลังการสิ้นสุดการบินที่สนามบินทหาร นักบินต้องแน่ใจว่าหน่วยที่เกี่ยวข้องได้รับแจ้งการสิ้นสุดของการบิน นักบินสามารถปฏิบัติได้ดังนี้ <b>ยกเว้น</b>ข้อใด ?",
-    o:["นบ. แจ้งกับหอบังคับการบินผ่านความถี่วิทยุ","นบ. เดินไปแจ้งกับเจ้าหน้าที่ยุทธการฐานบิน","นบ. โทรศัพท์แจ้งกับเจ้าหน้าที่ยุทธการฐานบิน","นบ. ลงนามในสมุดสั่งการบิน"], a:3 },
-  { q:"เครื่องหมาย Runway Threshold Markings มีหน้าที่หลักเพื่ออะไร ?",
-    o:["แสดงตำแหน่งเริ่มต้นของพื้นที่ที่สามารถใช้ลงจอดได้","แสดงพื้นที่สำหรับจอดเครื่องบิน","แสดงตำแหน่ง Taxiway","แสดงทิศทางลม"], a:0 },
-  { q:"The Five Freedoms of the Air เกี่ยวกับอะไร ?",
-    o:["สิทธิการบินของสายการบินระหว่างประเทศ","สิทธิของนักบิน","สิทธิของสนามบิน","สิทธิของผู้โดยสาร"], a:0 },
-  { q:"สิทธิการบินข้อใดใน Five Freedoms of the Air ที่หมายถึงสิทธิในการขนส่งผู้โดยสารหรือสินค้าจากประเทศของตนไปยังอีกประเทศหนึ่ง และรับผู้โดยสารหรือสินค้าจากประเทศนั้นกลับมายังประเทศของตน ?",
-    o:["First Freedom of the Air","Second Freedom of the Air","Third Freedom of the Air","Fourth Freedom of the Air"], a:3 },
-  { q:"Light Signals จากหอควบคุมมีไว้เพื่ออะไรเป็นหลัก ?",
-    o:["ใช้แทนวิทยุเมื่อสื่อสารวิทยุขัดข้อง หรือใช้เสริมการควบคุมในสนามบิน","ใช้บอกความเร็วลมเท่านั้น","ใช้แทน NOTAM","ใช้สำหรับการสอบสวนอุบัติเหตุ"], a:0 },
-  { q:"According to ICAO Annex 13, what type of information should be included in the initial notification of an aircraft accident or serious incident sent by the State of Occurrence?",
-    o:["The pilot’s personal medical history","Basic factual information such as aircraft identification, location, date and time of the occurrence","The final cause of the accident","The full investigation report"], a:1 },
-  { q:"According to ICAO Annex 2, when must position lights be displayed by aircraft in flight?",
-    o:["Only during takeoff and landing","At all times between sunset and sunrise","Only when flying in controlled airspace","Only during poor visibility"], a:1 },
-  { q:"ก่อนเข้าสู่ Controlled Airspace นักบินต้องปฏิบัติอย่างไร ?",
-    o:["เข้าพื้นที่ได้ทันทีหากมองเห็นสนามบิน","เปิดไฟลงจอดและบินต่อได้เลย","ติดต่อและได้รับอนุญาตจากหน่วยควบคุมจราจรทางอากาศ (ATC) ก่อน","ลดความเร็วต่ำกว่า 100 knots เท่านั้นก็เพียงพอ"], a:2 },
-  { q:"Restricted Area คือพื้นที่แบบใด ?",
-    o:["พื้นที่ที่ห้ามบินทุกกรณี","พื้นที่ที่อนุญาตให้บินได้เฉพาะเครื่องบินพาณิชย์","พื้นที่ที่การบินถูกจำกัดตามเงื่อนไขที่กำหนด","พื้นที่สำหรับการบินระหว่างประเทศเท่านั้น"], a:2 }
+  {"s":1,"n":1,"q":"According to ICAO Annex 2, who is responsible for the operation of an aircraft during flight?","o":["Air Traffic Control (ATC)","Airport Authority","Pilot-in-command","Aircraft Owner"],"a":2},
+  {"s":1,"n":2,"q":"ใน ICAO (Annex 2) ข้อใด<b>ไม่</b>ถูกกล่าวถึง ?","o":["General Rules","Instrument Flight Rules","Visual Flight Rules","Doc 7101"],"a":3},
+  {"s":1,"n":3,"q":"ตามกฎการบินทั่วไป ผู้บังคับอากาศยานสามารถเบี่ยงเบนจากกฎการบินได้ในกรณีใด ?","o":["เมื่อนักบินต้องการประหยัดเชื้อเพลิง","เมื่อเกิดสถานการณ์ฉุกเฉินที่จำเป็นต่อความปลอดภัยของอากาศยาน","เมื่อผู้โดยสารร้องขอ","เมื่อสภาพอากาศดี"],"a":1},
+  {"s":1,"n":4,"q":"What Annex that every pilot should understand first to fly safely in the air ?","o":["Annex 2 Rules of the Air","Annex 6 Operation of Aircraft","Annex 17 Security","Annex 19 Safety Management"],"a":0},
+  {"s":1,"n":5,"q":"ข้อกำหนดเกี่ยวกับเชื้อเพลิง ต้องมีเชื้อเพลิงสำรอง (Fuel Reserve) อย่างน้อย …… นาที สำหรับอากาศยานปีกตรึง และ …… นาที สำหรับเฮลิคอปเตอร์","o":["30, 30","30, 45","45, 30","45, 45"],"a":2},
+  {"s":1,"n":6,"q":"According to ICAO Annex 13, what is the primary objective of an aircraft accident investigation?","o":["To determine who is responsible for the accident","To improve aviation safety","To provide evidence for legal proceedings","To compensate the victims"],"a":1},
+  {"s":1,"n":7,"q":"หากอากาศยานกำลังทำการบินอยู่ (Aircraft in flight) และได้รับสัญญาณไฟสีแดงนิ่ง (Steady red) จากหอบังคับการบิน สัญญาณไฟนี้มีความหมายว่าอย่างไร ?","o":["บินกลับไปยังจุดเริ่มต้นบนสนามบิน","ให้ทางแก่อากาศยานลำอื่นและบินวนต่อไป","สนามบินไม่ปลอดภัย ห้ามลงจอด","อนุญาตให้ลงจอดได้"],"a":1},
+  {"s":1,"n":8,"q":"What does a steady green light from the control tower mean to an aircraft in flight?","o":["Return for landing","Cleared to land","Cleared for takeoff","Give way to other aircraft"],"a":1},
+  {"s":1,"n":9,"q":"According to ICAO Annex 13, what is the primary purpose of an aircraft accident investigation?","o":["To determine who is legally responsible for the accident","To prevent future accidents and incidents","To punish the pilot or airline involved"],"a":1},
+  {"s":1,"n":10,"q":"How many languages that Annex 2 has been published by ICAO?","o":["5","6","7","8"],"a":1},
+  {"s":1,"n":11,"q":"รายงาน Airprox หรือ Airmiss report มีวัตถุประสงค์หลักเพื่ออะไร ?","o":["รายงานกรณีเครื่องบินเฉียดกันในระยะอันตราย","รายงานสภาพอากาศไม่ดีระหว่างการบิน","รายงานการขัดข้องของเครื่องยนต์","รายงานการสูญหายของอากาศยาน"],"a":0},
+  {"s":1,"n":12,"q":"Under ICAO Annex 13, which of the following States must be notified by the State of Occurrence after an aircraft accident or serious incident?","o":["State of Registry, State of the Operator, State of Design, and State of Manufacture","Only the State of Registry and the aircraft manufacturer","Only the State of the Operator","Only the State where the aircraft was last maintained"],"a":0},
+  {"s":1,"n":13,"q":"ขณะบินแบบ VFR นักบินต้องใช้หลักการใดเป็นสำคัญเพื่อป้องกันการชนกับอากาศยานอื่น ?","o":["ใช้เรดาร์จาก ATC เท่านั้น","ใช้เครื่องวัดในห้องนักบินเป็นหลัก","หลักการ “See and Avoid”","บินตามเครื่องบินลำหน้าเสมอ"],"a":2},
+  {"s":1,"n":14,"q":"เครื่องบินสองลำบินเข้าหากัน (Head-On) ที่ระดับความสูงเดียวกัน นักบินทั้งสองลำควรทำอย่างไร ?","o":["ทั้งสองลำเลี้ยวซ้าย","ทั้งสองลำเลี้ยวขวา","เครื่องที่เร็วกว่าเลี้ยวซ้าย","เครื่องที่ต่ำกว่าเลี้ยวขวา"],"a":1},
+  {"s":1,"n":15,"q":"An aircraft blows a tire during taxi. There are zero injuries and no structural damage. This event is classified as an:","o":["Accident","Incident","Emergency","Hazard"],"a":1},
+  {"s":1,"n":16,"q":"According to ICAO, what is the minimum flight visibility required for an IFR flight in Class G airspace below 10,000 ft AMSL?","o":["1,500 m","3,000 m","5,000 m","No minimum visibility required"],"a":2},
+  {"s":1,"n":17,"q":"หลังการสิ้นสุดการบินที่สนามบินทหาร นักบินต้องแน่ใจว่าหน่วยที่เกี่ยวข้องได้รับแจ้งการสิ้นสุดของการบิน นักบินสามารถปฏิบัติได้ดังนี้ <b>ยกเว้น</b>ข้อใด ?","o":["นบ. แจ้งกับหอบังคับการบินผ่านความถี่วิทยุ","นบ. เดินไปแจ้งกับเจ้าหน้าที่ยุทธการฐานบิน","นบ. โทรศัพท์แจ้งกับเจ้าหน้าที่ยุทธการฐานบิน","นบ. ลงนามในสมุดสั่งการบิน"],"a":3},
+  {"s":1,"n":18,"q":"เครื่องหมาย Runway Threshold Markings มีหน้าที่หลักเพื่ออะไร ?","o":["แสดงตำแหน่งเริ่มต้นของพื้นที่ที่สามารถใช้ลงจอดได้","แสดงพื้นที่สำหรับจอดเครื่องบิน","แสดงตำแหน่ง Taxiway","แสดงทิศทางลม"],"a":0},
+  {"s":1,"n":19,"q":"The Five Freedoms of the Air เกี่ยวกับอะไร ?","o":["สิทธิการบินของสายการบินระหว่างประเทศ","สิทธิของนักบิน","สิทธิของสนามบิน","สิทธิของผู้โดยสาร"],"a":0},
+  {"s":1,"n":20,"q":"สิทธิการบินข้อใดใน Five Freedoms of the Air ที่หมายถึงสิทธิในการขนส่งผู้โดยสารหรือสินค้าจากประเทศของตนไปยังอีกประเทศหนึ่ง และรับผู้โดยสารหรือสินค้าจากประเทศนั้นกลับมายังประเทศของตน ?","o":["First Freedom of the Air","Second Freedom of the Air","Third Freedom of the Air","Fourth Freedom of the Air"],"a":3},
+  {"s":1,"n":21,"q":"Light Signals จากหอควบคุมมีไว้เพื่ออะไรเป็นหลัก ?","o":["ใช้แทนวิทยุเมื่อสื่อสารวิทยุขัดข้อง หรือใช้เสริมการควบคุมในสนามบิน","ใช้บอกความเร็วลมเท่านั้น","ใช้แทน NOTAM","ใช้สำหรับการสอบสวนอุบัติเหตุ"],"a":0},
+  {"s":1,"n":22,"q":"According to ICAO Annex 13, what type of information should be included in the initial notification of an aircraft accident or serious incident sent by the State of Occurrence?","o":["The pilot’s personal medical history","Basic factual information such as aircraft identification, location, date and time of the occurrence","The final cause of the accident","The full investigation report"],"a":1},
+  {"s":1,"n":23,"q":"According to ICAO Annex 2, when must position lights be displayed by aircraft in flight?","o":["Only during takeoff and landing","At all times between sunset and sunrise","Only when flying in controlled airspace","Only during poor visibility"],"a":1},
+  {"s":1,"n":24,"q":"ก่อนเข้าสู่ Controlled Airspace นักบินต้องปฏิบัติอย่างไร ?","o":["เข้าพื้นที่ได้ทันทีหากมองเห็นสนามบิน","เปิดไฟลงจอดและบินต่อได้เลย","ติดต่อและได้รับอนุญาตจากหน่วยควบคุมจราจรทางอากาศ (ATC) ก่อน","ลดความเร็วต่ำกว่า 100 knots เท่านั้นก็เพียงพอ"],"a":2},
+  {"s":1,"n":25,"q":"Restricted Area คือพื้นที่แบบใด ?","o":["พื้นที่ที่ห้ามบินทุกกรณี","พื้นที่ที่อนุญาตให้บินได้เฉพาะเครื่องบินพาณิชย์","พื้นที่ที่การบินถูกจำกัดตามเงื่อนไขที่กำหนด","พื้นที่สำหรับการบินระหว่างประเทศเท่านั้น"],"a":2},
+  {"s":2,"n":1,"q":"What is the latest edition of Annex 2?","o":["Ninth Edition, June 2005","Ninth Edition, July 2005","Tenth Edition, June 2005","Tenth Edition, July 2005"],"a":3},
+  {"s":2,"n":2,"q":"How many languages that Annex 2 has been published by ICAO?","o":["5","6","7","8"],"a":1},
+  {"s":2,"n":3,"q":"What is not language that Annex 2 had published By ICAO?","o":["German","Arabic","Spanish","Chinese"],"a":0},
+  {"s":2,"n":4,"q":"Where is Asia and Pacific ICAO Regional Office?","o":["India","Japan","Thailand","China"],"a":2},
+  {"s":2,"n":5,"q":"What is latest amendment on the Annex 2?","o":["39, date 23/11/06","40, date 22/11/07","41, date 20/11/08","42, date 19/11/09"],"a":3},
+  {"s":2,"n":6,"q":"What is Action by Contracting States about the Annex?","o":["Notification of differences","Promulgation of information","Use of the text in national regulation","All are correct"],"a":3},
+  {"s":2,"n":7,"q":"What is definition of “Maneuvers intentionally performed by an aircraft involving an abrupt change in its attitude, an abnormal attitude, or an abnormal variation in speed”?","o":["Aircraft","Aeroplane","Acrobatic flight","Aerodrome"],"a":2},
+  {"s":2,"n":8,"q":"What is definition of “A defined area on land or water (including any buildings, installations and equipment) intended to be used either wholly or in part for the arrival, departure and surface movement of aircraft”?","o":["Aircraft","Aeroplane","Acrobatic flight","Aerodrome"],"a":3},
+  {"s":2,"n":9,"q":"What is definition of “A power-driven heavier-than-air aircraft, deriving its lift in flight chiefly from aerodynamic reactions on surfaces which remain fixed under given conditions of flight”?","o":["Aircraft","Aeroplane","Acrobatic flight","Aerodrome"],"a":1},
+  {"s":2,"n":10,"q":"What is definition of “Any machine that can derive support in the atmosphere from the reactions of the air other than their actions of the air against the earth's surface”?","o":["Aircraft","Aeroplane","Acrobatic flight","Aerodrome"],"a":0},
+  {"s":2,"n":11,"q":"What is purpose of Air traffic control service?","o":["Preventing collision between aircraft","Preventing collision on the maneuvering area between aircraft and obstructions","Expediting and maintaining an orderly flow of air traffic.","All are correct"],"a":3},
+  {"s":2,"n":12,"q":"What is definition of “A control area or portion thereof established in the form of a corridor.”'?","o":["Altitude","Airway","Apron","Alternate aerodrome"],"a":1},
+  {"s":2,"n":13,"q":"What is definition of “A defined area, on a land aerodrome, intended to accommodate aircraft for purposes of loading or unloading passengers, mail or cargo, fuelling, parking or maintenance.”?","o":["Altitude","Airway","Apron","Alternate aerodrome"],"a":2},
+  {"s":2,"n":14,"q":"What is definition of “The vertical distance of a level, a point or an object considered as a point, measured from mean sea level (MSL).”?","o":["Altitude","Airway","Apron","Alternate aerodrome"],"a":0},
+  {"s":2,"n":15,"q":"“A defined area to which an aircraft may proceed when it becomes either impossible or inadvisable to proceed to or to land at the aerodrome of intended landing.”?","o":["Altitude","Airway","Apron","Alternate aerodrome"],"a":3},
+  {"s":2,"n":16,"q":"What is definition of “A method of navigation which permits aircraft operation on any desired flight path within the coverage of ground- or space-based navigation aids or within the limits of the capability of self-contained aids, or a combination of these\"?","o":["Ceiling","Area navigation (RNAV).","Danger area.","Cruising level."],"a":1},
+  {"s":2,"n":17,"q":"What is definition of “The height above the ground or water of the base of the lowest layer of cloud below 6 000 metres (20 000 feet) covering more than half the sky\"?","o":["Ceiling","Area navigation (RNAV).","Danger area.","Cruising level."],"a":0},
+  {"s":2,"n":18,"q":"What is definition of “A level maintained during a significant portion of a flight\"?","o":["Ceiling","Area navigation (RNAV).","Danger area.","Cruising level."],"a":3},
+  {"s":2,"n":19,"q":"What is definition of “An airspace of defined dimensions within which activities dangerous to the flight of aircraft may exist at specified times.\"?","o":["Ceiling","Area navigation (RNAV).","Danger area.","Cruising level."],"a":2},
+  {"s":2,"n":20,"q":"What is Estimated time of arrival?","o":["For IFR flights, the time at which it is estimated that the aircraft will arrive over that designated point, defined by reference to navigation aids, from which it is intended that an instrument approach procedure will be commenced, or,","For IFR flights, if no navigation aid is associated with the aerodrome, the time at which the aircraft will arrive over the aerodrome.","For VFR flights, the time at which it is estimated that the aircraft will arrive over the aerodrome","All are correct"],"a":3},
+  {"s":2,"n":21,"q":"What is definition of “The direction in which the longitudinal axis of an aircraft is pointed, usually expressed in degrees from North (true, magnetic, compass or grid).”?","o":["Expected approach time.","Maneuvering area","Ground visibility.","Heading."],"a":3},
+  {"s":2,"n":22,"q":"What is definition of \"That part of an aerodrome to be used for the take-off, landing and taxiing of aircraft, excluding aprons.\"?","o":["Expected approach time.","maneuvering area","Ground visibility.","Heading."],"a":1},
+  {"s":2,"n":23,"q":"What is definition of “The time at which ATC expects that an arriving aircraft, following a delay, will leave the holding fix to complete its approach for a landing.\"?","o":["Expected approach time.","maneuvering area","Ground visibility.","Heading"],"a":0},
+  {"s":2,"n":24,"q":"What is definition of “The visibility at an aerodrome as reported by an accredited observer or by automatic systems.”?","o":["Expected approach time.","maneuvering area","Ground visibility.","Heading."],"a":2},
+  {"s":2,"n":25,"q":"When set a QNH to altimeter, what is it indicate?","o":["Altitude","Height","Flight Level","Surface"],"a":0},
+  {"s":2,"n":26,"q":"When set a QFE to altimeter, what is it indicate above the QFE reference datum?","o":["Altitude","Height","Flight Level","Surface"],"a":1},
+  {"s":2,"n":27,"q":"When set a pressure of 1 013.2 hPa to altimeter, what is it indicate?","o":["Altitude;","Height","Flight Level","Surface"],"a":2},
+  {"s":2,"n":28,"q":"What is definition of “A series of predetermined maneuvers by reference to flight instruments with specified protection from obstacles from the initial approach fix, or where applicable, from the beginning of a defined arrival route to a point from which a landing can be completed”?","o":["Instrument approach procedure.","Precision approach (PA) procedure.","Approach procedure with vertical guidance (APV).","Non-precision approach (NPA) procedure."],"a":0},
+  {"s":2,"n":29,"q":"What is definition of “An instrument approach procedure which utilizes lateral guidance but does not utilize vertical guidance.”?","o":["Instrument approach procedure.","Precision approach (PA) procedure.","Approach procedure with vertical guidance (APV).","Non-precision approach (NPA) procedure."],"a":3},
+  {"s":2,"n":30,"q":"What is definition of “An instrument approach procedure which utilizes lateral and vertical guidance but does not meet the requirements established for precision approach and landing operations.”'?","o":["Instrument approach procedure.","Precision approach (PA) procedure.","Approach procedure with vertical guidance (APV).","Non-precision approach (NPA) procedure."],"a":2},
+  {"s":2,"n":31,"q":"What is definition of “An instrument approach procedure using precision lateral and vertical guidance with minima as determined by the category of operation”?","o":["Instrument approach procedure.","Precision approach (PA) procedure.","Approach procedure with vertical guidance (APV).","Non-precision approach (NPA) procedure."],"a":1},
+  {"s":2,"n":32,"q":"What is definition of “The pilot designated by the operator, or in the case of general aviation, the owner, as being in command and charged with the safe conduct of a flight.”?","o":["Pilot-in-command.","Restricted area","Reporting point","Prohibited area."],"a":0},
+  {"s":2,"n":33,"q":"What is definition of “An airspace of defined dimensions, above the land areas or territorial waters of a State, within which the flight of aircraft is prohibited.”?","o":["Pilot-in-command.","Restricted area","Reporting point","Prohibited area."],"a":3},
+  {"s":2,"n":34,"q":"What is definition of “An airspace of defined dimensions, above the land areas or territorial waters of a State, within which the flight of aircraft is restricted in accordance with certain specified conditions.”?","o":["Pilot-in-command.","Restricted area","Reporting point","Prohibited area."],"a":1},
+  {"s":2,"n":35,"q":"What is definition of “A specified geographical location in relation to which the position of an aircraft can be reported.”?","o":["Pilot-in-command.","Restricted area","Reporting point","Prohibited area."],"a":2},
+  {"s":2,"n":36,"q":"What is definition of “The projection on the earth's surface of the path of an aircraft, the direction of which path at any point is usually expressed in degrees from North (true, magnetic or grid).”?","o":["Track","Heading","Azimuth","Direction"],"a":0},
+  {"s":2,"n":37,"q":"What is Visibility for aeronautical purpose?","o":["The greatest distance at which a black object of suitable dimensions, situated near the ground, can be seen and","The greatest distance at which lights in the vicinity of 1 000 candelas can be seen and identified against an unlit background.","The observations of prevailing and minimum visibility reported in METAR and SPECI and to the observations of ground visibility.","All are correct"],"a":3},
+  {"s":2,"n":38,"q":"The operation of an aircraft either in flight or on the movement area of an aerodrome, in addition, when in flight, what is rule shall be in compliance with?","o":["The visual flight rules","The instrument flight rules","General rules","All are correct"],"a":3},
+  {"s":2,"n":39,"q":"What is authority of pilot-in-command of an aircraft?","o":["Shall have final authority as to the disposition of the aircraft while in command.","shall be responsible for the operation of the aircraft in accordance with the rules of the air","May depart from these rules in circumstances that render such departure absolutely necessary in the interests of safety.","All are correct"],"a":0},
+  {"s":2,"n":40,"q":"How to protect of persons and property by rules of the air?","o":["An aircraft shall not be operated in a negligent or reckless manner so as to endanger life or property of others.","Nothing shall be dropped or sprayed from an aircraft in flight","An aircraft shall not be flown over the congested areas of cities, towns or settlements","All are correct"],"a":3},
+  {"s":2,"n":41,"q":"What is distance that not exceed when flying in formation?","o":["0.5 km (0.25 NM) laterally and longitudinally and 15 m (50 ft) vertically from the flight leader","1 km (0.5 NM) laterally and longitudinally and 30 m (100 ft) vertically from the flight leader","1 km (0.5 NM) laterally and longitudinally and 60 m (200 ft) vertically from the flight leader","1.5 km (0.75 NM) laterally and longitudinally and 30 m (100 ft) vertically from the flight leader"],"a":1},
+  {"s":2,"n":42,"q":"If the aircraft has the right-of-way, shall be do?","o":["Maintain its heading and speed","Alter its heading to the right","The aircraft that has the other on its right shall give way","All are correct"],"a":0},
+  {"s":2,"n":43,"q":"When two aircrafts are approaching head-on or approximately so and there is danger of collision, what is PIC of both aircraft shall be?","o":["Maintain its heading and speed","Alter its heading to the right","The aircraft that has the other on its right shall give way","All are correct"],"a":1},
+  {"s":2,"n":44,"q":"When two aircrafts are converging at approximately the same level, what is PIC of both aircraft shall be?","o":["Maintain its heading and speed","Alter its heading to the right","The aircraft that has the other on its right shall give way","All are correct"],"a":2},
+  {"s":2,"n":45,"q":"When two aircrafts are converging at approximately the same level, which has the right-of-way?","o":["Aircraft be towing other aircraft or objects","Balloon","Glider","Airship"],"a":1},
+  {"s":2,"n":46,"q":"Who has the right-of-way when approaching for land?","o":["Aircraft landing or in the final stages of landing.","aircraft at the higher level shall give way to aircraft at the lower level","Power-driven heavier-than-air aircraft shall give way","Emergency aircraft landing"],"a":3},
+  {"s":2,"n":47,"q":"Lights to be displayed by aircraft, which are the lights, were intended to attract attention to the aircraft?","o":["Landing lights","Anti-collision lights","Navigation lights","Flood lights"],"a":1},
+  {"s":2,"n":48,"q":"Lights to be displayed by aircraft, which are the lights, were intended to indicate the relative path of the aircraft to an observer?","o":["Landing light","Anti-collision light","Navigation light","Flood light"],"a":2},
+  {"s":2,"n":49,"q":"What is condition that an aircraft can be flown under simulated instrument flight conditions?","o":["Fully functioning dual controls are installed in the aircraft","A qualified pilot occupies a control seat to act as safety pilot for the person who is flying under simulated instrument conditions.","The safety pilot shall have adequate vision forward and to each side of the aircraft, or a competent observer in communication","All are correct"],"a":3},
+  {"s":2,"n":50,"q":"An aircraft operated on or in the vicinity of an aerodrome, whether or not within an aerodrome traffic zone, shall be?","o":["Observe other aerodrome traffic for the purpose of avoiding collision","Conform with or avoid the pattern of traffic formed by other aircraft in operation","Make all turns to the left, when approaching for a landing and after taking off.","All are correct"],"a":3},
+  {"s":3,"n":51,"q":"Normally, aircraft shall land and take off into the wind. What conditions may justify a different runway direction?","o":["Safety","The runway configuration","Air traffic","All are correct"],"a":3},
+  {"s":3,"n":52,"q":"Under which conditions shall a flight plan be submitted prior to operating?","o":["Any flight or portion thereof to be provided with air traffic control service","Any IFR flight within advisory airspace","Any flight across international borders","All are correct"],"a":3},
+  {"s":3,"n":53,"q":"What are the contents of a flight plan?","o":["Aircraft identification, flight rules and type of flight","Number and type(s) of aircraft and wake turbulence category","Equipment, departure aerodrome and estimated off-block time","All are correct"],"a":3},
+  {"s":3,"n":54,"q":"What are the elements of arrival information in an arrival report made by an aircraft?","o":["Aircraft identification and departure aerodrome","Destination aerodrome (only in the case of a diversionary landing)","Arrival aerodrome and time of arrival","All are correct"],"a":3},
+  {"s":3,"n":55,"q":"Coordinated Universal Time is expressed in hours and minutes and, when required, seconds of the 24-hour day beginning at midnight. What is its code?","o":["CUT","UTC","TUC","UCT"],"a":1},
+  {"s":3,"n":56,"q":"If average true airspeed at cruising level between reporting points varies, or is expected to vary, from that given in the flight plan, at what variation shall the appropriate ATS unit be informed?","o":["Plus or minus 3 percent of the true airspeed","Plus or minus 4 percent of the true airspeed","Plus or minus 5 percent of the true airspeed","Plus or minus 10 percent of the true airspeed"],"a":2},
+  {"s":3,"n":57,"q":"If a time estimate for the next reporting point, FIR boundary or destination aerodrome is found to be in error from that notified to ATS, what change requires an update?","o":["In excess of 3 minutes","In excess of 5 minutes","In excess of 10 minutes","In excess of 15 minutes"],"a":0},
+  {"s":3,"n":58,"q":"If communication fails in VMC, what should the pilot-in-command do?","o":["Continue to fly in visual meteorological conditions","Land at the nearest suitable aerodrome","Report arrival by the most expeditious means to the appropriate air traffic services unit","All are correct"],"a":3},
+  {"s":3,"n":59,"q":"If communication fails in IMC, in airspace where radar is not used for ATC, what should the pilot-in-command do?","o":["Maintain the last assigned speed and level, or minimum flight altitude if higher, for 20 minutes following failure to report over a non-compulsory reporting point","Maintain the last assigned speed and level, or minimum flight altitude if higher, for 20 minutes following failure to report over a compulsory reporting point","Maintain the last assigned speed and level, or minimum flight altitude if higher, for 30 minutes following failure to report over a non-compulsory reporting point","Maintain the last assigned speed and level, or minimum flight altitude if higher, for 30 minutes following failure to report over a compulsory reporting point"],"a":1},
+  {"s":3,"n":60,"q":"If communication fails in IMC in airspace where radar is used for ATC, what should the pilot-in-command do?","o":["Maintain the last assigned speed and level, or minimum flight altitude if higher, for a period of 7 minutes following","The time the last assigned level or minimum flight altitude is reached","The time the transponder is set to Code 7600","All are correct"],"a":3},
+  {"s":3,"n":61,"q":"When flying at 5,000 ft, what are the VMC visibility and distance-from-cloud minima?","o":["5 km visibility, 1,500 m horizontal and 1,000 ft vertical","5 km visibility, 1,000 m horizontal and 1,500 ft vertical","8 km visibility, 1,500 m horizontal and 1,000 ft vertical","8 km visibility, 1,000 m horizontal and 1,500 ft vertical"],"a":0},
+  {"s":3,"n":62,"q":"VFR flights shall not take off or land at an aerodrome within a control zone, or enter its traffic zone or pattern, under which condition?","o":["The ceiling is less than 300 m (1,000 ft)","The ceiling is more than 450 m (1,500 ft)","The ground visibility is less than 5 km","The ground visibility is more than 5 km"],"a":2},
+  {"s":3,"n":63,"q":"Unless authorized by the appropriate ATS authority, when shall VFR flights not be operated?","o":["Above FL 130","Above FL 200","At transonic and supersonic speeds","B and C are correct"],"a":3},
+  {"s":3,"n":64,"q":"Except when necessary for take-off or landing, or with permission from the appropriate authority, where shall a VFR flight not be flown?","o":["Over congested areas or open-air assemblies at less than 300 m (1,000 ft) above the highest obstacle within 600 m of the aircraft","Elsewhere, at less than 150 m (500 ft) above the ground or water","Elsewhere, at less than 300 m (1,000 ft) above the ground or water","A and B are correct"],"a":3},
+  {"s":3,"n":65,"q":"Except when necessary for take-off or landing, or when specifically authorized, what minimum flight altitude applies to an IFR flight?","o":["Over high terrain or mountainous areas: at least 600 m (2,000 ft) above the highest obstacle within 8 km of the estimated position","Elsewhere: at least 300 m (1,000 ft) above the highest obstacle within 8 km of the estimated position","Elsewhere: at less than 300 m (1,000 ft) above the ground or water","A and B are correct"],"a":3},
+  {"s":3,"n":66,"q":"Which signals, used together or separately, mean that grave and imminent danger threatens and immediate assistance is requested?","o":["A radiotelegraphy or other signal consisting of the group SOS in Morse code","A radiotelephony distress signal consisting of the spoken word MAYDAY","Rockets or shells throwing red lights, fired one at a time at short intervals","All are correct"],"a":3},
+  {"s":3,"n":67,"q":"Which signals indicate that an aircraft has a very urgent message concerning the safety of a ship, aircraft, other vehicle, or person on board?","o":["A radiotelegraphy or other signal consisting of the group XXX","A radiotelephony urgency signal consisting of the spoken words PAN, PAN","A data-link urgency message conveying PAN, PAN","All are correct"],"a":3},
+  {"s":3,"n":68,"q":"An intercepting aircraft rocks its wings, flashes navigation lights at irregular intervals, then makes a slow level turn to the desired heading. What does this signal mean?","o":["You have been intercepted. Follow me.","You may proceed.","Land at this aerodrome.","Land as soon as possible."],"a":0},
+  {"s":3,"n":69,"q":"How should an intercepted aircraft respond to the interception signal in original question 68?","o":["Rock the aircraft only","Lower landing gear, show steady landing lights and follow","Rock the aircraft, flash navigation lights at irregular intervals and follow","All are correct"],"a":2},
+  {"s":3,"n":71,"q":"On the ground, what does a series of red flashes from the tower mean?","o":["Stop","Cleared to taxi","Taxi clear of the landing area in use","Return to the starting point on the aerodrome"],"a":2},
+  {"s":3,"n":72,"q":"In flight during daylight, how should a pilot acknowledge a light signal?","o":["Rock the aircraft's wings","Move the aircraft's ailerons or rudder","Flash the landing or navigation lights twice","All are correct"],"a":0},
+  {"s":3,"n":73,"q":"On the ground during daylight, how should a pilot acknowledge a light signal?","o":["Rock the aircraft's wings","Move the aircraft's ailerons or rudder","Flash the landing or navigation lights twice","All are correct"],"a":1},
+  {"s":3,"n":74,"q":"What do crosses of a single contrasting colour, yellow or white, displayed horizontally on runways or taxiways mean?","o":["Closed runways or taxiways","Prohibition of landing","Need for special precautions while approaching or landing","Right-hand traffic pattern"],"a":0},
+  {"s":3,"n":75,"q":"What does a right-hand arrow displayed in a signal area or at the end of the runway or strip in use mean?","o":["Closed runways or taxiways","Prohibition of landing","Need for special precautions while approaching or landing","Right-hand traffic pattern"],"a":3}
+];
+
+const PARTS = [
+  { id: 1, title: "Part 1 — Air Law 25 ข้อแรก", count: 25 },
+  { id: 2, title: "Part 2 — Rules of the Air Exam", count: 50 },
+  { id: 3, title: "Part 3 — โผจริง (ข้อใหม่)", count: 24 }
 ];
 
 const LETTERS = ["ก","ข","ค","ง"];
@@ -175,25 +238,60 @@ function buildQuiz() {
   container.innerHTML = '';
   document.getElementById('total-count').textContent = QUESTIONS.length;
 
-  const hdr = document.createElement('div');
-  hdr.className = 'section-header';
-  hdr.innerHTML = 'ข้อสอบ Air Law (กฎหมายการบิน)' + `<span>${QUESTIONS.length} ข้อ</span>`;
-  container.appendChild(hdr);
+  const nav = document.createElement('nav');
+  nav.className = 'part-nav';
+  nav.setAttribute('aria-label', 'เลือกส่วนข้อสอบ');
+  PARTS.forEach(part => {
+    const link = document.createElement('a');
+    link.href = '#part-' + part.id;
+    link.textContent = part.title + ' (' + part.count + ' ข้อ)';
+    nav.appendChild(link);
+  });
+  container.appendChild(nav);
 
+  let currentPart = 0;
   QUESTIONS.forEach((q, idx) => {
     q._answered = false;
+    q._correct = false;
+    if (q.s !== currentPart) {
+      const part = PARTS.find(item => item.id === q.s);
+      const hdr = document.createElement('div');
+      hdr.className = 'section-header';
+      hdr.id = 'part-' + part.id;
+      hdr.textContent = part.title;
+      const count = document.createElement('span');
+      count.textContent = part.count + ' ข้อ';
+      hdr.appendChild(count);
+      container.appendChild(hdr);
+      currentPart = q.s;
+    }
+
     const card = document.createElement('div');
     card.className = 'question-card';
     card.id = 'q-' + idx;
-    const choicesHtml = q.o.map((ch, ci) =>
-      `<button class="choice-btn" onclick="answer(${idx},${ci})" id="btn-${idx}-${ci}">
-         <span class="letter">${LETTERS[ci]}.</span><span>${ch}</span>
-       </button>`
-    ).join('');
-    card.innerHTML = `
-      <div class="q-number">ข้อ ${idx + 1}</div>
-      <div class="q-text">${q.q}</div>
-      <div class="choices">${choicesHtml}</div>`;
+    const number = document.createElement('div');
+    number.className = 'q-number';
+    number.textContent = 'ข้อ ' + q.n;
+    const question = document.createElement('div');
+    question.className = 'q-text';
+    question.innerHTML = q.q;
+    const choices = document.createElement('div');
+    choices.className = 'choices';
+    q.o.forEach((choice, ci) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'choice-btn';
+      button.id = 'btn-' + idx + '-' + ci;
+      button.onclick = () => answer(idx, ci);
+      const letter = document.createElement('span');
+      letter.className = 'letter';
+      letter.textContent = LETTERS[ci] + '.';
+      const label = document.createElement('span');
+      label.textContent = choice;
+      button.append(letter, label);
+      choices.appendChild(button);
+    });
+    card.append(number, question, choices);
     container.appendChild(card);
   });
 }
@@ -202,6 +300,7 @@ function answer(qIdx, chosen) {
   const q = QUESTIONS[qIdx];
   if (q._answered) return;
   q._answered = true;
+  q._correct = chosen === q.a;
   answered++;
 
   const card = document.getElementById('q-' + qIdx);
@@ -228,6 +327,10 @@ function showEnd() {
   const pct = Math.round(correct / QUESTIONS.length * 100);
   document.getElementById('final-score').textContent = pct + '%';
   document.getElementById('final-detail').textContent = `ตอบถูก ${correct} จาก ${QUESTIONS.length} ข้อ`;
+  document.getElementById('part-detail').textContent = PARTS.map(part => {
+    const group = QUESTIONS.filter(q => q.s === part.id);
+    return 'Part ' + part.id + ': ' + group.filter(q => q._correct).length + '/' + group.length;
+  }).join(' · ');
   document.getElementById('end-screen').scrollIntoView({ behavior: 'smooth' });
 }
 
