@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>110 Navigation — Quiz 1</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; color: #222; }
+
+  header {
+    background: linear-gradient(135deg, #1a3c6e, #2d6abf);
+    color: #fff; padding: 24px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  header h1 { font-size: 1.5rem; }
+  header p { font-size: 0.9rem; opacity: 0.85; margin-top: 4px; }
+
+  #score-bar {
+    background: #fff; border-bottom: 2px solid #dde3ec;
+    padding: 12px 32px; display: flex; gap: 32px; align-items: center;
+    font-size: 0.9rem; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08); flex-wrap: wrap;
+  }
+  #score-bar span { font-weight: 700; color: #1a3c6e; }
+  #progress-bar { flex: 1; min-width: 120px; height: 8px; background: #dde3ec; border-radius: 4px; overflow: hidden; }
+  #progress-fill { height: 100%; background: #2d6abf; border-radius: 4px; transition: width .4s; }
+
+  .section-header {
+    background: #1a3c6e; color: #fff;
+    padding: 14px 32px; font-size: 1.1rem; font-weight: 700;
+    margin-top: 32px; letter-spacing: .5px;
+  }
+  .section-header span { opacity: 0.7; font-size: 0.85rem; font-weight: 400; margin-left: 12px; }
+
+  .question-card {
+    background: #fff; margin: 16px 32px;
+    border-radius: 10px; padding: 22px 26px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    border-left: 4px solid #dde3ec;
+    transition: border-color .2s;
+  }
+  .question-card.answered-correct { border-left-color: #27ae60; }
+  .question-card.answered-wrong   { border-left-color: #e74c3c; }
+
+  .q-number { font-size: 0.75rem; color: #888; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; }
+  .q-text { font-size: 1rem; font-weight: 600; line-height: 1.55; margin-bottom: 16px; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; }
+  .choice-btn {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: #f7f9fc; border: 2px solid #dde3ec;
+    border-radius: 8px; padding: 11px 16px;
+    cursor: pointer; font-size: 0.93rem; text-align: left;
+    transition: background .15s, border-color .15s;
+    line-height: 1.45;
+  }
+  .choice-btn:hover:not(:disabled) { background: #e8eef8; border-color: #2d6abf; }
+  .choice-btn .letter {
+    font-weight: 700; color: #2d6abf;
+    min-width: 22px; flex-shrink: 0;
+  }
+  .choice-btn.correct  { background: #eafaf1; border-color: #27ae60; }
+  .choice-btn.wrong    { background: #fdf0ef; border-color: #e74c3c; }
+  .choice-btn.correct .letter { color: #27ae60; }
+  .choice-btn.wrong   .letter { color: #e74c3c; }
+  .choice-btn:disabled { cursor: default; }
+
+  .explanation {
+    display: none; margin-top: 14px;
+    background: #f0f6ff; border-left: 3px solid #2d6abf;
+    border-radius: 6px; padding: 12px 16px;
+    font-size: 0.88rem; line-height: 1.6; color: #333;
+  }
+  .explanation.visible { display: block; }
+  .explanation strong { color: #1a3c6e; }
+
+  #end-screen {
+    display: none; text-align: center;
+    background: #fff; margin: 32px; border-radius: 12px;
+    padding: 48px 32px; box-shadow: 0 4px 20px rgba(0,0,0,.1);
+  }
+  #end-screen h2 { font-size: 2rem; color: #1a3c6e; margin-bottom: 8px; }
+  #end-screen .big-score { font-size: 4rem; font-weight: 800; color: #2d6abf; }
+  #end-screen p { color: #555; margin: 8px 0; }
+  #restart-btn {
+    margin-top: 24px; background: #2d6abf; color: #fff;
+    border: none; padding: 14px 36px; border-radius: 8px;
+    font-size: 1rem; cursor: pointer; font-weight: 600;
+    transition: background .2s;
+  }
+  #restart-btn:hover { background: #1a3c6e; }
+  .section-score { display: inline-block; margin: 6px 12px; font-size: 0.95rem; color: #444; }
+
+@media (max-width: 640px) { header { padding: 20px 16px; } #score-bar { padding: 12px 16px; gap: 10px 18px; } .question-card { margin: 12px 14px; padding: 18px; } .section-header { padding: 14px 16px; } #end-screen { margin: 16px; padding: 32px 18px; } }
+.uncertain-tag { display:inline-block; margin-left:8px; padding:2px 8px; border-radius:5px; background:#c62828; color:#fff; font-size:.78rem; font-weight:600; text-transform:none; }
+.figure { max-width:560px; margin:4px 0 18px; padding:12px; border:1px solid #d9e2ef; border-radius:8px; background:#fafcff; }
+.figure svg { width:100%; height:auto; }
+.figure p { font-size:.78rem; color:#666; margin-top:6px; }
+.flight-grid { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); font-size:.7rem; overflow:auto; }
+.flight-grid span { border:1px solid #b9c9db; padding:7px 3px; text-align:center; min-height:32px; }
+.flight-grid .red-cell { border:2px solid #e74c3c; color:#e74c3c; font-weight:700; }
+.info-block { width:220px; margin:auto; border:2px solid #1a3c6e; }
+.info-block div { border-bottom:1px solid #1a3c6e; min-height:30px; padding:5px 10px; }
+.info-block div:last-child { border-bottom:0; }
+</style>
+</head>
+<body>
+<header><div><h1>110 Navigation — Quiz 1</h1><p>ข้อสอบการเดินอากาศ 50 ข้อ</p></div></header>
+<div id="score-bar"><div>ทำแล้ว: <span id="answered-count">0</span> / <span id="total-count">50</span></div><div id="progress-bar"><div id="progress-fill" style="width:0%"></div></div><div>ถูก: <span id="correct-count">0</span> / <span id="graded-count">50</span></div><div>คะแนน: <span id="score-pct">0%</span></div></div>
+<div id="quiz-container"></div>
+<div id="end-screen"><h2>ทำครบแล้ว!</h2><div class="big-score" id="final-score"></div><p id="final-detail"></p><button id="restart-btn" type="button" onclick="restartQuiz()">เริ่มใหม่</button></div>
+<script>
+const questions = [{"q": "ข้อใดต่อไปนี้ไม่ใช่คุณสมบัติของระบบกริด UTM (Universal Transverse Mercator Projection System)", "c": ["เป็นการใช้การฉายภาพทรงกระบอก", "แบ่งพื้นที่ 80 องศาเหนือ ลงมาถึง 84 องศาใต้ เป็น 60 โซน", "กำหนดอักษรโรมันกำกับไว้ตั้งแต่ C ถึง X ยกเว้น I กับ O", "สามารถบอกพิกัดหน่วยเป็นเมตร"], "a": 1, "ex": "UTM ครอบคลุม 80° ใต้ถึง 84° เหนือ ไม่ใช่ 80° เหนือถึง 84° ใต้", "verdict": "B", "n": 1, "uncertain": false}, {"q": "Which cruising altitude is appropriate for a VFR flight on a magnetic course of 135°?", "c": ["Even thousands.", "Odd thousands.", "Even thousands plus 500 feet.", "Odd thousands plus 500 feet."], "a": 3, "ex": "ทิศ 135° อยู่ฝั่งตะวันออก (000–179°); ระดับ VFR เป็นจำนวนพันคี่บวก 500 ฟุต", "verdict": "D", "n": 2, "uncertain": false}, {"q": "What is magnetic variation?", "c": ["Error from difference between true north and magnetic north.", "Error from difference between magnetic north and compass north.", "Error from difference between true north and compass north.", "None of above."], "a": 0, "ex": "Variation คือมุมต่างระหว่างทิศเหนือจริงกับทิศเหนือแม่เหล็ก", "verdict": "A", "n": 3, "uncertain": false}, {"q": "ข้อใดเป็นการจำลองแผนที่ลงบนแผ่นแบบที่มีจุดฉายอยู่ที่จุดศูนย์กลางของโลก", "c": ["Gnomonic Projection", "Stereographic Projection", "Orthographic Projection", "Conical Projection"], "a": 0, "ex": "Gnomonic projection ฉายจากจุดศูนย์กลางโลกลงบนระนาบ", "verdict": "A", "n": 4, "uncertain": false}, {"q": "ข้อใดต่อไปนี้ไม่ถูกต้อง", "c": ["เส้นวงใหญ่คือเส้นที่แบ่งทรงกลมออกเป็นสองส่วนเท่ากัน", "เส้นวงเล็กคือเส้นวงกลมบนผิวทรงกลม ที่มีรัศมีและจุดศูนย์กลางแตกต่างกัน", "เส้นศูนย์สูตรคือเส้นวงใหญ่ที่ผ่านจุดศูนย์กลางของโลก", "ถูกทุกข้อ"], "a": 2, "ex": "เส้นศูนย์สูตรเป็นเส้นวงใหญ่บนผิวโลก ไม่ใช่เส้นที่ผ่านจุดศูนย์กลางโลก จึงเลือก C ตามถ้อยคำของโจทย์", "verdict": "C", "n": 5, "uncertain": false}, {"q": "เกณฑ์เชื้อเพลิงต่ำสุด (Minimum Fuel) หมายความว่า", "c": ["ปริมาณเชื้อเพลิงของอากาศยานมีเหลือน้อยและเมื่อไปถึงสนามบินปลายทางแล้วจะไม่สามารถรอการล่าช้าต่อไปได้เกินกว่า 20 นาที", "ปริมาณเชื้อเพลิงของอากาศยานมีเหลือน้อยและเมื่อไปถึงสนามบินปลายทางแล้วจะไม่สามารถรอการล่าช้าต่อไปได้เกินกว่า 30 นาที", "ปริมาณเชื้อเพลิงของอากาศยานมีเหลือน้อยและเมื่อไปถึงสนามบินปลายทางแล้วจะไม่สามารถรอการล่าช้าต่อไปได้หรือรอได้เพี ยงชั่วขณะหนึ่ง โดยสภาพนี้ยังไม่อยู่ในภาวะฉุกเฉิน แต่จะเกิดขึ้นเมื่ออากาศยานมีเชื้อเพลิงอยู่ในเกณฑ์ต่ำสุด", "ปริมาณเชื้อเพลิงของอากาศยานมีเหลือน้อยและเมื่อไปถึงสนามบินปลายทางแล้วจะไม่สามารถรอการล่าช้าต่อไปได้หรือรอได้เพี ยงชั่วขณะหนึ่ง โดยสภาพนี้นับว่าอยู่ในภาวะฉุกเฉิน และต้องรีบลงสนามที่ใกล้ที่สุด"], "a": 2, "ex": "Minimum fuel หมายถึงลงสนามบินที่ตั้งใจไว้โดยไม่อาจรับความล่าช้าเพิ่มได้ แต่ยังไม่ใช่การประกาศภาวะฉุกเฉิน", "verdict": "C", "n": 6, "uncertain": false}, {"q": "What action is required when two aircraft of the same category converge, but not head-on? (GEN)", "c": ["The faster aircraft shall give way.", "The aircraft on the left shall give way.", "Each aircraft shall give way to the right.", "The aircraft on the right shall give way."], "a": 1, "ex": "เครื่องบินประเภทเดียวกันตัดกันในระดับใกล้เคียงกัน เครื่องที่เห็นอีกลำอยู่ด้านขวาต้องหลบ จึงเป็นลำทางซ้ายที่หลบ", "verdict": "B", "n": 7, "uncertain": false}, {"q": "Which aircraft has the right-of-way over the other aircraft listed? (GEN)", "c": ["Aircraft in distress.", "Airship.", "Aircraft refueling other aircraft.", "Aircraft towing."], "a": 0, "ex": "อากาศยานที่กำลังประสบภัยต้องได้รับทางก่อนเพื่อความปลอดภัย; ช้อยส์อื่นไม่ได้เหนือกว่าภาวะ distress", "verdict": "A", "n": 8, "uncertain": false}, {"q": "ข้อใดไม่ใช่คุณสมบัติที่พึงประสงค์ของแผนที่ (การเดินอากาศ)", "c": ["มาตราส่วนคงที่", "พื้นที่เปลี่ยนไปตามขนาดของแผนที่", "รูปร่างเหมือนจริง", "เส้นวงใหญ่และเส้นเกลียวเป็นเส้นโค้ง"], "a": 1, "ex": "ตามโผเฉลย B: พื้นที่ที่เปลี่ยนไปตามขนาดของแผนที่ไม่ใช่คุณสมบัติที่พึงประสงค์ของแผนที่เดินอากาศ", "verdict": "B", "n": 9, "uncertain": false}, {"q": "ข้อใดต่อไปนี้กล่าวได้ถูกต้องเกี่ยวกับวงขนาน (Parallels)", "c": ["วงขนานทั้งหมดคือวงเล็ก (Small Circle) ยกเว้นเส้นศูนย์สูตร", "วงขนานคือ Great Circle", "กำหนดได้ 180° ขึ้นเหนือ และลงใต้", "ไม่มีข้อถูก"], "a": 0, "ex": "วงขนานอื่นเป็น small circle; เส้นศูนย์สูตรเป็น great circle", "verdict": "A", "n": 10, "uncertain": false}, {"q": "When two or more aircraft are approaching an airport for the purpose of landing, the right-of-way belongs to the aircraft? (GEN)", "c": ["that has the other on its right.", "that is the least maneuverable.", "at the lower altitude, but it shall not take advantage of this rule to cut in front of or to overtake another.", "that is the first one who contact tower."], "a": 2, "ex": "เมื่อเข้าใกล้ลงจอด เครื่องที่ต่ำกว่ามีทางก่อน แต่ห้ามแทรกหน้าหรือแซงเครื่องอื่น", "verdict": "C", "n": 11, "uncertain": false}, {"q": "ข้อใดคือลักษณะของการจำลองแผนที่ลงบนรูปทรงกรวย (Conical Projection)", "c": ["มาตราส่วนถูกต้องตามเส้น Standard Parallel และขยายออกเมื่อห่างจากเส้นนี้ออกไป", "Rhumb Line เป็นเส้นตรง", "พื้นที่ขยายมากขึ้นเมื่อ Latitude สูงขึ้น", "Scale จะเหมือนจริงบริเวณจุดกลางของการฉาย"], "a": 0, "ex": "Conical projection มีมาตราส่วนจริงบน standard parallel และผิดเพี้ยนมากขึ้นเมื่อห่างออกไป", "verdict": "A", "n": 12, "uncertain": false}, {"q": "What is Magnetic Heading?", "c": ["True course corrected for local magnetic variation.", "Magnetic course corrected for the effects of wind.", "Magnetic course corrected for compass deviation.", "True heading corrected for the effects of wind."], "a": 1, "ex": "Magnetic heading คือทิศหัวเครื่องเทียบเหนือแม่เหล็ก; ได้จาก magnetic course บวก/ลบมุมแก้ลม", "verdict": "B", "n": 13, "uncertain": false}, {"q": "What will you enter in item 9 (Type of Aircraft)?", "c": ["ICAO designator specified in DOC 8643", "Type of Aircraft from flight operation manual", "Light or Heavy related to take off weight", "Type of fuel and how much you carry on board in hours."], "a": 0, "ex": "Item 9 ต้องใช้รหัสแบบอากาศยานตาม ICAO Doc 8643 ไม่ใช่ชื่อเล่นของแบบหรือชนิดเชื้อเพลิง 110 Navigation • เฉลยอิสระพร้อมเหตุผล หน้า 2", "verdict": "A", "n": 14, "uncertain": false}, {"q": "Which one is not a reason to climb to higher altitude when you are lost?", "c": ["Let you see more of the ground.", "Increasing your chances of spotting an identifiable landmark.", "Improves the reception range of your radios.", "Increase your range for gliding."], "a": 3, "ex": "โผของข้อสอบชุดนี้กำหนดให้ตอบ D (Increase your range for gliding) สำหรับคำถามที่ถามว่าไม่ใช่เหตุผลในการไต่สูงเมื่อหลงทาง", "verdict": "D", "n": 15, "uncertain": false}, {"q": "ข้อใดต่อไปนี้กล่าวถูกต้องเกี่ยวกับ Rhumb line", "c": ["ให้ระยะทางที่สั้นที่สุดระหว่างสองจุด", "เป็นเส้นสมมติที่ลากผ่านจุดศูนย์กลางของโลก", "เป็นเส้นสมมติที่ลากผ่านเส้นเมริเดียนที่มุมเท่ากันและทำให้ได้ระยะสั้นที่สุดระหว่างจุด", "ไม่มีข้อถูก"], "a": 3, "ex": "Rhumb line ตัดเส้นเมริเดียนด้วยมุมคงที่ แต่โดยทั่วไปไม่ใช่ระยะสั้นที่สุด; A–C จึงไม่ถูกครบ", "verdict": "D", "n": 16, "uncertain": false}, {"q": "What is the main purpose to file a VFR flight plan?", "c": ["To manage your route traffic by ATC.", "To announce your course for other aircrafts.", "To initiate a search for you if you are not arrived within 30 minutes.", "To prepare your skills for IFR navigation."], "a": 2, "ex": "ตามโผตอบ C: แผนการบินช่วยให้ติดตามและเริ่มค้นหาเมื่ออากาศยานไม่ถึงจุดหมายตามเวลาในโจทย์", "verdict": "C", "n": 17, "uncertain": false}, {"q": "What is Compass direction if True Course 045, Variation 5 W, Deviation +5?", "c": ["045", "055", "035", "040"], "a": 1, "ex": "True Course 045° บวก variation 5°W ได้ Magnetic Course 050°; เมื่อบวก deviation +5 ตามโจทย์ ได้ Compass Direction 055°", "verdict": "B", "n": 18, "uncertain": false}, {"q": "การเขียนแผนการบิน ITEM 8: Flight Rules and Type of Flight ถ้านักบินต้องการบินด้วยกฎ VFR และต่อด้วย IFR ต้องใส่สัญลักษณ์อะไร?", "c": ["V", "Z", "I", "Y"], "a": 1, "ex": "Item 8 ใช้ Z เมื่อเริ่มบิน VFR แล้วจึงเปลี่ยนเป็น IFR", "verdict": "B", "n": 19, "uncertain": false}, {"q": "An aircraft at FL290 is required to commence descent when 50 NM from the VOR and to cross that VOR at altitude 8000 feet. If a ground speed during descent is 271 kts. What is the minimum rate of descent required?", "c": ["1700 ft/min.", "1800 ft/min.", "1900 ft/min.", "2000 ft/min."], "a": 2, "ex": "ลด 21,000 ฟุตในเวลา 50/271 × 60 ≈ 11.07 นาที ต้องประมาณ 1,897 ft/min จึงเลือก 1,900", "verdict": "C", "n": 20, "uncertain": false}, {"q": "You are flying at 7500 ft and need to descent to pattern altitude (800 ft) at VTBK for landing with a ground speed of 120 kts. What is the minimum rate of descent required if you are 20 NM from the airport?", "c": ["670 ft/min.", "690 ft/min.", "710 ft/min.", "730 ft/min."], "a": 0, "ex": "ลดจาก 7,500 เป็น 800 = 6,700 ฟุต; 20 NM ที่ 120 kt ใช้ 10 นาที จึงต้อง 670 ft/min", "verdict": "A", "n": 21, "uncertain": false}, {"q": "Which one is not the component of Triangle of velocities?", "c": ["Ground vector", "Air vector", "Wind vector", "Speed vector"], "a": 3, "ex": "Wind triangle ประกอบด้วย air, wind และ ground velocity vectors; “speed vector” ไม่ใช่องค์ประกอบเฉพาะอีกอัน", "verdict": "D", "n": 22, "uncertain": false}, {"q": "What is Drift Correction?", "c": ["The angle between heading of the aircraft and course.", "The angle between course and track.", "The angle between heading of the aircraft and track.", "The angle between heading of the aircraft and wind direction."], "a": 0, "ex": "Drift correction คือมุมระหว่าง heading ที่ต้องถือกับ course/track ที่ต้องการ เพื่อหักล้างลม", "verdict": "A", "n": 23, "uncertain": false}, {"q": "ข้อใดคือประโยชน์ของ Critical Point (CP)?", "c": ["นำไปใช้เมื่อเกิดเหตุฉุกเฉิน เพื่อตัดสินใจไปต่อ หรือเลี้ยวกลับ", "ใช้พิจารณาปฏิบัติการบินในพื้นที่ที่ไม่สามารถบินลงระหว่างทางได้ เช่น ป่าเขาและทะเลทราย", "ใช้เพื่อพิจารณาว่าเครื่องบินสามารถบินออกไปทำภารกิจได้ไกลแค่ไหน และมีเวลาเท่าไร", "ทุกข้อข้างต้นเป็นประโยชน์ของ Critical Point"], "a": 3, "ex": "โผของข้อสอบชุดนี้กำหนดให้ A, B และ C เป็นประโยชน์ของ Critical Point จึงเลือก D (ทุกข้อ)", "verdict": "D", "n": 24, "uncertain": true}, {"q": "When will your indicated altitude equal to pressure altitude?", "c": ["When flying in standard pressure.", "When pilot set altimeter to current QNH.", "When set altimeter to 29.92\"hg.", "none of above."], "a": 2, "ex": "เมื่อปรับ altimeter เป็น 29.92 inHg หรือ 1013.25 hPa ค่าที่อ่านเป็น pressure altitude", "verdict": "C", "n": 25, "uncertain": false}, {"q": "What type of altitudes used in weather forecast?", "c": ["True altitude", "Absolute altitude", "Pressure altitude", "Density altitude"], "a": 1, "ex": "ตามเฉลยที่ผู้ใช้ยืนยัน ข้อนี้ตอบ Absolute altitude; คำว่า weather forecast ในโจทย์ค่อนข้างกว้าง จึงควรดูบริบทของเอกสารประกอบ", "verdict": "B", "n": 26, "uncertain": false}, {"q": "What will pilot fill in red section? (Flight Log Form - see diagram below)", "c": ["Actual Time Arrival", "Navigation aid type and frequency", "Navigation aid type and code", "Estimated Time Arrival"], "a": 3, "ex": "ในรูปที่จัดพิมพ์ใหม่ ช่องกรอบแดงอยู่ใต้ ETA ซึ่งหมายถึง Estimated Time of Arrival", "verdict": "D", "n": 27, "uncertain": false, "figure": "<div class=\"figure\" role=\"img\" aria-label=\"Flight log: ช่องสีแดงอยู่ใต้ ETA\"><div class=\"flight-grid\"><span>Route<\/span><span>Heading<\/span><span>Dist.<\/span><span>ETE<\/span><span>ETA<\/span><span>Fuel<\/span><span>Remarks<\/span><span><\/span><span><\/span><span><\/span><span><\/span><span class=\"red-cell\">?<\/span><span><\/span><span><\/span><\/div><\/div>"}, {"q": "To prepare a map for navigation, what colors should pilots use to draw track and safety height?", "c": ["black and blue", "red and Black", "red and blue", "blue and yellow"], "a": 2, "ex": "ตามธรรมเนียมการทำแผนที่ฝึกบินที่โจทย์นี้ตั้งใจถาม ใช้สีแดงลาก track และสีน้ำเงินกำกับ safety height; สีอาจขึ้นกับคู่มือหน่วย", "verdict": "C*", "n": 28, "uncertain": false}, {"q": "What is lost procedure composed of?", "c": ["climb, confess, conserve, communicate, compels", "climb, clock, conserve, communicate, comply", "climb, confess, conspire, communicate, comply", "climb, confess, conserve, communicate, comply"], "a": 3, "ex": "ชุด 5C คือ Climb, Confess, Conserve, Communicate, Comply 110 Navigation • เฉลยอิสระพร้อมเหตุผล หน้า 3", "verdict": "D", "n": 29, "uncertain": false}, {"q": "According to in-Flight Procedure, what should pilots do if checkpoints or turning points cannot be found?", "c": ["Make an orbit to look for your point", "Continue flight to next point", "Descend to lower altitude", "Take lost procedure"], "a": 3, "ex": "เมื่อหา checkpoint ไม่พบ ควรเข้าสู่ lost procedure เพื่อรักษาความปลอดภัยและขอความช่วยเหลือ", "verdict": "D", "n": 30, "uncertain": false}, {"q": "แผนการบินจะต้องส่งโดยผู้บังคับอากาศยานหรือผู้แทนอย่างน้อย ___ ชั่วโมง ก่อนเวลาที่คาดว่าจะขับเคลื่อนเพื่อบินขึ้น และสามารถส่งก่อนทำการบินล่วงหน้าได้ไม่เกิน ___ ชั่วโมง", "c": ["1 ชม. และ 100 ชม.", "1 ชม. และ 120 ชม.", "2 ชม. และ 100 ชม.", "2 ชม. และ 120 ชม."], "a": 1, "ex": "AIP ไทยระบุยื่น FPL ก่อนอย่างน้อย 1 ชั่วโมง และล่วงหน้าได้ไม่เกิน 120 ชั่วโมงเมื่อระบุวันบิน", "verdict": "B", "n": 31, "uncertain": false}, {"q": "ถ้าต้องการเปลี่ยนแปลงเลขมัคหรือความเร็วจริง (Mach Number/True Airspeed) ขณะทำการบินเพิ่มขึ้นหรือลดลง ต่างจากที่ระบุไว้ในแผนการบินปัจจุบันเท่าไร นักบินต้องแจ้งหน่วยบริการจราจรทางอากาศ?", "c": ["0.02 มัค ขึ้นไป หรือ 19 กม./ชม. (10 นอต) ขึ้นไปจากที่ระบุไว้ในแผนการบิน", "0.01 มัค ขึ้นไป หรือ 27 กม./ชม. (15 นอต) ขึ้นไปจากที่ระบุไว้ในแผนการบิน", "0.03 มัค ขึ้นไป หรือ 19 กม./ชม. (10 นอต) ขึ้นไปจากที่ระบุไว้ในแผนการบิน", "0.01 มัค ขึ้นไป หรือ 27 กม./ชม. (15 นอต) ขึ้นไปจากที่ระบุไว้ในแผนการบิน"], "a": 0, "ex": "ตัวเลือก A คือ 0.02 Mach หรือ 19 กม./ชม. (10 kt) ซึ่งเป็นเกณฑ์ตามโจทย์; ควรตรวจฉบับกฎที่ใช้สอบอีกครั้ง", "verdict": "A*", "n": 32, "uncertain": false}, {"q": "การบินตามกฎการบินด้วยทัศนวิสัย (VFR Flight) เหนือเมือง หมู่บ้าน หรือกลุ่มคนที่มีการมารวมตัวกันในบริเวณพื้นดินจะต้องมีความสูงต่ำกว่า ___ ฟุต เหนือสิ่งกีดขวางที่สูงที่สุดภายในรัศมี ___ เมตรจากอากาศยาน", "c": ["500 ฟุต, 500 เมตร", "500 ฟุต, 600 เมตร", "1,000 ฟุต, 600 เมตร", "1,000 ฟุต, 500 เมตร"], "a": 2, "ex": "เมื่อปรับช้อยส์ C เป็น 1,000 ฟุตเหนือสิ่งกีดขวางสูงสุดในรัศมี 600 เมตร จึงตรงกับเกณฑ์ที่ใช้ตอบข้อนี้", "verdict": "C", "n": 33, "uncertain": false}, {"q": "ให้ถือเกณฑ์เชื้อเพลิงสำรองอย่างน้อย ___ นาที สำหรับอากาศยานปีกตรึง และ ___ นาที สำหรับเฮลิคอปเตอร์ หรืออากาศยานที่ไม่สามารถปฏิบัติได้ ให้ถือเกณฑ์เชื้อเพลิงที่ใช้ทำการบินหรือ ___ นาที แล้วแต่จำนวนไหนจะมากกว่ากัน", "c": ["30, 20, 10, 20", "45, 20, 10, 20", "45, 30, 10, 20", "45, 30, 15, 30"], "a": 2, "ex": "ช้อยส์ C คือ 45, 30, 10, 20: ตาม AFMAN 11-202V3 สำรองน้ำมัน 10% ของเวลาบิน โดยมีเพดาน 45 นาทีสำหรับปีกตรึง หรือ 30 นาทีสำหรับเฮลิคอปเตอร์ และมีขั้นต่ำ 20 นาที ทั้งนี้ถ้อยคำโจทย์ควรแก้ให้ตรงกับเกณฑ์", "verdict": "C*", "n": 34, "uncertain": false}, {"q": "การคิด Time Zone ที่ใช้เส้น Meridian 105° ซึ่งผ่านจังหวัดอุบลราชธานี ทำให้ LMT ของประเทศไทยต่างจาก GMT เท่าไร", "c": ["ก่อน GMT 7 ชม.", "หลัง GMT 7 ชม.", "ก่อน GMT 5 ชม.", "หลัง GMT 5 ชม."], "a": 1, "ex": "ลองจิจูด 105°E ÷ 15° ต่อชั่วโมง = UTC/GMT+7 เวลาไทยจึงเร็วกว่า GMT 7 ชั่วโมง หรืออยู่ “หลัง GMT”", "verdict": "B", "n": 35, "uncertain": false}, {"q": "What are missing from this information block? (ETE / Actual Fuel Remaining - see diagram below)", "c": ["Magnetic Heading, Safety Height, Fuel Consumption", "Magnetic Heading, Safety Height, Fuel Remaining", "Compass Heading, Safety Height, Fuel Consumption", "Compass Heading, Safety Height, Fuel Remaining"], "a": 0, "ex": "แผนภาพมี Actual Fuel Remaining อยู่แล้ว จึงช่องที่ขาดเกี่ยวกับเชื้อเพลิงน่าจะเป็น Fuel Consumption และอีกสองช่องคือ Magnetic Heading กับ Safety Height", "verdict": "A*", "n": 36, "uncertain": false, "figure": "<div class=\"figure\" role=\"img\" aria-label=\"Information block มี ETE และ Actual Fuel Remaining แล้ว\"><div class=\"info-block\"><div>?<\/div><div>ETE<\/div><div>?<\/div><div>?<\/div><div>Actual Fuel Remaining<\/div><\/div><\/div>"}, {"q": "ข้อใดไม่ใช่การเตรียมแผนที่ในส่วนของ Distance Marker?", "c": ["ขีดระยะทางเป็นทุกๆ 10 NM", "เขียนด้านขวาของ Track", "เลือก Checkpoint ที่มองเห็นได้ชัดเจนทั้งด้านขวาและซ้ายของ Track", "ถูกทุกข้อ"], "a": 2, "ex": "ใช้ C เป็นเฉลยของ Quiz ตามการยืนยันล่าสุด: การเลือก checkpoint ที่เห็นชัดทั้งสองด้านเป็นการเลือกจุดตรวจ มากกว่าการทำ distance marker โดยตรง", "verdict": "C", "n": 37, "uncertain": true}, {"q": "Line of Position คืออะไร?", "c": ["เส้นที่ลากขึ้นบนแผนที่ โดยลากจริงหรือสมมติก็ตาม ตั้งฉากกับ Course", "เส้นที่ลากขึ้นบนแผนที่ โดยลากจริงหรือสมมติก็ตาม ผ่านเครื่องที่บินอยู่", "เส้นที่ลากขึ้นบนแผนที่หรือพื้นดิน โดยลากจริงหรือสมมติก็ตาม ผ่านเครื่องที่บินอยู่", "เส้นที่ลากขึ้นบนแผนที่หรือพื้นดิน โดยลากจริงหรือสมมติก็ตาม ตั้งฉากกับ Course"], "a": 1, "ex": "ตามคำตอบที่ผู้ใช้ยืนยัน Line of Position คือเส้นจริงหรือสมมติที่ลากบนแผนที่ผ่านตำแหน่งอากาศยาน จึงตอบ B", "verdict": "B", "n": 38, "uncertain": false}, {"q": "What type of special use airspace for VTD 16?", "c": ["Danger area", "Restricted area", "Prohibited area", "None of above"], "a": 0, "ex": "รหัส VTD: VT=ไทย และ D=Danger; VTD16 อยู่ในหมวด Danger Areas ของ AIP ไทย", "verdict": "A", "n": 39, "uncertain": false}, {"q": "เครื่องบินบินด้วยความเร็วอ่านจากเครื่องวัดได้ 200 KTS ลมจากทิศ 25° ความเร็วลม 10 KTS บินจากสนามบิน A ไปสนามบิน B ด้วยทิศ 30° และ OAT 5°C ด้วย Pressure Altitude 4000 ฟุต จงหา Point Of No Return (กำหนดให้เครื่องบินมีน้ำมัน 200 ลิตร และทุกๆ 1 ชม. จะใช้น้ำมัน 100 ลิตร)", "c": ["190", "200", "210", "220"], "a": 2, "ex": "ถ้า 200 kt เป็น IAS: ที่ PA 4,000 ft/OAT 5°C ได้ TAS ประมาณ 212 kt; ลมหัวขาไป/ลมหางขากลับราว 10 kt ทำให้ PNR ≈ 211 NM ใกล้ 210", "verdict": "C*", "n": 40, "uncertain": false}, {"q": "When flying with a fuel consumption of 65 Liters per hour, how much fuel used to fly 140 NM with 120 kts (TAS) in no wind condition?", "c": ["76 Liters", "80 Liters", "84 Liters", "88 Liters"], "a": 0, "ex": "เวลา 140/120 = 1.167 ชั่วโมง; น้ำมัน 65 × 1.167 ≈ 75.8 ลิตร ปัดเป็น 76", "verdict": "A", "n": 41, "uncertain": false}, {"q": "เครื่องบินบินจากสนามบิน A ไปสนามบิน B ระยะทาง 120 NM ใช้ H/D 040 ความเร็วในการบิน G/S 120 หลังจากบินมาได้ 15 นาทีพบว่าเครื่องบินอยู่ห่างจาก Track เดิม 5 NM และอยู่ทางขวาของ Track จงหาว่าจะต้องใช้ H/D เท่าไรในการแก้ให้บินขนาน Track", "c": ["300", "030", "020", "200"], "a": 1, "ex": "บิน 15 นาทีที่ 120 kt ได้ 30 NM; เบนขวา 5 NM เท่ากับ drift ≈ 10° (กฎ 1-in-60) จึงหัก heading 040° ไปซ้ายเป็น 030° เพื่อบินขนาน", "verdict": "B*", "n": 42, "uncertain": false}, {"q": "จากข้อ 42 จะต้องใช้ H/D เท่าไรในการบินไปที่ B โดยตรง", "c": ["127", "270", "207", "027"], "a": 3, "ex": "จากข้อ 42 ระยะถึง B เหลือ 90 NM; ต้องแก้เพิ่ม 5/90 × 60 ≈ 3° จาก heading ขนาน 030° ไปซ้ายเป็น 027°", "verdict": "D*", "n": 43, "uncertain": false}, {"q": "จากข้อ 42 ถ้าจะกลับเข้า Track เดิมใน 5 นาที จะต้องใช้ H/D เท่าไร", "c": ["355", "360", "025", "095"], "a": 1, "ex": "จะกลับเข้าร่องบินใน 5 นาที = 10 NM; ต้องแก้เพิ่ม 5/10 × 60 = 30° จาก 030° จึงเป็น 000°/360° 110 Navigation • เฉลยอิสระพร้อมเหตุผล หน้า 4", "verdict": "B*", "n": 44, "uncertain": false}, {"q": "If a true heading of 145° results in a ground track of 130° and a true airspeed of 145 knots results in a groundspeed of 135 knots, the wind would be from?", "c": ["212° and 28 knots.", "232° and 28 knots.", "212° and 38 knots."], "a": 2, "ex": "ลบเวกเตอร์อากาศ 145 kt @145° ออกจากเวกเตอร์พื้น 135 kt @130° ได้ลมพัดมาจากประมาณ 212° ความเร็ว 38 kt", "verdict": "C", "n": 45, "uncertain": false}, {"q": "เครื่องบินบินจากสนามบิน A ลาดตระเวนไปทางสนามบิน B ทิศทาง 030 ความเร็ว 120 KTS โดยมีความเร็วลม 30 KTS ทิศ 060 เครื่องบินจะลาดตระเวนไปได้ไกลเท่าไร โดยบินที่ความสูง 5000 ฟุต และอุณหภูมิอากาศภายนอกเท่ากับ 30 องศาเซลเซียส ถ้ามีเชื้อเพลิงบินนาน 3 ชม. จงหารัศมีทำการ", "c": ["193", "198", "205", "212"], "a": 0, "ex": "ถ้า 120 kt เป็น IAS: PA 5,000 ft/OAT 30°C ให้ TAS ≈135 kt; GS ขาออก/กลับ ≈108/160 kt; รัศมี 3×108×160/(108+160) ≈194 NM ใกล้ 193", "verdict": "A*", "n": 46, "uncertain": false}, {"q": "จากข้อ 46 จงหาเวลาบิน", "c": ["1.5 ชม.", "1.6 ชม.", "1.7 ชม.", "1.8 ชม."], "a": 3, "ex": "จากข้อ 46 เวลาขาออก ≈194/108 = 1.79 ชั่วโมง จึงใกล้ 1.8 ชั่วโมง", "verdict": "D*", "n": 47, "uncertain": false}, {"q": "Aircraft flies from Point A to Point B, a distance of 100 NM on a track of 125°. The aircraft’s true airspeed is 120 knots, flying at an altitude of 7,500 ft with an outside air temperature of 25°C.", "c": ["40", "47", "50", "57"], "a": 2, "ex": "ใช้ C เป็นเฉลยชั่วคราว โดยตีความว่าโจทย์ถามเวลาบิน: ระยะทาง 100 NM ที่ TAS 120 kt และไม่มีข้อมูลลม ใช้เวลา 100/120 ชั่วโมง หรือ 50 นาที", "verdict": "C", "n": 48, "uncertain": true}, {"q": "Aircraft has flown 50 NM and is now 6 NM off track, with the initial heading unknown. If the aircraft’s current heading is 090°, what heading should the pilot fly to regain the desired track within 10 NM? (See diagram below)", "c": ["103°", "113°", "123°", "133°"], "a": 2, "ex": "ถ้าถือว่า heading ปัจจุบัน 090° ขนาน track ที่ต้องการ การตัดกลับ 6 NM ภายใน 10 NM ต้องเลี้ยวประมาณ arctan(6/10)=31° ได้ ~121° ใกล้ 123°; แต่โจทย์ไม่ระบุ drift/ลม", "verdict": "C*", "n": 49, "uncertain": false, "figure": "<div class=\"figure\" role=\"img\" aria-label=\"เครื่องบินอยู่ห่าง desired track 6 NM หลังบินมา 50 NM ถือ heading 090 องศา\"><svg viewBox=\"0 0 520 180\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"35\" y1=\"130\" x2=\"480\" y2=\"130\" stroke=\"#1a3c6e\" stroke-width=\"3\"/><line x1=\"35\" y1=\"130\" x2=\"320\" y2=\"65\" stroke=\"#2d6abf\" stroke-width=\"3\"/><line x1=\"320\" y1=\"65\" x2=\"320\" y2=\"130\" stroke=\"#e74c3c\" stroke-width=\"2\" stroke-dasharray=\"5 4\"/><text x=\"70\" y=\"150\">Desired track / 50 NM<\/text><text x=\"328\" y=\"101\">6 NM<\/text><text x=\"300\" y=\"51\">✈ 090°<\/text><text x=\"38\" y=\"110\">???°<\/text><\/svg><p>ภาพประกอบเขียนใหม่จากโจทย์ฉบับพิมพ์ เพื่อให้เห็นระยะ 50 NM และระยะคลาดเคลื่อน 6 NM<\/p><\/div>"}, {"q": "From 49, if the pilot wants to regain the desired track in 20 minutes while flying at a groundspeed of 120 kt, what distance will be flown during the correction and what heading should be flown?", "c": ["40 NM, 106°", "40 NM, 112°", "40 NM, 118°", "40 NM, 124°"], "a": 0, "ex": "ใช้ A เป็นเฉลยชั่วคราว: 20 นาทีที่ GS 120 kt ได้ระยะ 40 NM ส่วน Heading 106° ต้องอาศัยสมมติฐานเรื่อง track error เพิ่มเติมจากข้อมูลในโจทย์", "verdict": "A", "n": 50, "uncertain": true}];
+let answered = 0, gradedAnswered = 0, correct = 0;
+function escapeHtml(value) { return String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  for (const [idx, q] of questions.entries()) {
+    q._answered = false;
+    const card = document.createElement('article'); card.className='question-card'; card.id='q-'+idx;
+    const choices = q.c.map((c,ci) => '<button type="button" class="choice-btn" id="btn-'+idx+'-'+ci+'" onclick="answer('+idx+','+ci+')"><span class="letter">'+String.fromCharCode(65+ci)+'.</span><span>'+escapeHtml(c)+'</span></button>').join('');
+    card.innerHTML='<div class="q-number">ข้อ '+q.n+(q.uncertain?'<span class="uncertain-tag">ไม่มั่นใจในคำตอบ</span>':'')+'</div><div class="q-text">'+escapeHtml(q.q)+'</div>'+(q.figure||'')+'<div class="choices">'+choices+'</div><div class="explanation" id="ex-'+idx+'"><strong>เฉลย '+String.fromCharCode(65+q.a)+':</strong> '+escapeHtml(q.ex)+'</div>';
+    container.appendChild(card);
+  }
+}
+function answer(idx, chosen) {
+  const q=questions[idx]; if(q._answered) return;
+  q._answered=true; answered++;
+  q.c.forEach((_,ci)=>{const button=document.getElementById('btn-'+idx+'-'+ci); button.disabled=true; if(q.a!==null && ci===q.a) button.classList.add('correct'); else if(ci===chosen && q.a!==null) button.classList.add('wrong');});
+  document.getElementById('ex-'+idx).classList.add('visible');
+  const card=document.getElementById('q-'+idx);
+  if(q.a===null) card.classList.add('answered-review');
+  else { gradedAnswered++; if(chosen===q.a) {correct++; card.classList.add('answered-correct');} else card.classList.add('answered-wrong'); }
+  document.getElementById('answered-count').textContent=answered;
+  document.getElementById('correct-count').textContent=correct;
+  document.getElementById('score-pct').textContent=(gradedAnswered?Math.round(correct/gradedAnswered*100):0)+'%';
+  document.getElementById('progress-fill').style.width=(answered/questions.length*100)+'%';
+  if(answered===questions.length) showEnd();
+}
+function showEnd() {
+  document.getElementById('end-screen').style.display='block';
+  document.getElementById('final-score').textContent=Math.round(correct/50*100)+'%';
+  document.getElementById('final-detail').textContent='ตอบถูก '+correct+' จาก 50 ข้อที่คิดคะแนน';
+  document.getElementById('end-screen').scrollIntoView({behavior:'smooth'});
+}
+function restartQuiz() {
+  answered=0; gradedAnswered=0; correct=0;
+  document.getElementById('answered-count').textContent='0';
+  document.getElementById('correct-count').textContent='0';
+  document.getElementById('score-pct').textContent='0%';
+  document.getElementById('progress-fill').style.width='0%';
+  document.getElementById('end-screen').style.display='none';
+  buildQuiz(); window.scrollTo({top:0,behavior:'smooth'});
+}
+buildQuiz();
+</script>
+</body>
+</html>
